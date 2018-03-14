@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/back_to_main"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:src="@drawable/image_edit_back" />
+
+    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/back_to_main"
+        android:max="2000"
+        android:progress="2000"
+        android:thumbTint="@color/white" />
+
+</RelativeLayout>

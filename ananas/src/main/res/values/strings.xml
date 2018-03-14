@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">Photo Editor</string>
+    <string name="no_images">No image found</string>
+    <string name="images">%d images</string>
+    <string name="done">DONE</string>
+    <string name="apply">APPLY</string>
+
+    <string name="stickers">Stickers</string>
+    <string name="filter">Filters</string>
+    <string name="crop">Crop</string>
+    <string name="rotate">Rotate</string>
+    <string name="text">Text</string>
+    <string name="edit">Edit</string>
+    <string name="brightness">Brightness</string>
+    <string name="saturation">Saturation</string>
+
+    <string name="materialcolorpicker__app_name">Android Material Color Picker Dialog</string>
+    <string name="materialcolorpicker__descLib">Material Color Picker Dialog</string>
+    <string name="materialcolorpicker__errHex">Hex Code Format incorrect</string>
+    <string name="materialcolorpicker__inputColor">Color:</string>
+    <string name="materialcolorpicker__btnSelectColor">Select</string>
+    <string name="saving_image">Saving…</string>
+    <string name="input_hint">Input Text …</string>
+
+    <string name="no_choose">Please choose a image for edit</string>
+    <string name="auto_newline">AutoNewline</string>
+    <string name="save_error">Save error!</string>
+    <string name="handing">Loading…</string>
+
+    <string-array name="filters">
+        <item>Origin</item>
+        <item>Soft</item>
+        <item>Black</item>
+        <item>Classic</item>
+        <item>Gorgeous</item>
+        <item>Retro</item>
+        <item>Grace</item>
+        <item>Film</item>
+        <item>Memory</item>
+        <item>Yogurt</item>
+        <item>Fleeting</item>
+        <item>Shine</item>
+    </string-array>
+
+    <string-array name="filter_drawable_list">
+        <item>filter_1</item>
+        <item>filter_2</item>
+        <item>filter_3</item>
+        <item>filter_4</item>
+        <item>filter_5</item>
+        <item>filter_6</item>
+        <item>filter_7</item>
+        <item>filter_8</item>
+        <item>filter_9</item>
+        <item>filter_10</item>
+        <item>filter_11</item>
+        <item>filter_12</item>
+    </string-array>
+
+    <string name="more">More</string>
+    <string name="exit_without_save">The edited image is not saved. Do you want to exit? </string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="beauty">Beauty</string>
+    <string name="smooth">Smoothness</string>
+    <string name="white_skin">Skin Tone</string>
+</resources>

@@ -1,0 +1,179 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/banner"
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:background="#333333">
+
+        <ImageView
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_gravity="left|center_vertical"
+            android:layout_margin="10dp"
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/back_arrow" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/back_btn"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <ViewFlipper
+            android:id="@+id/banner_flipper"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:flipInterval="1000"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/done"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/apply"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/apply"
+                android:textAllCaps="true"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+        </ViewFlipper>
+    </RelativeLayout>
+
+    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomViewPager
+        android:id="@+id/bottom_gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/bottom_banner_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/main_backgroud"
+        android:overScrollMode="never" />
+
+    <FrameLayout
+        android:id="@+id/work_space"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/bottom_gallery"
+        android:layout_below="@id/banner"
+        android:background="#000000">
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
+            android:id="@+id/main_image"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.StickerView
+            android:id="@+id/sticker_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.isseiaoki.simplecropview.CropImageView
+            android:id="@+id/crop_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:visibility="gone"
+            custom:scv_background_color="@color/main_backgroud"
+            custom:scv_crop_mode="free"
+            custom:scv_frame_color="@color/white"
+            custom:scv_frame_stroke_weight="1dp"
+            custom:scv_guide_color="@color/white"
+            custom:scv_guide_show_mode="show_always"
+            custom:scv_guide_stroke_weight="1dp"
+            custom:scv_handle_color="@color/white"
+            custom:scv_handle_show_mode="show_always"
+            custom:scv_handle_size="14dp"
+            custom:scv_min_frame_size="50dp"
+            custom:scv_overlay_color="#aa1c1c1c"
+            custom:scv_touch_padding="8dp" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView
+            android:id="@+id/rotate_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView
+            android:id="@+id/text_sticker_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView
+            android:id="@+id/custom_paint_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView
+            android:id="@+id/brightness_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.SaturationView
+            android:id="@+id/contrast_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/redo_undo_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_gallery"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="10dp">
+
+        <ImageView
+            android:id="@+id/undo_btn"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/undo" />
+
+        <ImageView
+            android:id="@+id/redo_btn"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:src="@drawable/redo" />
+    </LinearLayout>
+
+</RelativeLayout>
