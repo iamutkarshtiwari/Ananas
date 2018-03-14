@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Photo Editor</string>
+    <string name="library_name">Photo Editor</string>
     <string name="no_images">No image found</string>
     <string name="images">%d images</string>
     <string name="done">DONE</string>
