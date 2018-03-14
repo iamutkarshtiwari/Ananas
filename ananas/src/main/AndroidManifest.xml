@@ -3,7 +3,8 @@
     package="iamutkarshtiwari.github.io.ananas">
 
     <application android:label="@string/app_name">
-        <activity android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity" />
+        <activity android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>
