@@ -65,22 +65,17 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         ImageHolder imageHoler = (ImageHolder) holder;
         String path = pathList.get(position);
-        ImageLoader.getInstance().displayImage("assets://" + path,
+        ImageLoader.getInstance().displayImage("drawable://" + path,
                 imageHoler.image, imageOption);
+
         imageHoler.image.setTag(path);
         imageHoler.image.setOnClickListener(mImageClick);
     }
 
-    public void addStickerImages(String folderPath) {
+    public void addStickerImages(String folderPath, int stickerCount) {
         pathList.clear();
-        try {
-            String[] files = mStickerFragment.getActivity().getAssets()
-                    .list(folderPath);
-            for (String name : files) {
-                pathList.add(folderPath + File.separator + name);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (int i = 0; i < stickerCount; i++) {
+            pathList.add(folderPath + "_" + (i+1));
         }
         this.notifyDataSetChanged();
     }

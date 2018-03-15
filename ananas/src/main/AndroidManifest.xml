@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="iamutkarshtiwari.github.io.ananas">
 
-    <application android:label="@string/library_name">
+    <application>
         <activity android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity"
+            android:label="@string/library_name"
             android:exported="true"/>
     </application>
 

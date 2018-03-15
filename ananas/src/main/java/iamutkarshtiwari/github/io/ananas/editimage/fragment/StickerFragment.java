@@ -178,8 +178,8 @@ public class StickerFragment extends BaseEditFragment {
         }
     }
 
-    public void swipToStickerDetails(String path) {
-        mStickerAdapter.addStickerImages(path);
+    public void swipToStickerDetails(String path, int stickerCount) {
+        mStickerAdapter.addStickerImages(path, stickerCount);
         flipper.showNext();
     }
 

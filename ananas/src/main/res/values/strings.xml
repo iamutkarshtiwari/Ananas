@@ -14,10 +14,7 @@
     <string name="brightness">Brightness</string>
     <string name="saturation">Saturation</string>
 
-    <string name="materialcolorpicker__app_name">Android Material Color Picker Dialog</string>
-    <string name="materialcolorpicker__descLib">Material Color Picker Dialog</string>
     <string name="materialcolorpicker__errHex">Hex Code Format incorrect</string>
-    <string name="materialcolorpicker__inputColor">Color:</string>
     <string name="materialcolorpicker__btnSelectColor">Select</string>
     <string name="saving_image">Saving…</string>
     <string name="input_hint">Input Text …</string>
@@ -56,6 +53,33 @@
         <item>filter_11</item>
         <item>filter_12</item>
     </string-array>
+
+    <string-array name="types">
+        <item>type1</item>
+        <item>type2</item>
+        <item>type3</item>
+        <item>type4</item>
+        <item>type5</item>
+        <item>type6</item>
+    </string-array>
+
+    <string-array name="type_names">
+        <item>Type 1</item>
+        <item>Type 2</item>
+        <item>Type 3</item>
+        <item>Type 4</item>
+        <item>Type 5</item>
+        <item>Type 6</item>
+    </string-array>
+
+    <integer-array name="type_count">
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>4</item>
+        <item>5</item>
+    </integer-array>
 
     <string name="more">More</string>
     <string name="exit_without_save">The edited image is not saved. Do you want to exit? </string>

@@ -17,14 +17,18 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
     public static final int[] typeIcon = {R.drawable.stickers_type_animal,
             R.drawable.stickers_type_motion, R.drawable.stickers_type_cos,
             R.drawable.stickers_type_mark, R.drawable.stickers_type_decoration};
-    public static final String[] stickerPath = {"stickers/type1", "stickers/type2", "stickers/type3", "stickers/type4", "stickers/type5", "stickers/type6"};
-    public static final String[] stickerPathName = {"Type 1", "Type 2", "Type 3", "Type 4", "Type 5", "Type 6"};
+    private String[] stickerPath ;
+    private String[] stickerPathName;
+    private int[] stickerCount;
     private StickerFragment mStickerFragment;
     private ImageClick mImageClick = new ImageClick();
 
     public StickerTypeAdapter(StickerFragment fragment) {
         super();
         this.mStickerFragment = fragment;
+        stickerPath = mStickerFragment.getResources().getStringArray(R.array.types);
+        stickerPathName = mStickerFragment.getResources().getStringArray(R.array.type_names);
+        stickerCount = mStickerFragment.getResources().getIntArray(R.array.type_count);
     }
 
     public class ImageHolder extends ViewHolder {
@@ -63,16 +67,17 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         ImageHolder imageHoler = (ImageHolder) holder;
         String name = stickerPathName[position];
         imageHoler.text.setText(name);
-        imageHoler.text.setTag(stickerPath[position]);
+        imageHoler.text.setTag(0, stickerPath[position]);
+        imageHoler.text.setTag(1, stickerCount[position]);
         imageHoler.text.setOnClickListener(mImageClick);
     }
 
     private final class ImageClick implements OnClickListener {
         @Override
         public void onClick(View v) {
-            String data = (String) v.getTag();
-            // System.out.println("data---->" + data);
-            mStickerFragment.swipToStickerDetails(data);
+            String data = (String) v.getTag(0);
+            int count = (int) v.getTag(1);
+            mStickerFragment.swipToStickerDetails(data, count);
         }
     }
 }
