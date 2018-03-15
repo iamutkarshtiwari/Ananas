@@ -67,16 +67,16 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         ImageHolder imageHoler = (ImageHolder) holder;
         String name = stickerPathName[position];
         imageHoler.text.setText(name);
-        imageHoler.text.setTag(0, stickerPath[position]);
-        imageHoler.text.setTag(1, stickerCount[position]);
+        imageHoler.text.setTag(R.id.TAG_STICKERS_PATH, stickerPath[position]);
+        imageHoler.text.setTag(R.id.TAG_STICKERS_COUNT, stickerCount[position]);
         imageHoler.text.setOnClickListener(mImageClick);
     }
 
     private final class ImageClick implements OnClickListener {
         @Override
         public void onClick(View v) {
-            String data = (String) v.getTag(0);
-            int count = (int) v.getTag(1);
+            String data = (String) v.getTag(R.id.TAG_STICKERS_PATH);
+            int count = (int) v.getTag(R.id.TAG_STICKERS_COUNT);
             mStickerFragment.swipToStickerDetails(data, count);
         }
     }

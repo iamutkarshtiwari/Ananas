@@ -89,4 +89,7 @@
     <string name="beauty">Beauty</string>
     <string name="smooth">Smoothness</string>
     <string name="white_skin">Skin Tone</string>
+
+    <item type="id" name="TAG_STICKERS_PATH"/>
+    <item type="id" name="TAG_STICKERS_COUNT"/>
 </resources>
