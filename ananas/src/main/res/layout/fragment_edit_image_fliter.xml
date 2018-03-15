@@ -5,6 +5,7 @@
     <ImageView
         android:id="@+id/back_to_main"
         android:layout_width="40dp"
+        android:layout_marginLeft="16dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"

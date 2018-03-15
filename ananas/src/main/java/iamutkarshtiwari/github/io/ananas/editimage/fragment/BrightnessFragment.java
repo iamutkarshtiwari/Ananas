@@ -29,10 +29,6 @@ public class BrightnessFragment extends BaseEditFragment {
 
     private boolean start = true;
 
-    @SuppressLint("ValidFragment")
-    private BrightnessFragment() {
-    }
-
     public static BrightnessFragment newInstance() {
         BrightnessFragment fragment = new BrightnessFragment();
         return fragment;

@@ -28,10 +28,6 @@ public class SaturationFragment extends BaseEditFragment {
 
     private boolean start = true;
 
-    @SuppressLint("ValidFragment")
-    private SaturationFragment() {
-    }
-
     public static SaturationFragment newInstance() {
         SaturationFragment fragment = new SaturationFragment();
         return fragment;
