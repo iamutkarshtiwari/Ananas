@@ -21,6 +21,12 @@ public abstract class BaseEditFragment extends Fragment {
         ensureEditActivity();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ensureEditActivity();
+    }
+
     public abstract void onShow();
 
     public abstract void backToMain();
