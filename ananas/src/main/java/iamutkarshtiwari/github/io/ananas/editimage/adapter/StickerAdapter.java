@@ -57,25 +57,26 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
         View v = null;
         v = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_sticker_item, parent, false);
-        ImageHolder holer = new ImageHolder(v);
-        return holer;
+        ImageHolder holder = new ImageHolder(v);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHolder imageHoler = (ImageHolder) holder;
+        ImageHolder imageHolder = (ImageHolder) holder;
         String path = pathList.get(position);
-        ImageLoader.getInstance().displayImage("drawable://" + path,
-                imageHoler.image, imageOption);
 
-        imageHoler.image.setTag(path);
-        imageHoler.image.setOnClickListener(mImageClick);
+        String imageUrl = "drawable/" + path;
+        int imageKey = mStickerFragment.getResources().getIdentifier(imageUrl, "drawable", mStickerFragment.getContext().getPackageName());
+        imageHolder.image.setImageDrawable(mStickerFragment.getResources().getDrawable(imageKey));
+        imageHolder.image.setTag(imageUrl);
+        imageHolder.image.setOnClickListener(mImageClick);
     }
 
     public void addStickerImages(String folderPath, int stickerCount) {
         pathList.clear();
         for (int i = 0; i < stickerCount; i++) {
-            pathList.add(folderPath + "_" + (i+1));
+            pathList.add(folderPath + "_" + Integer.toString(i+1));
         }
         this.notifyDataSetChanged();
     }
@@ -87,5 +88,4 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
             mStickerFragment.selectedStickerItem(data);
         }
     }
-
 }

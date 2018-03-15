@@ -6,8 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -183,21 +186,10 @@ public class StickerFragment extends BaseEditFragment {
         flipper.showNext();
     }
 
-    private Bitmap getImageFromAssetsFile(String fileName) {
-        Bitmap image = null;
-        AssetManager am = getResources().getAssets();
-        try {
-            InputStream is = am.open(fileName);
-            image = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
     public void selectedStickerItem(String path) {
-        mStickerView.addBitImage(getImageFromAssetsFile(path));
+        int imageKey = getResources().getIdentifier(path, "drawable", getContext().getPackageName());
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageKey);
+        mStickerView.addBitImage(bitmap);
     }
 
     public StickerView getmStickerView() {
