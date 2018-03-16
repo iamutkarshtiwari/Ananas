@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#000000">
+    android:background="@color/main_backgroud">
 
     <ImageView
         android:id="@+id/back_to_main"
