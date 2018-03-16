@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -141,9 +142,10 @@ public class EditImageActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Lock orientation for this activity
+        setLockScreenOrientation(true);
         checkInitImageLoader();
         setContentView(R.layout.activity_image_edit);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         initView();
         getData();
     }
@@ -455,7 +457,24 @@ public class EditImageActivity extends BaseActivity {
         if (mRedoUndoController != null) {
             mRedoUndoController.onDestroy();
         }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        setLockScreenOrientation(false);
+    }
+
+    protected void setLockScreenOrientation(boolean lock) {
+        if (Build.VERSION.SDK_INT >= 18) {
+            setRequestedOrientation(lock?ActivityInfo.SCREEN_ORIENTATION_LOCKED:ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            return;
+        }
+
+        if (lock) {
+            switch (getWindowManager().getDefaultDisplay().getRotation()) {
+                case 0: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); break; // value 1
+                case 2: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT); break; // value 9
+                case 1: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); break; // value 0
+                case 3: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); break; // value 8
+            }
+        } else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR); // value 10
     }
 
     public void increaseOpTimes() {
