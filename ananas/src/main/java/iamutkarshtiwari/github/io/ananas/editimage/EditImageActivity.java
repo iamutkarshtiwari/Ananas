@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -142,6 +143,7 @@ public class EditImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         checkInitImageLoader();
         setContentView(R.layout.activity_image_edit);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         initView();
         getData();
     }
@@ -453,6 +455,7 @@ public class EditImageActivity extends BaseActivity {
         if (mRedoUndoController != null) {
             mRedoUndoController.onDestroy();
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 
     public void increaseOpTimes() {
