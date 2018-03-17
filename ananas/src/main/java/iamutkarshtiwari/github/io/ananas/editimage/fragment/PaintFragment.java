@@ -208,8 +208,8 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         setStokenWidthWindow.setAnimationStyle(R.style.popwin_anim_style);
 
 
-        mPaintModeView.setPaintStrokeColor(Color.RED);
-        mPaintModeView.setPaintStrokeWidth(10);
+        mPaintModeView.setPaintStrokeColor(Color.WHITE);
+        mPaintModeView.setPaintStrokeWidth(20);
 
         updatePaintView();
     }

@@ -1,0 +1,103 @@
+<resources>
+    <string name="library_name">写真編集者</string>
+    <string name="no_images">画像が見つかりません</string>
+    <string name="images">%d 画像</string>
+    <string name="done">完了</string>
+    <string name="apply">申し込み</string>
+
+    <string name="stickers">ステッカー</string>
+    <string name="filter">フィルタ</string>
+    <string name="crop">トリム</string>
+    <string name="rotate">回る</string>
+    <string name="text">本文</string>
+    <string name="edit">編集</string>
+    <string name="brightness">輝度</string>
+    <string name="saturation">飽和</string>
+
+    <string name="materialcolorpicker__errHex">16進コード形式が正しくない</string>
+    <string name="materialcolorpicker__btnSelectColor">選び出す</string>
+    <string name="saving_image">保存中…</string>
+    <string name="input_hint">入力テキスト…</string>
+
+    <string name="no_choose">編集する画像を選択してください</string>
+    <string name="auto_newline">自動改行</string>
+    <string name="save_error">エラーを保存する!</string>
+    <string name="handing">充填…</string>
+
+    <string name="free_size">自由にする</string>
+    <string name="fit_image">元の</string>
+    <string name="square">平方</string>
+    <string name="ratio3_4">3:4</string>
+    <string name="ratio4_3">4:3</string>
+    <string name="ratio9_16">9:16</string>
+    <string name="ratio16_9">16:9</string>
+
+    <string-array name="filters">
+        <item>原点</item>
+        <item>柔らかい</item>
+        <item>ブラック</item>
+        <item>クラシック</item>
+        <item>ゴージャスな</item>
+        <item>レトロ</item>
+        <item>グレース</item>
+        <item>膜</item>
+        <item>メモリ</item>
+        <item>ヨーグルト</item>
+        <item>儚い</item>
+        <item>シャイン</item>
+    </string-array>
+
+    <string-array translatable="false" name="filter_drawable_list">
+        <item>filter_1</item>
+        <item>filter_2</item>
+        <item>filter_3</item>
+        <item>filter_4</item>
+        <item>filter_5</item>
+        <item>filter_6</item>
+        <item>filter_7</item>
+        <item>filter_8</item>
+        <item>filter_9</item>
+        <item>filter_10</item>
+        <item>filter_11</item>
+        <item>filter_12</item>
+    </string-array>
+
+    <string-array translatable="false" name="types">
+        <item>type1</item>
+        <item>type2</item>
+        <item>type3</item>
+        <item>type4</item>
+        <item>type5</item>
+        <item>type6</item>
+    </string-array>
+
+    <string-array name="type_names">
+        <item>タイプ 1</item>
+        <item>タイプ 2</item>
+        <item>タイプ 3</item>
+        <item>タイプ 4</item>
+        <item>タイプ 5</item>
+        <item>タイプ 6</item>
+    </string-array>
+
+    <integer-array translatable="false" name="type_count">
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>4</item>
+        <item>5</item>
+    </integer-array>
+
+    <string name="more">もっと</string>
+    <string name="exit_without_save">編集した画像は保存されません。退室しますか？</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">取り消し</string>
+
+    <string name="beauty">美しさ</string>
+    <string name="smooth">滑らかさ</string>
+    <string name="white_skin">スキントーン</string>
+
+    <item type="id" translatable="false" name="TAG_STICKERS_PATH" />
+    <item type="id" translatable="false" name="TAG_STICKERS_COUNT" />
+</resources>

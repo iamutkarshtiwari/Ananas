@@ -13,22 +13,29 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.task.StickerTask;
-import iamutkarshtiwari.github.io.ananas.editimage.ui.ColorPicker;
 import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
+//import petrov.kristiyan.colorpicker.ColorPicker;
 
 
 public class AddTextFragment extends BaseEditFragment implements TextWatcher {
     public static final int INDEX = ModuleConfig.INDEX_ADDTEXT;
     public static final String TAG = AddTextFragment.class.getName();
+
+    public static final String KELLY_COLORS[] = {"#F2F3F4", "#222222", "#F3C300", "#875692", "#F38400", "#A1CAF1",
+            "#BE0032", "#C2B280", "#848482", "#008856", "#E68FAC", "#0067A5",
+            "#F99379", "#604E97", "#F6A600", "#B3446C", "#DCD300", "#882D17",
+            "#8DB600", "#654522", "#E25822", "#2B3D26"};
 
     private View mainView;
     private View backToMenu;// 返回主菜单
@@ -36,9 +43,7 @@ public class AddTextFragment extends BaseEditFragment implements TextWatcher {
     private EditText mInputText;//输入框
     private ImageView mTextColorSelector;//颜色选择器
     private TextStickerView mTextStickerView;// 文字贴图显示控件
-    private CheckBox mAutoNewLineCheck;
-
-    private ColorPicker mColorPicker;
+//    private ColorPicker mColorPicker;
 
     private int mTextColor = Color.WHITE;
     private InputMethodManager imm;
@@ -72,11 +77,11 @@ public class AddTextFragment extends BaseEditFragment implements TextWatcher {
         backToMenu = mainView.findViewById(R.id.back_to_main);
         mInputText = (EditText) mainView.findViewById(R.id.text_input);
         mTextColorSelector = (ImageView) mainView.findViewById(R.id.text_color);
-        mAutoNewLineCheck = (CheckBox) mainView.findViewById(R.id.check_auto_newline);
+        CheckBox mAutoNewLineCheck = (CheckBox) mainView.findViewById(R.id.check_auto_newline);
 
-        backToMenu.setOnClickListener(new BackToMenuClick());// 返回主菜单
-        mColorPicker = new ColorPicker(getActivity(), 255, 255, 255);
+        backToMenu.setOnClickListener(new BackToMenuClick());
         mTextColorSelector.setOnClickListener(new SelectColorBtnClick());
+
         mInputText.addTextChangedListener(this);
         mTextStickerView.setEditText(mInputText);
     }
@@ -101,15 +106,27 @@ public class AddTextFragment extends BaseEditFragment implements TextWatcher {
     private final class SelectColorBtnClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            mColorPicker.show();
-            Button okColor = (Button) mColorPicker.findViewById(R.id.okColorButton);
-            okColor.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    changeTextColor(mColorPicker.getColor());
-                    mColorPicker.dismiss();
-                }
-            });
+
+            ArrayList<String> kellyColors = new ArrayList<String>(Arrays.asList(KELLY_COLORS));
+//            mColorPicker = new ColorPicker(activity);
+//            mColorPicker.setOnFastChooseColorListener(new ColorPicker.OnFastChooseColorListener() {
+//
+//                @Override
+//                public void setOnFastChooseColorListener(int position, int color) {
+//                    changeTextColor(color);
+//                    mColorPicker.dismissDialog();
+//                }
+//
+//                @Override
+//                public void onCancel() {
+//
+//                }
+//            }).disableDefaultButtons(true)
+//                    .setColors(kellyColors)
+//                    .setDefaultColorButton(Color.parseColor("#ffffff"))
+//                    .setColumns(5).setRoundColorButton(true);
+//
+//            mColorPicker.show();
         }
     }
 

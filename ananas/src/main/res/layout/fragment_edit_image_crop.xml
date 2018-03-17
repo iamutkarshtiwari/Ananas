@@ -13,18 +13,18 @@
         android:src="@drawable/image_edit_back" />
 
     <HorizontalScrollView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@id/back_to_main">
 
         <LinearLayout
             android:id="@+id/ratio_list_group"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:orientation="horizontal"></LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"/>
     </HorizontalScrollView>
 
 </RelativeLayout>

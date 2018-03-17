@@ -6,11 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +15,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ViewFlipper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -29,12 +31,6 @@ import iamutkarshtiwari.github.io.ananas.editimage.model.StickerBean;
 import iamutkarshtiwari.github.io.ananas.editimage.task.StickerTask;
 import iamutkarshtiwari.github.io.ananas.editimage.view.StickerItem;
 import iamutkarshtiwari.github.io.ananas.editimage.view.StickerView;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 public class StickerFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_STICKER;
@@ -82,8 +78,7 @@ public class StickerFragment extends BaseEditFragment {
         flipper = (ViewFlipper) mainView.findViewById(R.id.flipper);
         flipper.setInAnimation(activity, R.anim.in_bottom_to_top);
         flipper.setOutAnimation(activity, R.anim.out_bottom_to_top);
-
-        //
+        
         backToMenu = mainView.findViewById(R.id.back_to_main);
         typeList = (RecyclerView) mainView
                 .findViewById(R.id.stickers_type_list);

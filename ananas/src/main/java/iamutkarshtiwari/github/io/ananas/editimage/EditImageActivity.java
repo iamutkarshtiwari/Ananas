@@ -26,6 +26,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.isseiaoki.simplecropview.CropImageView;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.AddTextFragment;
@@ -57,6 +58,7 @@ public class EditImageActivity extends BaseActivity {
     public static final String FILE_PATH = "file_path";
     public static final String EXTRA_OUTPUT = "extra_output";
     public static final String SAVE_FILE_PATH = "save_file_path";
+    public static final String FORCE_PORTRAIT = "force_portrait";
 
     private static final int PERMISSIONS_REQUEST_CODE = 110;
 
@@ -87,6 +89,7 @@ public class EditImageActivity extends BaseActivity {
 
     protected int mOpTimes = 0;
     protected boolean isBeenSaved = false;
+    protected boolean isPortraitForced = false;
 
     private EditImageActivity mContext;
     private Bitmap mainBitmap;
@@ -127,7 +130,7 @@ public class EditImageActivity extends BaseActivity {
      * @param outputPath
      * @param requestCode
      */
-    public static void start(Activity context, final String editImagePath, final String outputPath, final int requestCode) {
+    public static void start(Activity context, final String editImagePath, final String outputPath, final int requestCode, final boolean forcePortrait) {
         if (TextUtils.isEmpty(editImagePath)) {
             Toast.makeText(context, R.string.no_choose, Toast.LENGTH_SHORT).show();
             return;
@@ -136,14 +139,17 @@ public class EditImageActivity extends BaseActivity {
         Intent it = new Intent(context, EditImageActivity.class);
         it.putExtra(EditImageActivity.FILE_PATH, editImagePath);
         it.putExtra(EditImageActivity.EXTRA_OUTPUT, outputPath);
+        it.putExtra(EditImageActivity.FORCE_PORTRAIT, forcePortrait);
         context.startActivityForResult(it, requestCode);
+    }
+
+    public static void start(Activity context, final String editImagePath, final String outputPath, final int requestCode) {
+        start(context, editImagePath, outputPath, requestCode, false);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Lock orientation for this activity
-        setLockScreenOrientation(true);
         checkInitImageLoader();
         setContentView(R.layout.activity_image_edit);
         initView();
@@ -151,6 +157,7 @@ public class EditImageActivity extends BaseActivity {
     }
 
     private void getData() {
+        isPortraitForced = getIntent().getBooleanExtra(FORCE_PORTRAIT, false);
         filePath = getIntent().getStringExtra(FILE_PATH);
         saveFilePath = getIntent().getStringExtra(EXTRA_OUTPUT);
         loadImage(filePath);
@@ -233,6 +240,17 @@ public class EditImageActivity extends BaseActivity {
                 }
                 return;
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Lock orientation for this activity
+        if (isPortraitForced) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            setLockScreenOrientation(true);
         }
     }
 
@@ -457,21 +475,33 @@ public class EditImageActivity extends BaseActivity {
         if (mRedoUndoController != null) {
             mRedoUndoController.onDestroy();
         }
-        setLockScreenOrientation(false);
+        if (isPortraitForced) {
+
+        } else {
+            setLockScreenOrientation(false);
+        }
     }
 
     protected void setLockScreenOrientation(boolean lock) {
         if (Build.VERSION.SDK_INT >= 18) {
-            setRequestedOrientation(lock?ActivityInfo.SCREEN_ORIENTATION_LOCKED:ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
             return;
         }
 
         if (lock) {
             switch (getWindowManager().getDefaultDisplay().getRotation()) {
-                case 0: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); break; // value 1
-                case 2: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT); break; // value 9
-                case 1: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); break; // value 0
-                case 3: setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE); break; // value 8
+                case 0:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    break; // value 1
+                case 2:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                    break; // value 9
+                case 1:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    break; // value 0
+                case 3:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                    break; // value 8
             }
         } else
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR); // value 10
