@@ -1,11 +1,14 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -17,25 +20,19 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import eltos.simpledialogfragment.color.SimpleColorDialog;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.task.StickerTask;
 import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
-//import petrov.kristiyan.colorpicker.ColorPicker;
 
 
-public class AddTextFragment extends BaseEditFragment implements TextWatcher {
+public class AddTextFragment extends BaseEditFragment implements TextWatcher, SimpleColorDialog.OnDialogResultListener {
     public static final int INDEX = ModuleConfig.INDEX_ADDTEXT;
-    public static final String TAG = AddTextFragment.class.getName();
+    public static final String COLOR_DIALOG = "color_dialog";
 
-    public static final String KELLY_COLORS[] = {"#F2F3F4", "#222222", "#F3C300", "#875692", "#F38400", "#A1CAF1",
-            "#BE0032", "#C2B280", "#848482", "#008856", "#E68FAC", "#0067A5",
-            "#F99379", "#604E97", "#F6A600", "#B3446C", "#DCD300", "#882D17",
-            "#8DB600", "#654522", "#E25822", "#2B3D26"};
+    public static final String TAG = AddTextFragment.class.getName();
 
     private View mainView;
     private View backToMenu;// 返回主菜单
@@ -43,10 +40,10 @@ public class AddTextFragment extends BaseEditFragment implements TextWatcher {
     private EditText mInputText;//输入框
     private ImageView mTextColorSelector;//颜色选择器
     private TextStickerView mTextStickerView;// 文字贴图显示控件
-//    private ColorPicker mColorPicker;
 
     private int mTextColor = Color.WHITE;
     private InputMethodManager imm;
+    private SimpleColorDialog mSimpleColorDialog;
 
     private SaveTextStickerTask mSaveTask;
 
@@ -84,11 +81,15 @@ public class AddTextFragment extends BaseEditFragment implements TextWatcher {
 
         mInputText.addTextChangedListener(this);
         mTextStickerView.setEditText(mInputText);
+
+        mSimpleColorDialog = SimpleColorDialog.build()
+                .title(R.string.pick_a_color)
+                .colorPreset(Color.RED)
+                .colors(getColorList());
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        //mTextStickerView change
         String text = s.toString().trim();
         mTextStickerView.setText(text);
     }
@@ -103,30 +104,36 @@ public class AddTextFragment extends BaseEditFragment implements TextWatcher {
 
     }
 
+    /**
+     * Get Kelly's 22 color list
+     *
+     * @return
+     */
+    private int[] getColorList() {
+        Resources resources = this.getResources();
+        int colorList[] = new int[22];
+        for (int i = 0; i <= 21; i++) {
+            int resourceId = resources.getIdentifier("kelly_" + (i + 1), "color", getActivity().getPackageName());
+            colorList[i] = resources.getColor(resourceId);
+        }
+        return colorList;
+    }
+
+    @Override
+    public boolean onResult(@NonNull String dialogTag, int which, @NonNull Bundle extras) {
+        // handle results as usual
+        if (which == BUTTON_POSITIVE) {
+            @ColorInt int color = extras.getInt(SimpleColorDialog.COLOR);
+            changeTextColor(color);
+            return true;
+        }
+        return false;
+    }
+
     private final class SelectColorBtnClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-
-            ArrayList<String> kellyColors = new ArrayList<String>(Arrays.asList(KELLY_COLORS));
-//            mColorPicker = new ColorPicker(activity);
-//            mColorPicker.setOnFastChooseColorListener(new ColorPicker.OnFastChooseColorListener() {
-//
-//                @Override
-//                public void setOnFastChooseColorListener(int position, int color) {
-//                    changeTextColor(color);
-//                    mColorPicker.dismissDialog();
-//                }
-//
-//                @Override
-//                public void onCancel() {
-//
-//                }
-//            }).disableDefaultButtons(true)
-//                    .setColors(kellyColors)
-//                    .setDefaultColorButton(Color.parseColor("#ffffff"))
-//                    .setColumns(5).setRoundColorButton(true);
-//
-//            mColorPicker.show();
+            mSimpleColorDialog.show(AddTextFragment.this, COLOR_DIALOG);
         }
     }
 

@@ -7,4 +7,27 @@
     <color name="materialcolorpicker__grey">#b3b3b3</color>
     <color name="hint_foreground_material_light">#00000000</color>
     <color name="text_color">#BEC2C4</color>
+
+    <color name="kelly_1">#F2F3F4</color>
+    <color name="kelly_2">#222222</color>
+    <color name="kelly_3">#F3C300</color>
+    <color name="kelly_4">#875692</color>
+    <color name="kelly_5">#F38400</color>
+    <color name="kelly_6">#A1CAF1</color>
+    <color name="kelly_7">#BE0032</color>
+    <color name="kelly_8">#C2B280</color>
+    <color name="kelly_9">#848482</color>
+    <color name="kelly_10">#008856</color>
+    <color name="kelly_11">#E68FAC</color>
+    <color name="kelly_12">#0067A5</color>
+    <color name="kelly_13">#F99379</color>
+    <color name="kelly_14">#604E97</color>
+    <color name="kelly_15">#F6A600</color>
+    <color name="kelly_16">#B3446C</color>
+    <color name="kelly_17">#DCD300</color>
+    <color name="kelly_18">#882D17</color>
+    <color name="kelly_19">#8DB600</color>
+    <color name="kelly_20">#654522</color>
+    <color name="kelly_21">#E25822</color>
+    <color name="kelly_22">#2B3D26</color>
 </resources>

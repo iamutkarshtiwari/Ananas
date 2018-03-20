@@ -23,6 +23,7 @@
     <string name="auto_newline">AutoNewline</string>
     <string name="save_error">Save error!</string>
     <string name="handing">Loading…</string>
+    <string name="pick_a_color">Pick a color</string>
 
     <string name="free_size">FREE</string>
     <string name="fit_image">ORIGINAL</string>

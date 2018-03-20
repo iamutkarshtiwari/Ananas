@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '26.0.3'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -30,8 +30,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.+'
     compile 'com.isseiaoki:simplecropview:1.1.7'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-//    compile 'petrov.kristiyan:colorpicker-library:1.1.8'
-
+    compile 'com.github.eltos:simpledialogfragment:2.2.2'
 }
 repositories {
     mavenCentral()
