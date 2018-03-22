@@ -1,0 +1,141 @@
+
+# Ananas Photo Editor
+
+[![Download](https://img.shields.io/badge/JitPack-v1.0.0-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/v1.0.0) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
+
+An easy photo editor integration for your Android apps.
+
+## Features
+
+- [**Paint**](#paint) option with Brush Color, Size and Eraser.
+- Adding/Editing [**Text**](#text) with option to change its color.
+- Adding [**Stickers**](#adding-imagesstickers)
+- Pinch to [**Zoom**](), [**Rotate**]() and [**Crop**]() views.
+- [**Undo and Redo**](#undo-and-redo) for all changes.
+- [**Saving**](#saving) Photo after editing.
+- Applying [**Filters**]() to your image
+- Changing the [**Contrast**]() and [**Saturation**]() of images
+- Addition [**Beauty**]() settings for images with face
+ 
+
+## Benefits
+- Plug and play
+- Easy image editing
+
+## Getting Started
+Add it in your root build.gradle at the end of repositories:
+```
+  allprojects {
+    repositories {
+      ...
+      maven { url 'https://jitpack.io' }
+    }
+  }
+```
+
+
+Add the dependency in gradle file of app module like this
+```
+compile 'com.github.iamutkarshtiwari:Ananas:v1.0.0'
+```
+
+## Proguard Rules [Important!]
+
+Add this to your app's `proguard-rules.pro` file -
+
+```pro
+-keepclasseswithmembers class * {
+    native <methods>;
+}
+```
+
+
+
+## Starting the PhotoEditor activity
+Simply add this line to the place from where you want to start the activity-
+
+- If you wanna force `Portrait` mode, pass `forcePortrait` (boolean) as `true`
+```java
+EditImageActivity.start(sourceActivity, originalImagePath, outputImagePath, requestCode, forcePortait);
+```
+
+
+- If you wanna launch the activity in `Auto-rotate` mode
+```java
+EditImageActivity.start(sourceActivity, originalImagePath, outputImagePath, requestCode);
+```
+
+## Receiving the output image
+
+You can receive the new processed image path and it's edit status like this-
+```
+ @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (requestCode == PHOTO_EDITOR_REQUEST) { // same code you used while starting 
+            String newFilePath = data.getStringExtra(EditImageActivity.EXTRA_OUTPUT);
+            boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IMAGE_IS_EDIT, false);
+        }
+    }
+```
+
+## Special Note
+The photo editor locks the current orientation in which it is started -
+1) If you started in `Portrait` mode, you can't switch to `Landscape` while the image editor activity is running.
+2) If you started in `Landscape` mode, you can't switch to `Portrait` during the same.
+
+But once you navigate back to your original app, you are reverted back to your previous configuration change settings.
+
+## How to contribute?
+* Fork the project.
+* Make required changes and commit.
+* Generate pull request. Mention all the required description regarding changes you made.
+
+Happy coding! :)
+
+
+## What's next?
+- Add options to build photo editor with custom features
+- Add support for configuration change during photo editing
+
+
+## Questions?🤔
+Hit me on twitter 
+[![Twitter](https://img.shields.io/badge/Twitter-%40iamutkarsht-blue.svg)](https://twitter.com/iamutkarsht)
+[![Facebook](https://img.shields.io/badge/Facebook-Utkarsh%20Tiwari-blue.svg)](https://www.facebook.com/iamutkarshtiwari)
+
+## How to submit a valid issue
+- **Make sure you compiled the latest version.** If it still doesn't work out, don't hesitate to open a new issue.
+- Describe the scenarios when crash happened as much as possible (pictures would be better).
+- Sharing your device type and Android OS version is very helpful.
+- Paste your XML or Java code.
+- Paste the crash log.
+- Be polite.
+
+## License
+```
+   Copyright 2018 Utkarsh Tiwari
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```
+
+# Credits 
+
+ Name | Library
+------------ | -------------
+siwangqishiq | [ImageEditor Android](https://github.com/siwangqishiq/ImageEditor-Android) 
+IsseiAoki | [SimpleCropView](https://github.com/IsseiAoki/SimpleCropView)
+hoanganhtuan95ptit | [Contrast and Brightness feature](https://github.com/hoanganhtuan95ptit/EditPhoto)
+eltos | [Color Picker Dialog](https://github.com/eltos/SimpleDialogFragments)
+Russell Jurney | [Kelly's 22 colors list](https://medium.com/@rjurney/kellys-22-colours-of-maximum-contrast-58edb70c90d1)
