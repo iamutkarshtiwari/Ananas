@@ -1,7 +1,7 @@
 
 # Ananas Photo Editor
 
-[![Download](https://img.shields.io/badge/JitPack-v1.0.0-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/v1.0.0) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
+[![Download](https://img.shields.io/badge/JitPack-1.1.0-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/1.1.0) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
 
 An easy photo editor integration for your Android apps.
 
@@ -36,7 +36,7 @@ Add it in your root build.gradle at the end of repositories:
 
 Add the dependency in gradle file of app module like this
 ```
-compile 'com.github.iamutkarshtiwari:Ananas:v1.0.0'
+implementation 'com.github.iamutkarshtiwari:Ananas:1.1.0'
 ```
 
 ## Proguard Rules [Important!]
@@ -49,20 +49,37 @@ Add this to your app's `proguard-rules.pro` file -
 }
 ```
 
+## NOTE:
 
+Since this library uses `RxJava 2.0` and if your project uses `RxJava 1.0`, then you need to add the below code to the gradle file of you app so that both versions can co-exist-
+```
+android {
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+```
 
 ## Starting the PhotoEditor activity
 Simply add this line to the place from where you want to start the activity-
 
-- If you wanna force `Portrait` mode, pass `forcePortrait` (boolean) as `true`
 ```java
-EditImageActivity.start(sourceActivity, originalImagePath, outputImagePath, requestCode, forcePortait);
-```
+  Intent intent = new ImageEditorIntentBuilder(this, sourceImagePath, outputFilePath)
+         .withAddText() // Add the features you need 
+         .withPaintFeature()
+         .withFilterFeature()
+         .withRotateFeature()
+         .withCropFeature()
+         .withBrighnessFeature()
+         .withSaturationFeature()
+         .withBeautyFeature() 
+         .forcePortrait(true)  // Add this to force portrait mode (It's set to false by default)
+         .build();
 
-
-- If you wanna launch the activity in `Auto-rotate` mode
-```java
-EditImageActivity.start(sourceActivity, originalImagePath, outputImagePath, requestCode);
+ EditImageActivity.start(activity, intent, PHOTO_EDITOR_REQUEST_CODE);
+ } catch (Exception e) {
+     Log.e("Demo App", e.getMessage()); // This could throw if either `sourcePath` or `outputPath` is blank or Null
+ }
 ```
 
 ## Receiving the output image
@@ -73,8 +90,8 @@ You can receive the new processed image path and it's edit status like this-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
-        if (requestCode == PHOTO_EDITOR_REQUEST) { // same code you used while starting 
-            String newFilePath = data.getStringExtra(EditImageActivity.EXTRA_OUTPUT);
+        if (requestCode == PHOTO_EDITOR_REQUEST_CODE) { // same code you used while starting 
+            String newFilePath = data.getStringExtra(EditImageActivity.OUTPUT_PATH);
             boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IMAGE_IS_EDIT, false);
         }
     }
@@ -96,7 +113,6 @@ Happy coding! :)
 
 
 ## What's next?
-- Add options to build photo editor with custom features
 - Add support for configuration change during photo editing
 
 

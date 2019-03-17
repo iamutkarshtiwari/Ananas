@@ -2,9 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 
+group='com.github.iamutkarshtiwari'
+
 android {
     compileSdkVersion 27
-    buildToolsVersion '26.0.3'
 
     defaultConfig {
         minSdkVersion 16
@@ -21,6 +22,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions{
+        doNotStrip '*/mips/*.so'
     }
 }
 
