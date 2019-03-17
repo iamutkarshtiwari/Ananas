@@ -1,44 +1,30 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/back_to_main"
         android:layout_width="40dp"
-        android:layout_marginLeft="16dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
         android:src="@drawable/image_edit_back" />
 
-    <EditText
-        android:id="@+id/text_input"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="18dp"
-        android:layout_weight="1"
-        android:hint="@string/input_hint"
-        android:paddingLeft="8dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white" />
+    <LinearLayout
+        android:id="@+id/add_text_btn"
+        style="@style/option_style"
+        android:layout_centerInParent="true"
+        android:gravity="center">
 
-    <CheckBox
-        android:id="@+id/check_auto_newline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="3dp"
-        android:text="@string/auto_newline"
-        android:textColor="@color/white"
-        android:visibility="gone" />
+        <ImageView
+            style="@style/icon_style"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_add_text" />
 
-    <ImageView
-        android:id="@+id/text_color"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="10dp"
-        android:background="#ffffff" />
+        <TextView
+            style="@style/option_text_style"
+            android:text="@string/text" />
 
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -75,7 +75,7 @@ public class FilterListFragment extends BaseEditFragment {
     @Override
     public void onShow() {
         activity.mode = EditImageActivity.MODE_FILTER;
-        activity.mFilterListFragment.setCurrentBitmap(activity.getMainBit());
+        activity.filterListFragment.setCurrentBitmap(activity.getMainBit());
         activity.mainImage.setImageBitmap(activity.getMainBit());
         activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
         activity.mainImage.setScaleEnabled(false);

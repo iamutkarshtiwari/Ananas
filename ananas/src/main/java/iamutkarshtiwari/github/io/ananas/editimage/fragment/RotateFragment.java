@@ -72,7 +72,7 @@ public class RotateFragment extends BaseEditFragment {
 
         activity.mRotatePanel.addBit(activity.getMainBit(),
                 activity.mainImage.getBitmapRect());
-        activity.mRotateFragment.mSeekBar.setProgress(0);
+        activity.rotateFragment.mSeekBar.setProgress(0);
         activity.mRotatePanel.reset();
         activity.mRotatePanel.setVisibility(View.VISIBLE);
         activity.bannerFlipper.showNext();

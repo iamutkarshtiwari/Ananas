@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/sticker_border"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_8dp"
+        android:background="@drawable/background_border">
+
+        <TextView
+            android:id="@+id/text_sticker_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_4dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_18sp"
+            tools:text="Sample text"
+            tools:textColor="@android:color/white" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/sticker_delete_btn"
+        android:layout_width="@dimen/delete_icon_size"
+        android:layout_height="@dimen/delete_icon_size"
+        android:layout_gravity="top|start"
+        android:elevation="@dimen/elevation_2dp"
+        android:src="@drawable/ic_close" />
+
+</FrameLayout>

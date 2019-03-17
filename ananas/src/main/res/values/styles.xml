@@ -1,4 +1,5 @@
 <resources>
+
     <style name="popwin_anim_style">
         <item name="android:windowEnterAnimation">@anim/menushow</item>
         <item name="android:windowExitAnimation">@anim/menuhide</item>
@@ -14,9 +15,28 @@
     <style name="option_style">
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:layout_marginBottom">4dp</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_width">80dp</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="option_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:textSize">@dimen/text_sticker_size</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="edit_text_style">
+        <item name="android:singleLine">true</item>
+        <item name="colorControlNormal">#FFFFFF</item>
+        <item name="colorControlActivated">#FFFFFF</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

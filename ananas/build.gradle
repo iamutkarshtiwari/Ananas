@@ -18,13 +18,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:3.3.2"
-
+    testImplementation 'org.robolectric:robolectric:3.3.2'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'com.android.support:recyclerview-v7:26.+'

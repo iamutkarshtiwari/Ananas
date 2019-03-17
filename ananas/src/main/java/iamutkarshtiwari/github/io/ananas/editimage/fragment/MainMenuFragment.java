@@ -103,47 +103,47 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
 
     private void onStickClick() {
         activity.bottomGallery.setCurrentItem(StickerFragment.INDEX);
-        activity.mStickerFragment.onShow();
+        activity.stickerFragment.onShow();
     }
 
     private void onFilterClick() {
         activity.bottomGallery.setCurrentItem(FilterListFragment.INDEX);
-        activity.mFilterListFragment.onShow();
+        activity.filterListFragment.onShow();
     }
 
     private void onCropClick() {
         activity.bottomGallery.setCurrentItem(CropFragment.INDEX);
-        activity.mCropFragment.onShow();
+        activity.cropFragment.onShow();
     }
 
     private void onRotateClick() {
         activity.bottomGallery.setCurrentItem(RotateFragment.INDEX);
-        activity.mRotateFragment.onShow();
+        activity.rotateFragment.onShow();
     }
 
 
     private void onAddTextClick() {
         activity.bottomGallery.setCurrentItem(AddTextFragment.INDEX);
-        activity.mAddTextFragment.onShow();
+        activity.addTextFragment.onShow();
     }
 
     private void onPaintClick() {
         activity.bottomGallery.setCurrentItem(PaintFragment.INDEX);
-        activity.mPaintFragment.onShow();
+        activity.paintFragment.onShow();
     }
 
     private void onBeautyClick() {
         activity.bottomGallery.setCurrentItem(BeautyFragment.INDEX);
-        activity.mBeautyFragment.onShow();
+        activity.beautyFragment.onShow();
     }
 
     private void onBrightnessClick() {
         activity.bottomGallery.setCurrentItem(BrightnessFragment.INDEX);
-        activity.mBrightnessFragment.onShow();
+        activity.brightnessFragment.onShow();
     }
 
     private void onContrastClick() {
         activity.bottomGallery.setCurrentItem(SaturationFragment.INDEX);
-        activity.mSaturationFragment.onShow();
+        activity.saturationFragment.onShow();
     }
 }

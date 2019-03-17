@@ -1,10 +1,7 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +15,11 @@ import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fliter.PhotoProcessing;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
-import java.lang.ref.WeakReference;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBarChangeListener {
@@ -27,21 +28,21 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     public static final int INDEX = ModuleConfig.INDEX_BEAUTY;
 
     private View mainView;
-    private View backToMenu;// 返回主菜单
+    private Dialog dialog;
 
-    private SeekBar mSmoothValueBar;
-    private SeekBar mWhiteValueBar;
+    private SeekBar smoothValueBar;
+    private SeekBar whiteValueBar;
 
-    private BeautyTask mHandleTask;
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private Disposable beautyDisposable;
+    private Bitmap finalBmp;
 
-    private int mSmooth = 0;//磨皮值
-    private int mWhiteSkin = 0;//美白值
+    private int smooth = 0;
+    private int whiteSkin = 0;
 
-    private WeakReference<Bitmap> mResultBitmapRef;
 
     public static BeautyFragment newInstance() {
-        BeautyFragment fragment = new BeautyFragment();
-        return fragment;
+        return new BeautyFragment();
     }
 
     @Override
@@ -54,21 +55,22 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_beauty, null);
 
-        mSmoothValueBar = (SeekBar) mainView.findViewById(R.id.smooth_value_bar);
-        mWhiteValueBar = (SeekBar) mainView.findViewById(R.id.white_skin_value_bar);
+        smoothValueBar = mainView.findViewById(R.id.smooth_value_bar);
+        whiteValueBar = mainView.findViewById(R.id.white_skin_value_bar);
+        dialog = BaseActivity.getLoadingDialog(getActivity(), R.string.handing,
+                false);
         return mainView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        backToMenu = mainView.findViewById(R.id.back_to_main);
+        View backToMenu = mainView.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());// 返回主菜单
 
-        mSmoothValueBar.setOnSeekBarChangeListener(this);
-        mWhiteValueBar.setOnSeekBarChangeListener(this);
+        smoothValueBar.setOnSeekBarChangeListener(this);
+        whiteValueBar.setOnSeekBarChangeListener(this);
     }
-
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -84,26 +86,44 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     }
 
     protected void doBeautyTask() {
-        if (mHandleTask != null && !mHandleTask.isCancelled()) {
-            mHandleTask.cancel(true);
+        if (beautyDisposable != null && !beautyDisposable.isDisposed()) {
+            beautyDisposable.dispose();
         }
-        mSmooth = mSmoothValueBar.getProgress();
-        mWhiteSkin = mWhiteValueBar.getProgress();
+        smooth = smoothValueBar.getProgress();
+        whiteSkin = whiteValueBar.getProgress();
 
-        if (mSmooth == 0 && mWhiteSkin == 0) {
+        if (smooth == 0 && whiteSkin == 0) {
             activity.mainImage.setImageBitmap(activity.getMainBit());
             return;
         }
 
-        mHandleTask = new BeautyTask(mSmooth, mWhiteSkin);
-        mHandleTask.execute(0);
+        beautyDisposable = beautify(smooth, whiteSkin)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> dialog.show())
+                .doFinally(() -> dialog.dismiss())
+                .subscribe(bitmap -> {
+                    if (bitmap == null)
+                        return;
+                    activity.mainImage.setImageBitmap(bitmap);
+                    finalBmp = bitmap;
+                }, e -> {
+                    // Do nothing on error
+                });
+        disposable.add(beautyDisposable);
     }
 
-    /**
-     * 返回按钮逻辑
-     *
-     * @author panyi
-     */
+    private Single<Bitmap> beautify(int smoothVal, int whiteSkinVal) {
+        return Single.fromCallable(() -> {
+            Bitmap srcBitmap = Bitmap.createBitmap(
+                    activity.getMainBit().copy(
+                            Bitmap.Config.ARGB_8888, true)
+            );
+            PhotoProcessing.handleSmoothAndWhiteSkin(srcBitmap, smoothVal, whiteSkinVal);
+            return srcBitmap;
+        });
+    }
+
     private final class BackToMenuClick implements OnClickListener {
         @Override
         public void onClick(View v) {
@@ -111,15 +131,12 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
         }
     }
 
-    /**
-     * 返回主菜单
-     */
     @Override
     public void backToMain() {
-        this.mSmooth = 0;
-        this.mWhiteSkin = 0;
-        mSmoothValueBar.setProgress(0);
-        mWhiteValueBar.setProgress(0);
+        this.smooth = 0;
+        this.whiteSkin = 0;
+        smoothValueBar.setProgress(0);
+        whiteValueBar.setProgress(0);
 
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
@@ -140,75 +157,22 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     }
 
     public void applyBeauty() {
-        if (mResultBitmapRef.get() != null && (mSmooth != 0 || mWhiteSkin != 0)) {
-            activity.changeMainBitmap(mResultBitmapRef.get(),true);
+        if (finalBmp != null && (smooth != 0 || whiteSkin != 0)) {
+            activity.changeMainBitmap(finalBmp, true);
         }
 
         backToMain();
     }
 
-    /**
-     * 美颜操作任务
-     */
-    private final class BeautyTask extends AsyncTask<Integer, Void, Bitmap> {
-        private float smoothVal;
-        private float whiteVal;
-
-        private Dialog dialog;
-        private Bitmap srcBitmap;
-
-        public BeautyTask(float smooth, float white) {
-            this.smoothVal = smooth;
-            this.whiteVal = white;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = BaseActivity.getLoadingDialog(getActivity(), R.string.handing,
-                    false);
-            dialog.show();
-        }
-
-        @Override
-        protected Bitmap doInBackground(Integer... params) {
-            srcBitmap = Bitmap.createBitmap(activity.getMainBit().copy(
-                    Bitmap.Config.ARGB_8888, true));
-            //System.out.println("smoothVal = "+smoothVal+"     whiteVal = "+whiteVal);
-            PhotoProcessing.handleSmoothAndWhiteSkin(srcBitmap, smoothVal, whiteVal);
-            return srcBitmap;
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            dialog.dismiss();
-        }
-
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        @Override
-        protected void onCancelled(Bitmap result) {
-            super.onCancelled(result);
-            dialog.dismiss();
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            dialog.dismiss();
-            if (result == null)
-                return;
-
-            mResultBitmapRef = new WeakReference<Bitmap>(result);
-            activity.mainImage.setImageBitmap(mResultBitmapRef.get());
-        }
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mHandleTask != null && !mHandleTask.isCancelled()) {
-            mHandleTask.cancel(true);
-        }
+        disposable.dispose();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        disposable.clear();
     }
 }
