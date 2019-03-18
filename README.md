@@ -72,7 +72,8 @@ Simply add this line to the place from where you want to start the activity-
          .withCropFeature()
          .withBrighnessFeature()
          .withSaturationFeature()
-         .withBeautyFeature() 
+         .withBeautyFeature()
+         .withStickerFeature() 
          .forcePortrait(true)  // Add this to force portrait mode (It's set to false by default)
          .build();
 

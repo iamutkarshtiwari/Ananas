@@ -37,7 +37,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
-    fun withBrighnessFeature(): ImageEditorIntentBuilder {
+    fun withBrightnessFeature(): ImageEditorIntentBuilder {
         intent.putExtra(BRIGHTNESS_FEATURE, true)
         return this
     }
