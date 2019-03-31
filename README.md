@@ -1,5 +1,6 @@
+<img align="left" src="art/ananas.png" width="50" height="50" />
 
-# Ananas Photo Editor
+# Ananas Photo Editor 
 
 [![Download](https://img.shields.io/badge/JitPack-1.1.0-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/1.1.0) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
 
