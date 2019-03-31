@@ -1,5 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,30 +12,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.LinkedHashMap;
 
+import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.StickerAdapter;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.StickerTypeAdapter;
-import iamutkarshtiwari.github.io.ananas.editimage.task.StickerTask;
+import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.view.StickerItem;
 import iamutkarshtiwari.github.io.ananas.editimage.view.StickerView;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class StickerFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_STICKER;
-
     public static final String TAG = StickerFragment.class.getName();
 
     private View mainView;
     private ViewFlipper flipper;
     private StickerView stickerView;
     private StickerAdapter stickerAdapter;
-
-    private SaveStickersTask saveStickersTask;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private Dialog loadingDialog;
 
     public static StickerFragment newInstance() {
         return new StickerFragment();
@@ -51,6 +58,8 @@ public class StickerFragment extends BaseEditFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         mainView = inflater.inflate(R.layout.fragment_edit_image_sticker_type,
                 null);
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.saving_image,
+                false);
         return mainView;
     }
 
@@ -117,6 +126,18 @@ public class StickerFragment extends BaseEditFragment {
     }
 
     @Override
+    public void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        compositeDisposable.dispose();
+        super.onDestroy();
+    }
+
+    @Override
     public void backToMain() {
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(0);
@@ -125,33 +146,54 @@ public class StickerFragment extends BaseEditFragment {
     }
 
     public void applyStickers() {
-        if (saveStickersTask != null) {
-            saveStickersTask.cancel(true);
-        }
-        saveStickersTask = new SaveStickersTask((EditImageActivity) getActivity());
-        saveStickersTask.execute(activity.getMainBit());
+        compositeDisposable.clear();
+
+        Disposable saveStickerDisposable = applyStickerToImage(activity.getMainBit())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(bitmap -> {
+                    if (bitmap == null) {
+                        return;
+                    }
+
+                    stickerView.clear();
+                    activity.changeMainBitmap(bitmap, true);
+                    backToMain();
+                }, e -> {
+                    Toast.makeText(getActivity(), R.string.save_error, Toast.LENGTH_SHORT).show();
+                });
+
+        compositeDisposable.add(saveStickerDisposable);
     }
 
-    private final class SaveStickersTask extends StickerTask {
-        public SaveStickersTask(EditImageActivity activity) {
-            super(activity);
-        }
+    private Single<Bitmap> applyStickerToImage(Bitmap mainBitmap) {
+        return Single.fromCallable(() -> {
+            EditImageActivity context = (EditImageActivity) getActivity();
+            Matrix touchMatrix = context.mainImage.getImageViewMatrix();
 
-        @Override
-        public void handleImage(Canvas canvas, Matrix m) {
-            LinkedHashMap<Integer, StickerItem> addItems = stickerView.getBank();
-            for (Integer id : addItems.keySet()) {
-                StickerItem item = addItems.get(id);
-                item.matrix.postConcat(m);
-                canvas.drawBitmap(item.bitmap, item.matrix, null);
-            }
-        }
+            Bitmap resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
+                    Bitmap.Config.ARGB_8888, true);
+            Canvas canvas = new Canvas(resultBitmap);
 
-        @Override
-        public void onPostResult(Bitmap result) {
-            stickerView.clear();
-            activity.changeMainBitmap(result, true);
-            backToMain();
+            float[] data = new float[9];
+            touchMatrix.getValues(data);
+            Matrix3 cal = new Matrix3(data);
+            Matrix3 inverseMatrix = cal.inverseMatrix();
+            Matrix m = new Matrix();
+            m.setValues(inverseMatrix.getValues());
+            handleImage(canvas, m);
+            return resultBitmap;
+        });
+    }
+
+    private void handleImage(Canvas canvas, Matrix m) {
+        LinkedHashMap<Integer, StickerItem> addItems = stickerView.getBank();
+        for (Integer id : addItems.keySet()) {
+            StickerItem item = addItems.get(id);
+            item.matrix.postConcat(m);
+            canvas.drawBitmap(item.bitmap, item.matrix, null);
         }
     }
 }
