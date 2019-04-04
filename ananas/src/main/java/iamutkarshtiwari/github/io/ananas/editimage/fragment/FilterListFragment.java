@@ -1,16 +1,14 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -19,15 +17,23 @@ import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.FilterAdapter;
 import iamutkarshtiwari.github.io.ananas.editimage.fliter.PhotoProcessing;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
-
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class FilterListFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_FILTER;
+    public static final int NULL_FILTER_INDEX = 0;
     public static final String TAG = FilterListFragment.class.getName();
-    private View mainView;
 
+    private View mainView;
     private Bitmap filterBitmap;
     private Bitmap currentBitmap;
+    private Dialog loadingDialog;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static FilterListFragment newInstance() {
         return new FilterListFragment();
@@ -42,6 +48,8 @@ public class FilterListFragment extends BaseEditFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_fliter, null);
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.handing,
+                false);
         return mainView;
     }
 
@@ -91,75 +99,69 @@ public class FilterListFragment extends BaseEditFragment {
     }
 
     @Override
+    public void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
-        if (filterBitmap != null && (!filterBitmap.isRecycled())) {
-            filterBitmap.recycle();
-        }
+        tryRecycleFilterBitmap();
+        compositeDisposable.dispose();
         super.onDestroy();
     }
 
-    public void enableFilter(int position) {
-        if (position == 0) {
+    private void tryRecycleFilterBitmap() {
+        if (filterBitmap != null && (!filterBitmap.isRecycled())) {
+            filterBitmap.recycle();
+        }
+    }
+
+    public void enableFilter(int filterIndex) {
+        if (filterIndex == NULL_FILTER_INDEX) {
             activity.mainImage.setImageBitmap(activity.getMainBit());
             currentBitmap = activity.getMainBit();
             return;
         }
 
-        ProcessingImage task = new ProcessingImage();
-        task.execute(position);
+        compositeDisposable.clear();
+
+        Disposable applyFilterDisposable = applyFilter(filterIndex)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(
+                        this::updatePreviewWithFilter,
+                        e -> showSaveErrorToast()
+                );
+
+        compositeDisposable.add(applyFilterDisposable);
     }
 
-    private final class ProcessingImage extends AsyncTask<Integer, Void, Bitmap> {
-        private Dialog dialog;
-        private Bitmap srcBitmap;
+    private void updatePreviewWithFilter(Bitmap bitmapWithFilter) {
+        if (bitmapWithFilter == null) return;
 
-        @Override
-        protected Bitmap doInBackground(Integer... params) {
-            int type = params[0];
-            if (srcBitmap != null && !srcBitmap.isRecycled()) {
-                srcBitmap.recycle();
-            }
+        if (filterBitmap != null && (!filterBitmap.isRecycled())) {
+            filterBitmap.recycle();
+        }
 
-            srcBitmap = Bitmap.createBitmap(activity.getMainBit().copy(
+        filterBitmap = bitmapWithFilter;
+        activity.mainImage.setImageBitmap(filterBitmap);
+        currentBitmap = filterBitmap;
+    }
+
+    private void showSaveErrorToast() {
+        Toast.makeText(getActivity(), R.string.save_error, Toast.LENGTH_SHORT).show();
+    }
+
+    private Single<Bitmap> applyFilter(int filterIndex) {
+        return Single.fromCallable(() -> {
+
+            Bitmap srcBitmap = Bitmap.createBitmap(activity.getMainBit().copy(
                     Bitmap.Config.RGB_565, true));
-            return PhotoProcessing.filterPhoto(srcBitmap, type);
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            dialog.dismiss();
-        }
-
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        @Override
-        protected void onCancelled(Bitmap result) {
-            super.onCancelled(result);
-            dialog.dismiss();
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            dialog.dismiss();
-            if (result == null)
-                return;
-            if (filterBitmap != null && (!filterBitmap.isRecycled())) {
-                filterBitmap.recycle();
-            }
-            filterBitmap = result;
-            activity.mainImage.setImageBitmap(filterBitmap);
-            currentBitmap = filterBitmap;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = BaseActivity.getLoadingDialog(getActivity(), R.string.handing,
-                    false);
-            dialog.show();
-        }
-
+            return PhotoProcessing.filterPhoto(srcBitmap, filterIndex);
+        });
     }
 
     public void setCurrentBitmap(Bitmap currentBitmap) {
