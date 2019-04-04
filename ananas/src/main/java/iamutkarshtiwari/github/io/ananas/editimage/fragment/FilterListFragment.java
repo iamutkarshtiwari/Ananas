@@ -10,9 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -27,18 +25,12 @@ public class FilterListFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_FILTER;
     public static final String TAG = FilterListFragment.class.getName();
     private View mainView;
-    private View backBtn;
-    private RecyclerView mFilterRecyclerView;
-    private FilterAdapter mFilterAdapter;
 
-    private Bitmap filterBit;
-
-    private LinearLayout mFilterGroup;
+    private Bitmap filterBitmap;
     private Bitmap currentBitmap;
 
     public static FilterListFragment newInstance() {
-        FilterListFragment fragment = new FilterListFragment();
-        return fragment;
+        return new FilterListFragment();
     }
 
     @Override
@@ -57,19 +49,15 @@ public class FilterListFragment extends BaseEditFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        backBtn = mainView.findViewById(R.id.back_to_main);
-        mFilterRecyclerView = mainView.findViewById(R.id.filter_recycler);
-        mFilterAdapter = new FilterAdapter(this, getContext());
+        RecyclerView filterRecyclerView = mainView.findViewById(R.id.filter_recycler);
+        FilterAdapter filterAdapter = new FilterAdapter(this, getContext());
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        mFilterRecyclerView.setLayoutManager(layoutManager);
-        mFilterRecyclerView.setAdapter(mFilterAdapter);
-        backBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backToMain();
-            }
-        });
+        filterRecyclerView.setLayoutManager(layoutManager);
+        filterRecyclerView.setAdapter(filterAdapter);
+
+        View backBtn = mainView.findViewById(R.id.back_to_main);
+        backBtn.setOnClickListener(v -> backToMain());
     }
 
     @Override
@@ -85,8 +73,8 @@ public class FilterListFragment extends BaseEditFragment {
     @Override
     public void backToMain() {
         currentBitmap = activity.getMainBit();
-        filterBit = null;
-        activity.mainImage.setImageBitmap(activity.getMainBit());// 返回原图
+        filterBitmap = null;
+        activity.mainImage.setImageBitmap(activity.getMainBit());
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(0);
         activity.mainImage.setScaleEnabled(true);
@@ -96,17 +84,16 @@ public class FilterListFragment extends BaseEditFragment {
     public void applyFilterImage() {
         if (currentBitmap == activity.getMainBit()) {
             backToMain();
-            return;
         } else {
-            activity.changeMainBitmap(filterBit, true);
+            activity.changeMainBitmap(filterBitmap, true);
             backToMain();
         }
     }
 
     @Override
     public void onDestroy() {
-        if (filterBit != null && (!filterBit.isRecycled())) {
-            filterBit.recycle();
+        if (filterBitmap != null && (!filterBitmap.isRecycled())) {
+            filterBitmap.recycle();
         }
         super.onDestroy();
     }
@@ -117,6 +104,7 @@ public class FilterListFragment extends BaseEditFragment {
             currentBitmap = activity.getMainBit();
             return;
         }
+
         ProcessingImage task = new ProcessingImage();
         task.execute(position);
     }
@@ -156,12 +144,12 @@ public class FilterListFragment extends BaseEditFragment {
             dialog.dismiss();
             if (result == null)
                 return;
-            if (filterBit != null && (!filterBit.isRecycled())) {
-                filterBit.recycle();
+            if (filterBitmap != null && (!filterBitmap.isRecycled())) {
+                filterBitmap.recycle();
             }
-            filterBit = result;
-            activity.mainImage.setImageBitmap(filterBit);
-            currentBitmap = filterBit;
+            filterBitmap = result;
+            activity.mainImage.setImageBitmap(filterBitmap);
+            currentBitmap = filterBitmap;
         }
 
         @Override
@@ -172,10 +160,6 @@ public class FilterListFragment extends BaseEditFragment {
             dialog.show();
         }
 
-    }
-
-    public Bitmap getCurrentBitmap() {
-        return currentBitmap;
     }
 
     public void setCurrentBitmap(Bitmap currentBitmap) {
