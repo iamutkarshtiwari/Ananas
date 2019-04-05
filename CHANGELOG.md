@@ -1,8 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-
 # Released
+## [1.1.1]
+### Bugfix
+- Fixed memory leaks from AsyncTask by replacing with RxJava
 
 ## [1.1.0]
 ### Bugfix
