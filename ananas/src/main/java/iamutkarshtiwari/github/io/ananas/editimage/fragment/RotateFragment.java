@@ -1,10 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -27,15 +22,16 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
 
 public class RotateFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_ROTATE;
+    public static final int MIN_ROTATION_DEGREE = 0;
+    public static final int MAX_ROTATION_DEGREE = 360;
     public static final String TAG = RotateFragment.class.getName();
+
     private View mainView;
-    private View backToMenu;// 返回主菜单
-    public SeekBar mSeekBar;// 角度设定
-    private RotateImageView mRotatePanel;// 旋转效果展示控件
+    public SeekBar seekBar;
+    private RotateImageView rotatePanel;
 
     public static RotateFragment newInstance() {
-        RotateFragment fragment = new RotateFragment();
-        return fragment;
+        return new RotateFragment();
     }
 
     @Override
@@ -54,13 +50,13 @@ public class RotateFragment extends BaseEditFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        backToMenu = mainView.findViewById(R.id.back_to_main);
-        mSeekBar = (SeekBar) mainView.findViewById(R.id.rotate_bar);
-        mSeekBar.setProgress(0);
+        View backToMenu = mainView.findViewById(R.id.back_to_main);
+        seekBar = mainView.findViewById(R.id.rotate_bar);
+        seekBar.setProgress(MIN_ROTATION_DEGREE);
 
-        this.mRotatePanel = ensureEditActivity().mRotatePanel;
-        backToMenu.setOnClickListener(new BackToMenuClick());// 返回主菜单
-        mSeekBar.setOnSeekBarChangeListener(new RotateAngleChange());
+        this.rotatePanel = ensureEditActivity().rotatePanel;
+        backToMenu.setOnClickListener(new BackToMenuClick());
+        seekBar.setOnSeekBarChangeListener(new RotateAngleChange());
     }
 
     @Override
@@ -70,31 +66,21 @@ public class RotateFragment extends BaseEditFragment {
         activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
         activity.mainImage.setVisibility(View.GONE);
 
-        activity.mRotatePanel.addBit(activity.getMainBit(),
+        activity.rotatePanel.addBit(activity.getMainBit(),
                 activity.mainImage.getBitmapRect());
-        activity.rotateFragment.mSeekBar.setProgress(0);
-        activity.mRotatePanel.reset();
-        activity.mRotatePanel.setVisibility(View.VISIBLE);
+        activity.rotateFragment.seekBar.setProgress(MIN_ROTATION_DEGREE);
+        activity.rotatePanel.reset();
+        activity.rotatePanel.setVisibility(View.VISIBLE);
         activity.bannerFlipper.showNext();
     }
 
-    private final class RotateAngleChange implements OnSeekBarChangeListener {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int angle,
-                                      boolean fromUser) {
-            // System.out.println("progress--->" + progress);
-            mRotatePanel.rotateImage(angle);
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
+    @Override
+    public void backToMain() {
+        activity.mode = EditImageActivity.MODE_NONE;
+        activity.bottomGallery.setCurrentItem(0);
+        activity.mainImage.setVisibility(View.VISIBLE);
+        this.rotatePanel.setVisibility(View.GONE);
+        activity.bannerFlipper.showPrevious();
     }
 
     private final class BackToMenuClick implements OnClickListener {
@@ -104,23 +90,28 @@ public class RotateFragment extends BaseEditFragment {
         }
     }
 
-    @Override
-    public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        activity.mainImage.setVisibility(View.VISIBLE);
-        this.mRotatePanel.setVisibility(View.GONE);
-        activity.bannerFlipper.showPrevious();
-    }
-
     public void applyRotateImage() {
-        // System.out.println("保存旋转图片");
-        if (mSeekBar.getProgress() == 0 || mSeekBar.getProgress() == 360) {// 没有做旋转
+        if (seekBar.getProgress() == MIN_ROTATION_DEGREE || seekBar.getProgress() == MAX_ROTATION_DEGREE) {
             backToMain();
-            return;
-        } else {// 保存图片
+        } else {
             SaveRotateImageTask task = new SaveRotateImageTask();
             task.execute(activity.getMainBit());
+        }
+    }
+
+    private final class RotateAngleChange implements OnSeekBarChangeListener {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int angle,
+                                      boolean fromUser) {
+            rotatePanel.rotateImage(angle);
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
         }
     }
 
@@ -146,7 +137,7 @@ public class RotateFragment extends BaseEditFragment {
         @SuppressWarnings("WrongThread")
         @Override
         protected Bitmap doInBackground(Bitmap... params) {
-            RectF imageRect = mRotatePanel.getImageNewRect();
+            RectF imageRect = rotatePanel.getImageNewRect();
             Bitmap originBit = params[0];
             Bitmap result = Bitmap.createBitmap((int) imageRect.width(),
                     (int) imageRect.height(), Bitmap.Config.ARGB_4444);
@@ -162,7 +153,7 @@ public class RotateFragment extends BaseEditFragment {
             RectF dst = new RectF(left, top, left + originBit.getWidth(), top
                     + originBit.getHeight());
             canvas.save();
-            canvas.rotate(mRotatePanel.getRotateAngle(), imageRect.width() / 2,
+            canvas.rotate(rotatePanel.getRotateAngle(), imageRect.width() / 2,
                     imageRect.height() / 2);
 
             canvas.drawBitmap(originBit, new Rect(0, 0, originBit.getWidth(),
@@ -179,23 +170,6 @@ public class RotateFragment extends BaseEditFragment {
 
             activity.changeMainBitmap(result,true);
             backToMain();
-        }
-    }
-
-    public static void saveBitmap(Bitmap bm, String filePath) {
-        File f = new File(filePath);
-        if (f.exists()) {
-            f.delete();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

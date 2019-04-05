@@ -94,7 +94,7 @@ public class EditImageActivity extends BaseActivity {
 
     public StickerView mStickerView;
     public CropImageView mCropPanel;
-    public RotateImageView mRotatePanel;
+    public RotateImageView rotatePanel;
     public TextStickerView mTextStickerView;
     public CustomPaintView mPaintView;
     public BrightnessView mBrightnessView;
@@ -172,7 +172,7 @@ public class EditImageActivity extends BaseActivity {
 
         mStickerView = findViewById(R.id.sticker_panel);
         mCropPanel = findViewById(R.id.crop_panel);
-        mRotatePanel = findViewById(R.id.rotate_panel);
+        rotatePanel = findViewById(R.id.rotate_panel);
         mTextStickerView = findViewById(R.id.text_sticker_panel);
         mPaintView = findViewById(R.id.custom_paint_view);
         mBrightnessView = findViewById(R.id.brightness_panel);
