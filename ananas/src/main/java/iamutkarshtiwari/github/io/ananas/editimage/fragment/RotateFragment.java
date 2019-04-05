@@ -1,10 +1,10 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +13,17 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class RotateFragment extends BaseEditFragment {
@@ -27,8 +33,11 @@ public class RotateFragment extends BaseEditFragment {
     public static final String TAG = RotateFragment.class.getName();
 
     private View mainView;
-    public SeekBar seekBar;
+    private SeekBar seekBar;
     private RotateImageView rotatePanel;
+    private Dialog loadingDialog;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static RotateFragment newInstance() {
         return new RotateFragment();
@@ -43,6 +52,8 @@ public class RotateFragment extends BaseEditFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_rotate, null);
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.handing,
+                false);
         return mainView;
     }
 
@@ -83,6 +94,18 @@ public class RotateFragment extends BaseEditFragment {
         activity.bannerFlipper.showPrevious();
     }
 
+    @Override
+    public void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        compositeDisposable.dispose();
+        super.onDestroy();
+    }
+
     private final class BackToMenuClick implements OnClickListener {
         @Override
         public void onClick(View v) {
@@ -94,8 +117,22 @@ public class RotateFragment extends BaseEditFragment {
         if (seekBar.getProgress() == MIN_ROTATION_DEGREE || seekBar.getProgress() == MAX_ROTATION_DEGREE) {
             backToMain();
         } else {
-            SaveRotateImageTask task = new SaveRotateImageTask();
-            task.execute(activity.getMainBit());
+            compositeDisposable.clear();
+            Disposable applyRotationDisposable = applyRotation(activity.getMainBit())
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(subscriber -> loadingDialog.show())
+                    .doFinally(() -> loadingDialog.dismiss())
+                    .subscribe(processedBitmap -> {
+                        if (processedBitmap == null)
+                            return;
+
+                        applyAndExit(processedBitmap);
+                    }, e -> {
+                        // Do nothing on error
+                    });
+
+            compositeDisposable.add(applyRotationDisposable);
         }
     }
 
@@ -115,61 +152,47 @@ public class RotateFragment extends BaseEditFragment {
         }
     }
 
-    private final class SaveRotateImageTask extends
-            AsyncTask<Bitmap, Void, Bitmap> {
-        //private Dialog dialog;
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-        @Override
-        protected void onCancelled(Bitmap result) {
-            super.onCancelled(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @SuppressWarnings("WrongThread")
-        @Override
-        protected Bitmap doInBackground(Bitmap... params) {
+    private Single<Bitmap> applyRotation(Bitmap sourceBitmap) {
+        return Single.fromCallable(() -> {
             RectF imageRect = rotatePanel.getImageNewRect();
-            Bitmap originBit = params[0];
-            Bitmap result = Bitmap.createBitmap((int) imageRect.width(),
+            Bitmap resultBitmap = Bitmap.createBitmap((int) imageRect.width(),
                     (int) imageRect.height(), Bitmap.Config.ARGB_4444);
-            Canvas canvas = new Canvas(result);
-            int w = originBit.getWidth() >> 1;
-            int h = originBit.getHeight() >> 1;
+
+            Canvas canvas = new Canvas(resultBitmap);
+            int w = sourceBitmap.getWidth() >> 1;
+            int h = sourceBitmap.getHeight() >> 1;
+
             float centerX = imageRect.width() / 2;
             float centerY = imageRect.height() / 2;
 
             float left = centerX - w;
             float top = centerY - h;
 
-            RectF dst = new RectF(left, top, left + originBit.getWidth(), top
-                    + originBit.getHeight());
+            RectF destinationRect = new RectF(left, top, left + sourceBitmap.getWidth(), top
+                    + sourceBitmap.getHeight());
             canvas.save();
-            canvas.rotate(rotatePanel.getRotateAngle(), imageRect.width() / 2,
-                    imageRect.height() / 2);
+            canvas.rotate(
+                    rotatePanel.getRotateAngle(),
+                    imageRect.width() / 2,
+                    imageRect.height() / 2
+            );
 
-            canvas.drawBitmap(originBit, new Rect(0, 0, originBit.getWidth(),
-                    originBit.getHeight()), dst, null);
+            canvas.drawBitmap(
+                    sourceBitmap,
+                    new Rect(
+                            0,
+                            0,
+                            sourceBitmap.getWidth(),
+                            sourceBitmap.getHeight()),
+                    destinationRect,
+                    null);
             canvas.restore();
-            return result;
-        }
+            return resultBitmap;
+        });
+    }
 
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            if (result == null)
-                return;
-
-            activity.changeMainBitmap(result,true);
-            backToMain();
-        }
+    private void applyAndExit(Bitmap resultBitmap) {
+        activity.changeMainBitmap(resultBitmap, true);
+        backToMain();
     }
 }
