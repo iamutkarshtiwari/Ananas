@@ -141,7 +141,7 @@ public class CropFragment extends BaseEditFragment {
         backToMenu = mainView.findViewById(R.id.back_to_main);
         ratioList = (LinearLayout) mainView.findViewById(R.id.ratio_list_group);
         setUpRatioList();
-        this.mCropPanel = ensureEditActivity().mCropPanel;
+        this.mCropPanel = ensureEditActivity().cropPanel;
         backToMenu.setOnClickListener(new BackToMenuClick());// 返回主菜单
     }
 
@@ -149,7 +149,7 @@ public class CropFragment extends BaseEditFragment {
     public void onShow() {
         activity.mode = EditImageActivity.MODE_CROP;
 
-        activity.mCropPanel.setVisibility(View.VISIBLE);
+        activity.cropPanel.setVisibility(View.VISIBLE);
         activity.mainImage.setImageBitmap(activity.getMainBit());
         activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
         activity.mainImage.setScaleEnabled(false);

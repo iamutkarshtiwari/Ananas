@@ -1,6 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -56,13 +55,13 @@ public class SaturationFragment extends BaseEditFragment {
 
         mBackToMenu = mainView.findViewById(R.id.back_to_main);
 
-        this.mSaturationView = ensureEditActivity().mSaturationView;
+        this.mSaturationView = ensureEditActivity().saturationView;
         mBackToMenu.setOnClickListener(new SaturationFragment.BackToMenuClick());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float value = progress - (seekBar.getMax() / 2);
-                activity.mSaturationView.setSaturation(value / 10f);
+                activity.saturationView.setSaturation(value / 10f);
             }
 
             @Override
@@ -85,8 +84,8 @@ public class SaturationFragment extends BaseEditFragment {
         activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
         activity.mainImage.setVisibility(View.GONE);
 
-        activity.mSaturationView.setImageBitmap(activity.getMainBit());
-        activity.mSaturationView.setVisibility(View.VISIBLE);
+        activity.saturationView.setImageBitmap(activity.getMainBit());
+        activity.saturationView.setVisibility(View.VISIBLE);
         initView();
         activity.bannerFlipper.showNext();
     }
@@ -96,7 +95,7 @@ public class SaturationFragment extends BaseEditFragment {
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(0);
         activity.mainImage.setVisibility(View.VISIBLE);
-        activity.mSaturationView.setVisibility(View.GONE);
+        activity.saturationView.setVisibility(View.GONE);
         activity.bannerFlipper.showPrevious();
     }
 

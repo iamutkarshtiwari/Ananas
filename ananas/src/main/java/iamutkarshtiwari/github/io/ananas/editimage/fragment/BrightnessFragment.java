@@ -1,6 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -57,13 +56,13 @@ public class BrightnessFragment extends BaseEditFragment {
 
         mBackToMenu = mainView.findViewById(R.id.back_to_main);
 
-        this.mBrightnessView = ensureEditActivity().mBrightnessView;
+        this.mBrightnessView = ensureEditActivity().brightnessView;
         mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float value = progress - (seekBar.getMax() / 2);
-                activity.mBrightnessView.setBright(value / 10f);
+                activity.brightnessView.setBright(value / 10f);
             }
 
             @Override
@@ -86,8 +85,8 @@ public class BrightnessFragment extends BaseEditFragment {
         activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
         activity.mainImage.setVisibility(View.GONE);
 
-        activity.mBrightnessView.setImageBitmap(activity.getMainBit());
-        activity.mBrightnessView.setVisibility(View.VISIBLE);
+        activity.brightnessView.setImageBitmap(activity.getMainBit());
+        activity.brightnessView.setVisibility(View.VISIBLE);
         initView();
         activity.bannerFlipper.showNext();
     }
@@ -97,7 +96,7 @@ public class BrightnessFragment extends BaseEditFragment {
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(0);
         activity.mainImage.setVisibility(View.VISIBLE);
-        activity.mBrightnessView.setVisibility(View.GONE);
+        activity.brightnessView.setVisibility(View.GONE);
         activity.bannerFlipper.showPrevious();
     }
 

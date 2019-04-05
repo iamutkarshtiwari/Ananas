@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,14 +17,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.isseiaoki.simplecropview.CropImageView;
+
+import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -51,19 +52,16 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
 import iamutkarshtiwari.github.io.ananas.editimage.widget.RedoUndoController;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class EditImageActivity extends BaseActivity {
-
     private static final int PERMISSIONS_REQUEST_CODE = 110;
-
-    private String[] mRequiredPermissions = new String[]{
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
-    public static final String IMAGE_IS_EDIT = "image_is_edit";
-
+    public static final String IS_IMAGE_EDITED = "is_image_edited";
     public static final int MODE_NONE = 0;
     public static final int MODE_STICKERS = 1;
     public static final int MODE_FILTER = 2;
@@ -75,30 +73,32 @@ public class EditImageActivity extends BaseActivity {
     public static final int MODE_BRIGHTNESS = 8;
     public static final int MODE_SATURATION = 9;
 
+    private final String[] requiredPermissions = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     public String sourceFilePath;
     public String outputFilePath;
+    public StickerView stickerView;
+    public CropImageView cropPanel;
+    public ImageViewTouch mainImage;
+    public TextStickerView textStickerView;
+
     private int imageWidth, imageHeight;
-    private LoadImageTask mLoadImageTask;
-
     public int mode = MODE_NONE;
-
-    protected int mOpTimes = 0;
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
+    public CustomPaintView paintView;
 
-    private EditImageActivity mContext;
     private Bitmap mainBitmap;
-    public ImageViewTouch mainImage;
 
     public ViewFlipper bannerFlipper;
-
-    public StickerView mStickerView;
-    public CropImageView mCropPanel;
+    public BrightnessView brightnessView;
+    public SaturationView saturationView;
     public RotateImageView rotatePanel;
-    public TextStickerView mTextStickerView;
-    public CustomPaintView mPaintView;
-    public BrightnessView mBrightnessView;
-    public SaturationView mSaturationView;
+    protected int numberOfOperations = 0;
+    private Dialog loadingDialog;
 
     public CustomViewPager bottomGallery;
     private MainMenuFragment mainMenuFragment;
@@ -109,19 +109,13 @@ public class EditImageActivity extends BaseActivity {
     public AddTextFragment addTextFragment;
     public PaintFragment paintFragment;
     public BeautyFragment beautyFragment;
-    private SaveImageTask saveImageTask;
     public BrightnessFragment brightnessFragment;
     public SaturationFragment saturationFragment;
 
     private RedoUndoController redoUndoController;
-
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    /**
-     * @param activity Source activity
-     * @param intent from ImageEditorIntentBuilder
-     * @param requestCode for result
-     */
     public static void start(Activity activity, Intent intent, int requestCode) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
             Toast.makeText(activity, R.string.no_choose, Toast.LENGTH_SHORT).show();
@@ -139,20 +133,28 @@ public class EditImageActivity extends BaseActivity {
         getData();
     }
 
+    @Override
+    protected void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
-        loadImage(sourceFilePath);
+        loadImageFromFile(sourceFilePath);
     }
 
     private void initView() {
-        mContext = this;
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.handing,
+                false);
+
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageWidth = metrics.widthPixels / 2;
         imageHeight = metrics.heightPixels / 2;
 
-        bannerFlipper = (ViewFlipper) findViewById(R.id.banner_flipper);
+        bannerFlipper = findViewById(R.id.banner_flipper);
         bannerFlipper.setInAnimation(this, R.anim.in_bottom_to_top);
         bannerFlipper.setOutAnimation(this, R.anim.out_bottom_to_top);
         View applyBtn = findViewById(R.id.apply);
@@ -160,23 +162,18 @@ public class EditImageActivity extends BaseActivity {
         View saveBtn = findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(new SaveBtnClick());
 
-        mainImage = (ImageViewTouch) findViewById(R.id.main_image);
+        mainImage = findViewById(R.id.main_image);
 
         View backBtn = findViewById(R.id.back_btn);
-        backBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        backBtn.setOnClickListener(v -> onBackPressed());
 
-        mStickerView = findViewById(R.id.sticker_panel);
-        mCropPanel = findViewById(R.id.crop_panel);
+        stickerView = findViewById(R.id.sticker_panel);
+        cropPanel = findViewById(R.id.crop_panel);
         rotatePanel = findViewById(R.id.rotate_panel);
-        mTextStickerView = findViewById(R.id.text_sticker_panel);
-        mPaintView = findViewById(R.id.custom_paint_view);
-        mBrightnessView = findViewById(R.id.brightness_panel);
-        mSaturationView = findViewById(R.id.contrast_panel);
+        textStickerView = findViewById(R.id.text_sticker_panel);
+        paintView = findViewById(R.id.custom_paint_view);
+        brightnessView = findViewById(R.id.brightness_panel);
+        saturationView = findViewById(R.id.contrast_panel);
         bottomGallery = findViewById(R.id.bottom_gallery);
 
         mainMenuFragment = MainMenuFragment.newInstance();
@@ -193,24 +190,20 @@ public class EditImageActivity extends BaseActivity {
         brightnessFragment = BrightnessFragment.newInstance();
         saturationFragment = SaturationFragment.newInstance();
         addTextFragment = AddTextFragment.newInstance();
-        setOnMainBitmapChangeListener((OnMainBitmapChangeListener) addTextFragment);
+        setOnMainBitmapChangeListener(addTextFragment);
 
         bottomGallery.setAdapter(bottomGalleryAdapter);
 
-
-        mainImage.setFlingListener(new ImageViewTouch.OnImageFlingListener() {
-            @Override
-            public void onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (velocityY > 1) {
-                    closeInputMethod();
-                }
+        mainImage.setFlingListener((e1, e2, velocityX, velocityY) -> {
+            if (velocityY > 1) {
+                closeInputMethod();
             }
         });
 
         redoUndoController = new RedoUndoController(this, findViewById(R.id.redo_undo_panel));
 
-        if (!PermissionUtils.hasPermissions(this, mRequiredPermissions)) {
-            ActivityCompat.requestPermissions(this, mRequiredPermissions, PERMISSIONS_REQUEST_CODE);
+        if (!PermissionUtils.hasPermissions(this, requiredPermissions)) {
+            ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
     }
 
@@ -220,16 +213,15 @@ public class EditImageActivity extends BaseActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NotNull String permissions[], @NotNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
+                if (!(grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     finish();
                 }
-                return;
+                break;
             }
         }
     }
@@ -253,7 +245,6 @@ public class EditImageActivity extends BaseActivity {
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
-
     }
 
     @Override
@@ -292,7 +283,7 @@ public class EditImageActivity extends BaseActivity {
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                     alertDialogBuilder.setMessage(R.string.exit_without_save)
-                            .setCancelable(false).setPositiveButton(R.string.confirm, (dialog, id) -> mContext.finish()).setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
+                            .setCancelable(false).setPositiveButton(R.string.confirm, (dialog, id) -> finish()).setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
@@ -301,19 +292,6 @@ public class EditImageActivity extends BaseActivity {
         }
     }
 
-    public void loadImage(String filepath) {
-        if (mLoadImageTask != null) {
-            Log.e("Image Editor", "Image is null");
-            mLoadImageTask.cancel(true);
-        }
-        mLoadImageTask = new LoadImageTask();
-        mLoadImageTask.execute(filepath);
-    }
-
-    /**
-     * @param newBit
-     * @param needPushUndoStack
-     */
     public void changeMainBitmap(Bitmap newBit, boolean needPushUndoStack) {
         if (newBit == null)
             return;
@@ -337,53 +315,127 @@ public class EditImageActivity extends BaseActivity {
         Intent returnIntent = new Intent();
         returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_PATH, sourceFilePath);
         returnIntent.putExtra(ImageEditorIntentBuilder.OUTPUT_PATH, outputFilePath);
-        returnIntent.putExtra(IMAGE_IS_EDIT, mOpTimes > 0);
+        returnIntent.putExtra(IS_IMAGE_EDITED, numberOfOperations > 0);
 
         setResult(RESULT_OK, returnIntent);
         finish();
     }
 
     protected void doSaveImage() {
-        if (mOpTimes <= 0)
+        if (numberOfOperations <= 0)
             return;
 
-        if (saveImageTask != null) {
-            saveImageTask.cancel(true);
-        }
+        compositeDisposable.clear();
 
-        saveImageTask = new SaveImageTask();
-        saveImageTask.execute(mainBitmap);
+        Disposable saveImageDisposable = saveImage(mainBitmap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(result -> {
+                    if (result) {
+                        resetOpTimes();
+                        onSaveTaskDone();
+                    } else {
+                        showToast(R.string.save_error);
+                    }
+                }, e -> showToast(R.string.save_error));
+
+        compositeDisposable.add(saveImageDisposable);
     }
 
-    private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            return BitmapUtils.getSampledBitmap(params[0], imageWidth,
-                    imageHeight);
+    private Single<Boolean> saveImage(Bitmap finalBitmap) {
+        return Single.fromCallable(() -> {
+            if (TextUtils.isEmpty(outputFilePath))
+                return false;
+
+            return BitmapUtils.saveBitmap(finalBitmap, outputFilePath);
+        });
+    }
+
+    private void loadImageFromFile(String filePath) {
+        compositeDisposable.clear();
+
+        Disposable loadImageDisposable = loadImage(filePath)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.load_error));
+
+        compositeDisposable.add(loadImageDisposable);
+    }
+
+    private Single<Bitmap> loadImage(String filePath) {
+        return Single.fromCallable(() -> BitmapUtils.getSampledBitmap(filePath, imageWidth,
+                imageHeight));
+    }
+
+    private void showToast(@StringRes int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+
+        if (redoUndoController != null) {
+            redoUndoController.onDestroy();
         }
 
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            changeMainBitmap(result, false);
+        if (!isPortraitForced) {
+            setLockScreenOrientation(false);
         }
     }
 
-    private final class SaveBtnClick implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            if (mOpTimes == 0) {
-                onSaveTaskDone();
-            } else {
-                doSaveImage();
+    protected void setLockScreenOrientation(boolean lock) {
+        if (Build.VERSION.SDK_INT >= 18) {
+            setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            return;
+        }
+
+        if (lock) {
+            switch (getWindowManager().getDefaultDisplay().getRotation()) {
+                case Surface
+                        .ROTATION_0:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    break;
+                case Surface
+                        .ROTATION_90:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    break;
+                case Surface
+                        .ROTATION_180:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                    break;
+                case Surface
+                        .ROTATION_270:
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                    break;
             }
-        }
+        } else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+    }
+
+    public void increaseOpTimes() {
+        numberOfOperations++;
+        isBeenSaved = false;
+    }
+
+    public boolean canAutoExit() {
+        return isBeenSaved || numberOfOperations == 0;
+    }
+
+    public void resetOpTimes() {
+        isBeenSaved = true;
     }
 
     /**
      * @author panyi
      */
     private final class BottomGalleryAdapter extends FragmentPagerAdapter {
-        public BottomGalleryAdapter(FragmentManager fm) {
+        BottomGalleryAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -420,63 +472,15 @@ public class EditImageActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mLoadImageTask != null) {
-            mLoadImageTask.cancel(true);
-        }
-
-        if (saveImageTask != null) {
-            saveImageTask.cancel(true);
-        }
-
-        if (redoUndoController != null) {
-            redoUndoController.onDestroy();
-        }
-        if (isPortraitForced) {
-
-        } else {
-            setLockScreenOrientation(false);
-        }
-    }
-
-    protected void setLockScreenOrientation(boolean lock) {
-        if (Build.VERSION.SDK_INT >= 18) {
-            setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-            return;
-        }
-
-        if (lock) {
-            switch (getWindowManager().getDefaultDisplay().getRotation()) {
-                case 0:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    break; // value 1
-                case 2:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-                    break; // value 9
-                case 1:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    break; // value 0
-                case 3:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                    break; // value 8
+    private final class SaveBtnClick implements OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (numberOfOperations == 0) {
+                onSaveTaskDone();
+            } else {
+                doSaveImage();
             }
-        } else
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR); // value 10
-    }
-
-    public void increaseOpTimes() {
-        mOpTimes++;
-        isBeenSaved = false;
-    }
-
-    public void resetOpTimes() {
-        isBeenSaved = true;
-    }
-
-    public boolean canAutoExit() {
-        return isBeenSaved || mOpTimes == 0;
+        }
     }
 
     private final class ApplyBtnClick implements OnClickListener {
@@ -512,50 +516,6 @@ public class EditImageActivity extends BaseActivity {
                     break;
                 default:
                     break;
-            }
-        }
-    }
-
-    private final class SaveImageTask extends AsyncTask<Bitmap, Void, Boolean> {
-        private Dialog dialog;
-
-        @Override
-        protected Boolean doInBackground(Bitmap... params) {
-            if (TextUtils.isEmpty(outputFilePath))
-                return false;
-
-            return BitmapUtils.saveBitmap(params[0], outputFilePath);
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            dialog.dismiss();
-        }
-
-        @Override
-        protected void onCancelled(Boolean result) {
-            super.onCancelled(result);
-            dialog.dismiss();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = EditImageActivity.getLoadingDialog(mContext, R.string.saving_image, false);
-            dialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            dialog.dismiss();
-
-            if (result) {
-                resetOpTimes();
-                onSaveTaskDone();
-            } else {
-                Toast.makeText(mContext, R.string.save_error, Toast.LENGTH_SHORT).show();
             }
         }
     }
