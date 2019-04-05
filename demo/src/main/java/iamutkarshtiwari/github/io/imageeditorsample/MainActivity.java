@@ -1,12 +1,11 @@
 package iamutkarshtiwari.github.io.imageeditorsample;
 
 import android.Manifest;
-import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,12 +17,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
+import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
 import iamutkarshtiwari.github.io.ananas.picchooser.SelectPictureActivity;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static final int REQUEST_PERMISSON_SORAGE = 1;
@@ -32,18 +39,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int SELECT_GALLERY_IMAGE_CODE = 7;
     public static final int TAKE_PHOTO_CODE = 8;
     public static final int ACTION_REQUEST_EDITIMAGE = 9;
-    public static final int ACTION_STICKERS_IMAGE = 10;
-    private MainActivity context;
+
     private ImageView imgView;
-    private View openAblum;
-    private View editImage;//
     private Bitmap mainBitmap;
-    private int imageWidth, imageHeight;//
+    private Dialog loadingDialog;
+
+    private int imageWidth, imageHeight;
     private String path;
-
-
-    private View mTakenPhoto;//拍摄照片用于编辑
     private Uri photoURI = null;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,20 +57,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
     }
 
+    @Override
+    protected void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        compositeDisposable.dispose();
+        super.onDestroy();
+    }
+
     private void initView() {
-        context = this;
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageWidth = metrics.widthPixels;
         imageHeight = metrics.heightPixels;
 
-        imgView = (ImageView) findViewById(R.id.img);
-        openAblum = findViewById(R.id.select_ablum);
-        editImage = findViewById(R.id.edit_image);
-        openAblum.setOnClickListener(this);
+        imgView = findViewById(R.id.img);
+
+        View selectAlbum = findViewById(R.id.select_ablum);
+        View editImage = findViewById(R.id.edit_image);
+        selectAlbum.setOnClickListener(this);
         editImage.setOnClickListener(this);
 
-        mTakenPhoto = findViewById(R.id.take_photo);
-        mTakenPhoto.setOnClickListener(this);
+        View takenPhoto = findViewById(R.id.take_photo);
+        takenPhoto.setOnClickListener(this);
+
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.handing,
+                false);
     }
 
     @Override
@@ -80,23 +100,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.select_ablum:
                 selectFromAblum();
                 break;
-        }//end switch
+        }
     }
 
-    /**
-     * 拍摄照片
-     */
     protected void takePhotoClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestTakePhotoPermissions();
         } else {
             doTakePhoto();
-        }//end if
+        }
     }
 
-    /**
-     * 请求拍照权限
-     */
     private void requestTakePhotoPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -108,9 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         doTakePhoto();
     }
 
-    /**
-     * 拍摄照片
-     */
     private void doTakePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -122,16 +133,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE);
             }
-
-            //startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE);
         }
     }
 
-    /**
-     * 编辑选择的图片
-     *
-     * @author panyi
-     */
     private void editImageClick() {
         File outputFile = FileUtils.genEditFile();
         try {
@@ -153,18 +157,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /**
-     * 从相册选择编辑图片
-     */
     private void selectFromAblum() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             openAblumWithPermissionsCheck();
         } else {
-            openAblum();
-        }//end if
+            openAlbum();
+        }
     }
 
-    private void openAblum() {
+    private void openAlbum() {
         MainActivity.this.startActivityForResult(new Intent(
                         MainActivity.this, SelectPictureActivity.class),
                 SELECT_GALLERY_IMAGE_CODE);
@@ -178,24 +179,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     REQUEST_PERMISSON_SORAGE);
             return;
         }
-        openAblum();
+        openAlbum();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSON_SORAGE
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            openAblum();
-            return;
-        }//end if
-
-        if (requestCode == REQUEST_PERMISSON_CAMERA
+            openAlbum();
+        } else if (requestCode == REQUEST_PERMISSON_CAMERA
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             doTakePhoto();
-            return;
-        }//end if
+        }
     }
 
     @Override
@@ -203,23 +200,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case SELECT_GALLERY_IMAGE_CODE://
+                case SELECT_GALLERY_IMAGE_CODE:
                     handleSelectFromAblum(data);
                     break;
-                case TAKE_PHOTO_CODE://拍照返回
-                    handleTakePhoto(data);
+                case TAKE_PHOTO_CODE:
+                    handleTakePhoto();
                     break;
-                case ACTION_REQUEST_EDITIMAGE://
+                case ACTION_REQUEST_EDITIMAGE:
                     handleEditorImage(data);
                     break;
             }
         }
     }
 
-    private void handleTakePhoto(Intent data) {
-        if (photoURI != null) {//拍摄成功
+    private void handleTakePhoto() {
+        if (photoURI != null) {
             path = photoURI.getPath();
-            startLoadTask();
+            loadImage(path);
         }
     }
 
@@ -233,56 +230,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             newFilePath = data.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
 
         }
-        Log.d("image is edit", isImageEdit + "");
-        LoadImageTask loadTask = new LoadImageTask();
-        loadTask.execute(newFilePath);
+
+        loadImage(newFilePath);
     }
 
     private void handleSelectFromAblum(Intent data) {
-        String filepath = data.getStringExtra("imgPath");
-        path = filepath;
-        startLoadTask();
+        path = data.getStringExtra("imgPath");
+        loadImage(path);
     }
 
-    private void startLoadTask() {
-        LoadImageTask task = new LoadImageTask();
-        task.execute(path);
+    private void loadImage(String imagePath) {
+        compositeDisposable.clear();
+        Disposable applyRotationDisposable = loadBitmapFromFile(imagePath)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(
+                        this::setMainBitmap,
+                        e -> Toast.makeText(
+                                this, R.string.load_error, Toast.LENGTH_SHORT).show()
+                );
+
+        compositeDisposable.add(applyRotationDisposable);
     }
 
-
-    private final class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            return BitmapUtils.getSampledBitmap(params[0], imageWidth / 4, imageHeight / 4);
+    private void setMainBitmap(Bitmap sourceBitmap) {
+        if (mainBitmap != null) {
+            mainBitmap.recycle();
+            mainBitmap = null;
+            System.gc();
         }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-        @Override
-        protected void onCancelled(Bitmap result) {
-            super.onCancelled(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            if (mainBitmap != null) {
-                mainBitmap.recycle();
-                mainBitmap = null;
-                System.gc();
-            }
-            mainBitmap = result;
-            imgView.setImageBitmap(mainBitmap);
-        }
+        mainBitmap = sourceBitmap;
+        imgView.setImageBitmap(mainBitmap);
     }
 
-}//end class
+    private Single<Bitmap> loadBitmapFromFile(String filePath) {
+        return Single.fromCallable(() ->
+                BitmapUtils.getSampledBitmap(
+                        filePath,
+                        imageWidth / 4,
+                        imageHeight / 4
+                )
+        );
+    }
+}
