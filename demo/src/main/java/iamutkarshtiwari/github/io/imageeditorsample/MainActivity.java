@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View takenPhoto = findViewById(R.id.take_photo);
         takenPhoto.setOnClickListener(this);
 
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.handing,
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
                 false);
     }
 

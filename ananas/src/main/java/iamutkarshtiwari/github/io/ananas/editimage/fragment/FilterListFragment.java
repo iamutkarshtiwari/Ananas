@@ -48,7 +48,7 @@ public class FilterListFragment extends BaseEditFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_fliter, null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.handing,
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
                 false);
         return mainView;
     }

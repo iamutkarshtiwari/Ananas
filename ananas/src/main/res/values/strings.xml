@@ -23,7 +23,7 @@
     <string name="auto_newline">AutoNewline</string>
     <string name="save_error">Save error!</string>
     <string name="load_error">Failed to load the image!</string>
-    <string name="handing">Loading…</string>
+    <string name="loading">Loading…</string>
     <string name="pick_a_color">Pick a color</string>
 
     <string name="free_size">FREE</string>

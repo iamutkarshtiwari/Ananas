@@ -23,7 +23,7 @@
     <string name="auto_newline">自動改行</string>
     <string name="save_error">エラーを保存する!</string>
     <string name="load_error">画像を読み込めませんでした。</string>
-    <string name="handing">充填…</string>
+    <string name="loading">充填…</string>
     <string name="pick_a_color">色を選ぶ</string>
 
     <string name="free_size">自由にする</string>

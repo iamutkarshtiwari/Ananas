@@ -147,7 +147,7 @@ public class EditImageActivity extends BaseActivity {
     }
 
     private void initView() {
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.handing,
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
                 false);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();

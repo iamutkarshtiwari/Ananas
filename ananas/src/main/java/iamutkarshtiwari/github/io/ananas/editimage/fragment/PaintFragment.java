@@ -1,5 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,14 +18,20 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 
+import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.ColorListAdapter;
-import iamutkarshtiwari.github.io.ananas.editimage.task.StickerTask;
 import iamutkarshtiwari.github.io.ananas.editimage.ui.ColorPicker;
+import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.PaintModeView;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class PaintFragment extends BaseEditFragment implements View.OnClickListener, ColorListAdapter.IColorListAction {
     public static final int INDEX = ModuleConfig.INDEX_PAINT;
@@ -55,9 +62,10 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     private PopupWindow setStrokeWidthWindow;
     private ColorPicker colorPicker;
     private ImageView eraserView;
-
-    private SaveCustomPaintTask savePaintImageTask;
     private SeekBar strokeWidthSeekBar;
+    private Dialog loadingDialog;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static PaintFragment newInstance() {
         return new PaintFragment();
@@ -74,6 +82,8 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
+                false);
         customPaintView = getActivity().findViewById(R.id.custom_paint_view);
         backToMenu = mainView.findViewById(R.id.back_to_main);
         paintModeView = mainView.findViewById(R.id.paint_thumb);
@@ -112,6 +122,12 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         } else if (view == eraserView) {
             toggleEraserView();
         }
+    }
+
+    @Override
+    public void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
     }
 
     public void backToMain() {
@@ -222,51 +238,75 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     }
 
     public void savePaintImage() {
-        if (savePaintImageTask != null && !savePaintImageTask.isCancelled()) {
-            savePaintImageTask.cancel(true);
-        }
+        compositeDisposable.clear();
 
-        savePaintImageTask = new SaveCustomPaintTask(activity);
-        savePaintImageTask.execute(activity.getMainBit());
+        Disposable applyPaintDisposable = applyPaint(activity.getMainBit())
+                .flatMap(bitmap -> {
+                    if (bitmap == null) {
+                        return Single.error(new Throwable("Error occurred while applying paint"));
+                    } else {
+                        return Single.just(bitmap);
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(bitmap -> {
+                    customPaintView.reset();
+                    activity.changeMainBitmap(bitmap, true);
+                    backToMain();
+                }, e -> {
+                    // Do nothing on error
+                });
+
+        compositeDisposable.add(applyPaintDisposable);
     }
 
     @Override
     public void onDestroy() {
+        compositeDisposable.dispose();
         super.onDestroy();
-        if (savePaintImageTask != null && !savePaintImageTask.isCancelled()) {
-            savePaintImageTask.cancel(true);
-        }
     }
 
-    private final class SaveCustomPaintTask extends StickerTask {
+    private Single<Bitmap> applyPaint(Bitmap mainBitmap) {
+        return Single.fromCallable(() -> {
+            Matrix touchMatrix = activity.mainImage.getImageViewMatrix();
 
-        public SaveCustomPaintTask(EditImageActivity activity) {
-            super(activity);
+            Bitmap resultBit = Bitmap.createBitmap(mainBitmap).copy(
+                    Bitmap.Config.ARGB_8888, true);
+            Canvas canvas = new Canvas(resultBit);
+
+            float[] data = new float[9];
+            touchMatrix.getValues(data);
+            Matrix3 cal = new Matrix3(data);
+            Matrix3 inverseMatrix = cal.inverseMatrix();
+            Matrix matrix = new Matrix();
+            matrix.setValues(inverseMatrix.getValues());
+
+            handleImage(canvas, matrix);
+
+            return resultBit;
+        });
+    }
+
+    private void handleImage(Canvas canvas, Matrix matrix) {
+        float[] f = new float[9];
+        matrix.getValues(f);
+
+        int dx = (int) f[Matrix.MTRANS_X];
+        int dy = (int) f[Matrix.MTRANS_Y];
+
+        float scale_x = f[Matrix.MSCALE_X];
+        float scale_y = f[Matrix.MSCALE_Y];
+
+        canvas.save();
+        canvas.translate(dx, dy);
+        canvas.scale(scale_x, scale_y);
+
+        if (customPaintView.getPaintBit() != null) {
+            canvas.drawBitmap(customPaintView.getPaintBit(), 0, 0, null);
         }
-
-        @Override
-        public void handleImage(Canvas canvas, Matrix m) {
-            float[] f = new float[9];
-            m.getValues(f);
-            int dx = (int) f[Matrix.MTRANS_X];
-            int dy = (int) f[Matrix.MTRANS_Y];
-            float scale_x = f[Matrix.MSCALE_X];
-            float scale_y = f[Matrix.MSCALE_Y];
-            canvas.save();
-            canvas.translate(dx, dy);
-            canvas.scale(scale_x, scale_y);
-
-            if (customPaintView.getPaintBit() != null) {
-                canvas.drawBitmap(customPaintView.getPaintBit(), 0, 0, null);
-            }
-            canvas.restore();
-        }
-
-        @Override
-        public void onPostResult(Bitmap result) {
-            customPaintView.reset();
-            activity.changeMainBitmap(result, true);
-            backToMain();
-        }
+        canvas.restore();
     }
 }
