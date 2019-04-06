@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -34,6 +35,7 @@ import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnPhotoEditorListe
 import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -46,10 +48,8 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     private View mainView;
     private TextStickerView textStickersParentView;
 
-    private InputMethodManager imm;
-
-    private Disposable applyTextDisposable;
-
+    private InputMethodManager inputMethodManager;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private List<View> addedViews;
 
     public static AddTextFragment newInstance() {
@@ -62,9 +62,8 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mainView = inflater.inflate(R.layout.fragment_edit_image_add_text, container, false);
         return mainView;
     }
@@ -72,8 +71,11 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        EditImageActivity editImageActivity = ensureEditActivity();
 
-        textStickersParentView = getActivity().findViewById(R.id.text_sticker_panel);
+        inputMethodManager = (InputMethodManager) editImageActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        textStickersParentView = editImageActivity.findViewById(R.id.text_sticker_panel);
         textStickersParentView.setDrawingCacheEnabled(true);
         addedViews = new ArrayList<>();
 
@@ -84,7 +86,7 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
         addTextButton.setOnClickListener(this);
     }
 
-    public void showTextEditDialog(final View rootView, String text, int colorCode) {
+    private void showTextEditDialog(final View rootView, String text, int colorCode) {
         TextEditorDialogFragment textEditorDialogFragment =
                 TextEditorDialogFragment.show(activity, text, colorCode);
         textEditorDialogFragment.setOnTextEditorListener((inputText, colorCode1) -> editText(rootView, inputText, colorCode1));
@@ -92,28 +94,22 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
 
     @Override
     public void onAddViewListener(int numberOfAddedViews) {
-
     }
 
     @Override
     public void onRemoveViewListener(int numberOfAddedViews) {
-
     }
-
 
     @Override
     public void onStartViewChangeListener() {
-
     }
 
     @Override
     public void onStopViewChangeListener() {
-
     }
 
     @Override
     public void onRemoveViewListener(View removedView) {
-
     }
 
     @Override
@@ -127,13 +123,13 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
 
     public void hideInput() {
         if (getActivity() != null && getActivity().getCurrentFocus() != null && isInputMethodShow()) {
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
-    public boolean isInputMethodShow() {
-        return imm.isActive();
+    private boolean isInputMethodShow() {
+        return inputMethodManager.isActive();
     }
 
     @Override
@@ -171,7 +167,8 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     public void applyTextImage() {
         // Hide borders of all stickers before save
         updateViewsBordersVisibilityExcept(null);
-        applyTextDisposable = Observable.fromCallable(() -> getFinalBitmapFromView(textStickersParentView))
+        compositeDisposable.clear();
+        Disposable applyTextDisposable = Observable.fromCallable(() -> getFinalBitmapFromView(textStickersParentView))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -186,6 +183,7 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
                             backToMain();
                             Toast.makeText(getContext(), getString(R.string.save_error), Toast.LENGTH_SHORT).show();
                         });
+        compositeDisposable.add(applyTextDisposable);
     }
 
     private void clearAllStickers() {
@@ -207,10 +205,14 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     }
 
     @Override
+    public void onPause() {
+        compositeDisposable.clear();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
-        if (applyTextDisposable != null && !applyTextDisposable.isDisposed()) {
-            applyTextDisposable.dispose();
-        }
+        compositeDisposable.dispose();
         super.onDestroy();
     }
 
@@ -261,7 +263,6 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
 
             @Override
             public void onLongClick() {
-
             }
         });
 
@@ -295,14 +296,7 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
         }
     }
 
-    /**
-     * This will update the text and color on provided view
-     *
-     * @param view      root view where text view is a child
-     * @param inputText text to update textview
-     * @param colorCode color to update on textview
-     */
-    public void editText(View view, String inputText, int colorCode) {
+    private void editText(View view, String inputText, int colorCode) {
         TextView inputTextView = view.findViewById(R.id.text_sticker_tv);
         if (inputTextView != null && addedViews.contains(view) && !TextUtils.isEmpty(inputText)) {
             inputTextView.setText(inputText);
