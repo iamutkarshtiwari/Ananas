@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
@@ -73,7 +74,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_paint, null);
         return mainView;
@@ -85,7 +86,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
 
         loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
                 false);
-        customPaintView = getActivity().findViewById(R.id.custom_paint_view);
+        customPaintView = ensureEditActivity().findViewById(R.id.custom_paint_view);
         backToMenu = mainView.findViewById(R.id.back_to_main);
         paintModeView = mainView.findViewById(R.id.paint_thumb);
         colorListView = mainView.findViewById(R.id.paint_color_list);

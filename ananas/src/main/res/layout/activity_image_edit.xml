@@ -122,12 +122,19 @@
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView
-            android:id="@+id/text_sticker_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+        <iamutkarshtiwari.github.io.ananas.editimage.layout.ZoomLayout
+            android:id="@+id/text_sticker_panel_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView
+                android:id="@+id/text_sticker_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+        </iamutkarshtiwari.github.io.ananas.editimage.layout.ZoomLayout>
 
         <iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView
             android:id="@+id/custom_paint_view"
