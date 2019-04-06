@@ -4,37 +4,27 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.adapter.viewholders.FilterViewHolder;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.FilterListFragment;
 
 public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int DEFAULT_TYPE = 1;
 
-    String[] filters;
-    String[] filterImages;
-    private FilterListFragment mFilterListFragment;
-    private Context mContext;
+    private String[] filters;
+    private String[] filterImages;
+    private FilterListFragment filterListFragment;
+    private Context context;
 
     public FilterAdapter(FilterListFragment fragment, Context context) {
         super();
-        this.mFilterListFragment = fragment;
-        this.mContext = context;
-        filters = mFilterListFragment.getResources().getStringArray(R.array.filters);
-        filterImages = mFilterListFragment.getResources().getStringArray(R.array.filter_drawable_list);
-    }
-
-    public class ImageHolder extends RecyclerView.ViewHolder {
-        public ImageView icon;
-        public TextView text;
-
-        public ImageHolder(View itemView) {
-            super(itemView);
-            this.icon = (ImageView) itemView.findViewById(R.id.filter_image);
-            this.text = (TextView) itemView.findViewById(R.id.filter_name);
-        }
+        this.filterListFragment = fragment;
+        this.context = context;
+        filters = filterListFragment.getResources().getStringArray(R.array.filters);
+        filterImages = filterListFragment.getResources().getStringArray(R.array.filter_drawable_list);
     }
 
     @Override
@@ -44,35 +34,29 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        return 1;
+        return DEFAULT_TYPE;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewtype) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.filter_item, parent, false);
-        return new ImageHolder(view);
+        return new FilterViewHolder(view);
     }
 
-    /**
-     */
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int pos) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
         final int position = pos;
-        ImageHolder imageHolder = (ImageHolder) holder;
+        FilterViewHolder filterViewHolder = (FilterViewHolder) holder;
         String name = filters[position];
-        imageHolder.text.setText(name);
+        filterViewHolder.text.setText(name);
 
         String imageUrl = "drawable/" + filterImages[position];
-        int imageKey = mFilterListFragment.getResources().getIdentifier(imageUrl, "drawable", mContext.getPackageName());
-        imageHolder.icon.setImageDrawable(mFilterListFragment.getResources().getDrawable(imageKey));
+        int imageKey = filterListFragment.getResources().getIdentifier(imageUrl, "drawable", context.getPackageName());
+        filterViewHolder.icon.setImageDrawable(filterListFragment.getResources().getDrawable(imageKey));
 
-        imageHolder.icon.setTag(position);
-        imageHolder.icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFilterListFragment.enableFilter(position);
-            }
-        });
+        filterViewHolder.icon.setTag(position);
+        filterViewHolder.icon.setOnClickListener(v -> filterListFragment.enableFilter(position));
     }
 }
