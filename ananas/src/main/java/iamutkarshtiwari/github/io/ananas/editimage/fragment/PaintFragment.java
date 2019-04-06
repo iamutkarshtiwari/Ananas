@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -109,7 +109,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         stickerListLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         colorListView.setLayoutManager(stickerListLayoutManager);
-        ColorListAdapter colorListAdapter = new ColorListAdapter(this, paintColors, this);
+        ColorListAdapter colorListAdapter = new ColorListAdapter(paintColors, this);
         colorListView.setAdapter(colorListAdapter);
     }
 
