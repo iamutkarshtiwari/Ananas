@@ -2,30 +2,25 @@ package ananas.editimage;
 
 import android.graphics.Bitmap;
 
-import iamutkarshtiwari.github.io.ananas.editimage.widget.EditCache;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import iamutkarshtiwari.github.io.ananas.editimage.widget.EditCache;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by panyi on 2017/11/15.
- */
-//@RunWith(JUnit4.class)
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest= Config.NONE)
 public class EditCacheTest {
     private EditCache editCache;
 
-    int flag1 = 100;
-    int flag2 = 100;
+    private int flag1 = 100;
+    private int flag2 = 100;
 
     @Before
     public void prepare() {
@@ -33,34 +28,19 @@ public class EditCacheTest {
     }
 
     @Test
-    public void testEditCacheSizeDefault() throws Exception {
+    public void testEditCacheSizeDefault() {
         assertEquals(EditCache.EDIT_CACHE_SIZE, editCache.getEditCacheSize());
     }
 
     @Test
-    public void testEditCacheSize() throws Exception {
+    public void testEditCacheSize() {
         int size = 100;
         EditCache cache = new EditCache(size);
         assertEquals(size, cache.getEditCacheSize());
     }
 
-//    @Test
-//    public void testEditCachePushSize() throws Exception {
-//        Bitmap bit1 = createTestBitmap();
-//        Bitmap bit2 = createTestBitmap();
-//        Bitmap bit3 = createTestBitmap();
-//        Bitmap bit4 = createTestBitmap();
-//        Bitmap bit5 = createTestBitmap();
-//        editCache.push(bit1);
-//        editCache.push(bit2);
-//        editCache.push(bit3);
-//        editCache.push(bit4);
-//        editCache.push(bit5);
-//        assertEquals(editCache.getEditCacheSize(), editCache.getSize());
-//    }
-
     @Test
-    public void test_EditCache_PushSame() throws Exception {
+    public void test_EditCache_PushSame() {
         Bitmap bit1 = createTestBitmap();
         Bitmap bit2 = createTestBitmap();
         Bitmap bit3 = createTestBitmap();
@@ -77,24 +57,22 @@ public class EditCacheTest {
         editCache.push(bit4);
         editCache.push(bit5);
 
-        //assertEquals(bit5 , );
         assertEquals(5, editCache.getSize());
     }
 
-    public void test_EditCache_Pop() throws Exception {
+    public void test_EditCache_Pop() {
         prepareCache();
         assertEquals(editCache.getEditCacheSize(), editCache.getSize());
     }
 
-    public void test_EditCache_Pop2() throws Exception {
+    public void test_EditCache_Pop2() {
         prepareCache();
         Bitmap insertBit = Bitmap.createBitmap(1024, 500, Bitmap.Config.ARGB_8888);
         editCache.push(insertBit);
-        //assertEquals(insertBit, editCache.pop());
     }
 
     @Test
-    public void test_EditCache_Pop3() throws Exception {
+    public void test_EditCache_Pop3() {
         prepareCache();
         Bitmap insertBit1 = Bitmap.createBitmap(1024, 500, Bitmap.Config.ARGB_8888);
         editCache.push(insertBit1);
@@ -106,18 +84,17 @@ public class EditCacheTest {
 
 
     @Test
-    public void test_EditCache_PushSame2() throws Exception {
+    public void test_EditCache_PushSame2() {
         Bitmap bit1 = createTestBitmap();
         Bitmap bit2 = createTestBitmap();
         editCache.push(bit2);
         editCache.push(bit1);
         editCache.push(bit2);
-        //assertEquals(bit2, editCache.pop());
         assertEquals(2, editCache.getSize());
     }
 
     @Test
-    public void test_EditCache_removeAll() throws Exception {
+    public void test_EditCache_removeAll() {
         prepare();
         Bitmap bit1 = createTestBitmap();
         Bitmap bit2 = createTestBitmap();
@@ -134,16 +111,16 @@ public class EditCacheTest {
         editCache.removeAll();
 
         assertEquals(0, editCache.getSize());
-        assertEquals(bit1.isRecycled(), true);
-        assertEquals(bit2.isRecycled(), true);
-        assertEquals(bit3.isRecycled(), true);
-        assertEquals(bit4.isRecycled(), true);
-        assertEquals(bit5.isRecycled(), true);
+        assertTrue(bit1.isRecycled());
+        assertTrue(bit2.isRecycled());
+        assertTrue(bit3.isRecycled());
+        assertTrue(bit4.isRecycled());
+        assertTrue(bit5.isRecycled());
     }
 
 
     @Test
-    public void test_EditCache_get_next_and_pre_Bitmap() throws Exception {
+    public void test_EditCache_get_next_and_pre_Bitmap() {
         Bitmap bit1 = createTestBitmap();
         Bitmap bit2 = createTestBitmap();
         Bitmap bit3 = createTestBitmap();
@@ -179,19 +156,19 @@ public class EditCacheTest {
 
     @Test
     public void test_EditCache_isPointTo() {
-        assertEquals(true, editCache.isPointToLastElem());
+        assertTrue(editCache.isPointToLastElem());
         Bitmap bit1 = createTestBitmap();
         editCache.push(bit1);
-        assertEquals(true, editCache.isPointToLastElem());
+        assertTrue(editCache.isPointToLastElem());
 
         editCache.push(createTestBitmap());
-        assertEquals(true, editCache.isPointToLastElem());
+        assertTrue(editCache.isPointToLastElem());
 
         Bitmap bit2 = createTestBitmap();
         editCache.push(bit2);
         Bitmap bit3 = createTestBitmap();
         editCache.push(bit3);
-        assertEquals(true, editCache.isPointToLastElem());
+        assertTrue(editCache.isPointToLastElem());
     }
 
     @Test
@@ -204,9 +181,8 @@ public class EditCacheTest {
         editCache.push(bit3);
         Bitmap bit4 = createTestBitmap();
         editCache.push(bit4);
-        //editCache.push(bit1);
 
-        assertEquals(true, editCache.isPointToLastElem());
+        assertTrue(editCache.isPointToLastElem());
     }
 
     @Test
@@ -224,8 +200,6 @@ public class EditCacheTest {
         assertEquals(bit3, editCache.getNextCurrentBit());
         assertEquals(bit2, editCache.getNextCurrentBit());
         assertEquals(bit1, editCache.getNextCurrentBit());
-
-        //editCache.getPreCurrentBit();
         assertEquals(bit2, editCache.getPreCurrentBit());
         assertEquals(bit3, editCache.getPreCurrentBit());
         assertEquals(bit4, editCache.getPreCurrentBit());
@@ -289,7 +263,6 @@ public class EditCacheTest {
         assertEquals(bit3, editCache.getNextCurrentBit());
         assertEquals(bit2, editCache.getNextCurrentBit());
         assertEquals(bit1, editCache.getNextCurrentBit());
-
         assertEquals(size, editCache.getCur());
     }
 
@@ -318,31 +291,19 @@ public class EditCacheTest {
         Bitmap bit6 = createTestBitmap();
         editCache.push(bit6);
         assertEquals(bit6, editCache.getCurBit());
-        assertEquals(true, bit1.isRecycled());
-        assertEquals(true, bit2.isRecycled());
-        assertEquals(true, bit3.isRecycled());
-        assertEquals(true, bit4.isRecycled());
+        assertTrue(bit1.isRecycled());
+        assertTrue(bit2.isRecycled());
+        assertTrue(bit3.isRecycled());
+        assertTrue(bit4.isRecycled());
 
         assertEquals(6, editCache.getSize());
     }
 
     @Test
     public void test_EditCache_observer1(){
-        //prepareCache(10);
-        EditCache.ListModify modify1 = new EditCache.ListModify() {
-            @Override
-            public void onCacheListChange(EditCache cache) {
-                //assertEquals();
-                flag1 = 200;
-            }
-        };
+        EditCache.ListModify modify1 = cache -> flag1 = 200;
 
-        EditCache.ListModify modify2 = new EditCache.ListModify() {
-            @Override
-            public void onCacheListChange(EditCache cache) {
-                flag2 = 200;
-            }
-        };
+        EditCache.ListModify modify2 = cache -> flag2 = 200;
 
         editCache.addObserver(modify1);
         editCache.addObserver(modify2);
@@ -356,8 +317,8 @@ public class EditCacheTest {
 
         flag1 = 100;
         flag2 = 100;
-        //editCache.removeObserver(modify1);
-        Bitmap b = editCache.getNextCurrentBit();
+        Bitmap bitmap = editCache.getNextCurrentBit();
+
         assertEquals(200 , flag1);
         assertEquals(200 , flag2);
 
@@ -370,7 +331,7 @@ public class EditCacheTest {
         flag1 = 400;
         flag2 = 400;
         editCache.removeObserver(modify1);
-        Bitmap bit3 = createTestBitmap();
+        Bitmap testBitmap = createTestBitmap();
         editCache.push(bit1);
         assertEquals(400 , flag1);
         assertEquals(200 , flag2);
@@ -380,26 +341,16 @@ public class EditCacheTest {
     public void test_EditCache_observer2(){
         flag1 = 100;
         flag2 = 100;
-        EditCache.ListModify modify1 = new EditCache.ListModify() {
-            @Override
-            public void onCacheListChange(EditCache cache) {
-                //assertEquals();
-                flag1 = 200;
-            }
-        };
+        EditCache.ListModify modify1 = cache -> flag1 = 200;
 
-        EditCache.ListModify modify2 = new EditCache.ListModify() {
-            @Override
-            public void onCacheListChange(EditCache cache) {
-                flag2 = 200;
-            }
-        };
+        EditCache.ListModify modify2 = cache -> flag2 = 200;
 
         editCache.addObserver(modify1);
         editCache.addObserver(modify2);
 
         flag1 = 100;
         flag2 = 100;
+
         prepareCache(10);
         assertEquals(200 , flag1);
         assertEquals(200 , flag2);
@@ -416,27 +367,23 @@ public class EditCacheTest {
 
     @Test
     public void test_check(){
-        assertEquals(false , editCache.checkNextBitExist());
-        assertEquals(false , editCache.checkPreBitExist());
+        assertFalse(editCache.checkNextBitExist());
+        assertFalse(editCache.checkPreBitExist());
         prepareCache(3);
-        assertEquals(true , editCache.checkNextBitExist());
-        assertEquals(false , editCache.checkPreBitExist());
+        assertTrue(editCache.checkNextBitExist());
+        assertFalse(editCache.checkPreBitExist());
 
-        assertEquals(true , editCache.checkNextBitExist());
+        assertTrue(editCache.checkNextBitExist());
         editCache.getNextCurrentBit();
-        assertEquals(true,editCache.checkPreBitExist());
-        assertEquals(true , editCache.checkNextBitExist());
+        assertTrue(editCache.checkPreBitExist());
+        assertTrue(editCache.checkNextBitExist());
         editCache.getNextCurrentBit();
-        assertEquals(false , editCache.checkNextBitExist());
+        assertFalse(editCache.checkNextBitExist());
         editCache.getNextCurrentBit();
 
         prepareCache(1);
-        assertEquals(false, editCache.checkPreBitExist());
-        assertEquals(false , editCache.checkNextBitExist());
-    }
-
-    @After
-    public void test_after(){
+        assertFalse(editCache.checkPreBitExist());
+        assertFalse(editCache.checkNextBitExist());
     }
 
     private void prepareCache(int size) {
@@ -483,4 +430,4 @@ public class EditCacheTest {
     private Bitmap createTestBitmap() {
         return Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
     }
-}//end class
+}
