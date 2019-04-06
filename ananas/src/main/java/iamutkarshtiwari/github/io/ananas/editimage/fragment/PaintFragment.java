@@ -23,6 +23,7 @@ import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.ColorListAdapter;
+import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnColorSelected;
 import iamutkarshtiwari.github.io.ananas.editimage.ui.ColorPicker;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
@@ -33,7 +34,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class PaintFragment extends BaseEditFragment implements View.OnClickListener, ColorListAdapter.IColorListAction {
+public class PaintFragment extends BaseEditFragment implements View.OnClickListener, OnColorSelected {
     public static final int INDEX = ModuleConfig.INDEX_PAINT;
     public static final String TAG = PaintFragment.class.getName();
 

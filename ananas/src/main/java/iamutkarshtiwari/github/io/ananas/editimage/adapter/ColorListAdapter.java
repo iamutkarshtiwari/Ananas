@@ -8,20 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.adapter.viewholders.ColorViewHolder;
+import iamutkarshtiwari.github.io.ananas.editimage.adapter.viewholders.MoreViewHolder;
+import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnColorSelected;
 
 public class ColorListAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final int TYPE_COLOR = 1;
     private static final int TYPE_MORE = 2;
 
-    public interface IColorListAction {
-        void onColorSelected(final int position, final int color);
-        void onMoreSelected(final int position);
-    }
-
     private int[] colorsData;
-    private IColorListAction actionCallback;
+    private OnColorSelected actionCallback;
 
-    public ColorListAdapter(int[] colors, IColorListAction action) {
+    public ColorListAdapter(int[] colors, OnColorSelected action) {
         super();
         this.colorsData = colors;
         this.actionCallback = action;
@@ -74,29 +72,10 @@ public class ColorListAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     private void onBindColorMoreViewHolder(final MoreViewHolder holder, final int position) {
-        holder.moreBtn.setOnClickListener(v -> {
+        holder.moreButton.setOnClickListener(v -> {
             if (actionCallback != null) {
                 actionCallback.onMoreSelected(position);
             }
         });
-    }
-
-    public class ColorViewHolder extends ViewHolder {
-        View colorPanelView;
-
-        ColorViewHolder(View itemView) {
-            super(itemView);
-            this.colorPanelView = itemView.findViewById(R.id.color_panel_view);
-        }
-    }
-
-    public class MoreViewHolder extends ViewHolder {
-        View moreBtn;
-
-        MoreViewHolder(View itemView) {
-            super(itemView);
-            this.moreBtn = itemView.findViewById(R.id.color_panel_more);
-        }
-
     }
 }
