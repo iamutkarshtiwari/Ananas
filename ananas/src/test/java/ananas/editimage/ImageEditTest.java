@@ -7,9 +7,6 @@ import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by panyi on 2017/11/15.
- */
 @RunWith(JUnit4.class)
 public class ImageEditTest {
     @Before
@@ -17,12 +14,12 @@ public class ImageEditTest {
     }
 
     @Test
-    public void addition_isCorrect() throws Exception {
+    public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
 
     @Test
     public void test_hell(){
-        assertEquals(100, 20*5);
+        assertEquals(100, 20 * 5);
     }
-}//end class
+}

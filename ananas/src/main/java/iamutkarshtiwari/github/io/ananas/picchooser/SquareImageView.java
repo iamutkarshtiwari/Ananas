@@ -19,4 +19,4 @@ public class SquareImageView extends ImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
     }
-}//end class
+}
