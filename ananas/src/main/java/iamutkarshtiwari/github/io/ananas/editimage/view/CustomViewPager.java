@@ -1,8 +1,9 @@
 package iamutkarshtiwari.github.io.ananas.editimage.view;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+
+import androidx.viewpager.widget.ViewPager;
 
 public class CustomViewPager extends ViewPager {
     private boolean isCanScroll = false;

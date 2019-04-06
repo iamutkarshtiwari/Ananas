@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -215,7 +215,7 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void addText(String text, final int colorCodeTextView) {
+    private void addText(String text, final int colorCodeTextView) {
         final View textStickerView = getTextStickerLayout();
         final TextView textInputTv = textStickerView.findViewById(R.id.text_sticker_tv);
         final ImageView imgClose = textStickerView.findViewById(R.id.sticker_delete_btn);

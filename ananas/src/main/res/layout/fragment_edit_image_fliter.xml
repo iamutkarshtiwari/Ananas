@@ -12,7 +12,7 @@
         android:layout_gravity="center_vertical"
         android:src="@drawable/image_edit_back" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filter_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

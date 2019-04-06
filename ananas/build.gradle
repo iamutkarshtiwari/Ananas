@@ -5,11 +5,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.iamutkarshtiwari'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -29,15 +29,18 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    testImplementation 'org.robolectric:robolectric:3.3.2'
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'com.android.support:recyclerview-v7:26.+'
-    compile 'com.isseiaoki:simplecropview:1.1.7'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compile 'com.github.eltos:simpledialogfragment:2.2.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation "junit:junit:${junit_version}"
+    testImplementation "org.robolectric:robolectric:${robolectric_version}"
+    implementation "androidx.appcompat:appcompat:${androidx_compat}"
+    implementation "androidx.recyclerview:recyclerview:${androidx_version}"
+    implementation "com.nostra13.universalimageloader:universal-image-loader:${univeral_image_loader_version}"
+    implementation 'com.isseiaoki:simplecropview:1.1.7'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.github.eltos:simpledialogfragment:${simple_dialog_fragment_version}"
+    implementation "com.edmodo:cropper:${cropper_version}"
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 }
 repositories {
     mavenCentral()

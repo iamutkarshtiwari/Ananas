@@ -1,7 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
-
 
 public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
     public static final int[] typeIcon = {R.drawable.stickers_type_animal,
@@ -35,10 +36,10 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         public ImageView icon;
         public TextView text;
 
-        public ImageHolder(View itemView) {
+        ImageHolder(View itemView) {
             super(itemView);
-            this.icon = (ImageView) itemView.findViewById(R.id.icon);
-            this.text = (TextView) itemView.findViewById(R.id.text);
+            this.icon = itemView.findViewById(R.id.icon);
+            this.text = itemView.findViewById(R.id.text);
         }
     }
 
@@ -52,24 +53,22 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         return 1;
     }
 
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewtype) {
-        View v = null;
-        v = LayoutInflater.from(parent.getContext()).inflate(
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewtype) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_sticker_type_item, parent, false);
-        ImageHolder holer = new ImageHolder(v);
-        return holer;
+        return new ImageHolder(view);
     }
 
-
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHolder imageHoler = (ImageHolder) holder;
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
+        ImageHolder imageHolder = (ImageHolder) holder;
         String name = stickerPathName[position];
-        imageHoler.text.setText(name);
-        imageHoler.text.setTag(R.id.TAG_STICKERS_PATH, stickerPath[position]);
-        imageHoler.text.setTag(R.id.TAG_STICKERS_COUNT, stickerCount[position]);
-        imageHoler.text.setOnClickListener(mImageClick);
+        imageHolder.text.setText(name);
+        imageHolder.text.setTag(R.id.TAG_STICKERS_PATH, stickerPath[position]);
+        imageHolder.text.setTag(R.id.TAG_STICKERS_COUNT, stickerCount[position]);
+        imageHolder.text.setOnClickListener(mImageClick);
     }
 
     private final class ImageClick implements OnClickListener {

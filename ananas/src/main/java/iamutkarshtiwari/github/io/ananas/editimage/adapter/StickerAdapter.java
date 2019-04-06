@@ -1,32 +1,25 @@
 package iamutkarshtiwari.github.io.ananas.editimage.adapter;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import iamutkarshtiwari.github.io.ananas.R;
-import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
+
 
 public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
-    public DisplayImageOptions imageOption = new DisplayImageOptions.Builder()
-            .cacheInMemory(true).showImageOnLoading(R.drawable.yd_image_tx)
-            .build();
 
     private StickerFragment mStickerFragment;
     private ImageClick mImageClick = new ImageClick();
-    private List<String> pathList = new ArrayList<String>();// 图片路径列表
+    private List<String> pathList = new ArrayList<String>();
 
     public StickerAdapter(StickerFragment fragment) {
         super();
@@ -36,7 +29,7 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public class ImageHolder extends ViewHolder {
         public ImageView image;
 
-        public ImageHolder(View itemView) {
+        ImageHolder(View itemView) {
             super(itemView);
             this.image = (ImageView) itemView.findViewById(R.id.img);
         }

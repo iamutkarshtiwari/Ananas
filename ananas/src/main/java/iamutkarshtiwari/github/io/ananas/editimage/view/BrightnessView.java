@@ -3,12 +3,12 @@ package iamutkarshtiwari.github.io.ananas.editimage.view;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.support.annotation.FloatRange;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.FloatRange;
+import androidx.appcompat.widget.AppCompatImageView;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;

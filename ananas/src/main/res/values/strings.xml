@@ -19,7 +19,7 @@
     <string name="saving_image">Saving…</string>
     <string name="input_hint">Input Text …</string>
 
-    <string name="no_choose">Please choose a image for edit</string>
+    <string name="not_selected">Please choose an image for edit</string>
     <string name="auto_newline">AutoNewline</string>
     <string name="save_error">Save error!</string>
     <string name="load_error">Failed to load the image!</string>
