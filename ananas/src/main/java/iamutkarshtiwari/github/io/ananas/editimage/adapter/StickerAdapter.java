@@ -4,35 +4,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.adapter.viewholders.StickerViewHolder;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 
-
 public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
-
-    private StickerFragment mStickerFragment;
-    private ImageClick mImageClick = new ImageClick();
-    private List<String> pathList = new ArrayList<String>();
+    private StickerFragment stickerFragment;
+    private ImageClick imageClick = new ImageClick();
+    private List<String> pathList = new ArrayList<>();
 
     public StickerAdapter(StickerFragment fragment) {
         super();
-        this.mStickerFragment = fragment;
-    }
-
-    public class ImageHolder extends ViewHolder {
-        public ImageView image;
-
-        ImageHolder(View itemView) {
-            super(itemView);
-            this.image = (ImageView) itemView.findViewById(R.id.img);
-        }
+        this.stickerFragment = fragment;
     }
 
     @Override
@@ -45,31 +35,31 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
         return 1;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewtype) {
-        View v = null;
-        v = LayoutInflater.from(parent.getContext()).inflate(
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewtype) {
+        View view;
+        view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_sticker_item, parent, false);
-        ImageHolder holder = new ImageHolder(v);
-        return holder;
+        return new StickerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHolder imageHolder = (ImageHolder) holder;
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        StickerViewHolder stickerViewHolder = (StickerViewHolder) viewHolder;
         String path = pathList.get(position);
 
         String imageUrl = "drawable/" + path;
-        int imageKey = mStickerFragment.getResources().getIdentifier(imageUrl, "drawable", mStickerFragment.getContext().getPackageName());
-        imageHolder.image.setImageDrawable(mStickerFragment.getResources().getDrawable(imageKey));
-        imageHolder.image.setTag(imageUrl);
-        imageHolder.image.setOnClickListener(mImageClick);
+        int imageKey = stickerFragment.getResources().getIdentifier(imageUrl, "drawable", stickerFragment.getContext().getPackageName());
+        stickerViewHolder.image.setImageDrawable(stickerFragment.getResources().getDrawable(imageKey));
+        stickerViewHolder.image.setTag(imageUrl);
+        stickerViewHolder.image.setOnClickListener(imageClick);
     }
 
     public void addStickerImages(String folderPath, int stickerCount) {
         pathList.clear();
         for (int i = 0; i < stickerCount; i++) {
-            pathList.add(folderPath + "_" + Integer.toString(i+1));
+            pathList.add(folderPath + "_" + Integer.toString(i + 1));
         }
         this.notifyDataSetChanged();
     }
@@ -78,7 +68,7 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
         @Override
         public void onClick(View v) {
             String data = (String) v.getTag();
-            mStickerFragment.selectedStickerItem(data);
+            stickerFragment.selectedStickerItem(data);
         }
     }
 }
