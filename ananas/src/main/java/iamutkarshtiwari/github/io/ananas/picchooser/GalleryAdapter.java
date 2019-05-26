@@ -1,9 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.picchooser;
 
-import java.util.List;
-
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import iamutkarshtiwari.github.io.ananas.R;
+import com.bumptech.glide.Glide;
 
+import java.util.List;
+
+import iamutkarshtiwari.github.io.ananas.R;
 
 class GalleryAdapter extends BaseAdapter {
 
@@ -23,16 +20,7 @@ class GalleryAdapter extends BaseAdapter {
     private final List<GridItem> items;
     private final LayoutInflater mInflater;
 
-    private static final DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .resetViewBeforeLoading(true)
-            .cacheInMemory(true)
-            .cacheOnDisk(false)
-            .considerExifParams(true)
-            .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .build();
-
-    public GalleryAdapter(final Context context, final List<GridItem> buckets) {
+    GalleryAdapter(final Context context, final List<GridItem> buckets) {
         this.items = buckets;
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
@@ -55,13 +43,13 @@ class GalleryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, final ViewGroup parent) {
-        if (items.get(0) instanceof BucketItem) { // show buckets
+        if (items.get(0) instanceof BucketItem) {
             ViewHolder holder;
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.bucketitem, null);
                 holder = new ViewHolder();
-                holder.icon = (ImageView) convertView.findViewById(R.id.icon);
-                holder.text = (TextView) convertView.findViewById(R.id.text);
+                holder.icon = convertView.findViewById(R.id.icon);
+                holder.text = convertView.findViewById(R.id.text);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -70,16 +58,24 @@ class GalleryAdapter extends BaseAdapter {
             holder.text.setText(bi.images > 1 ?
                     bi.name + " - " + context.getString(R.string.images, bi.images) :
                     bi.name);
-            ImageLoader.getInstance().displayImage("file://" + bi.path, holder.icon);
+
+            Glide.with(context)
+                    .load("file://" + bi.path)
+                    .into(holder.icon);
+
             return convertView;
-        } else { // show images in a bucket
+        } else {
             ImageView imageView;
-            if (convertView == null) {  // if it's not recycled, initialize some attributes
+            if (convertView == null) {
                 imageView = (ImageView) mInflater.inflate(R.layout.imageitem, null);
             } else {
                 imageView = (ImageView) convertView;
             }
-            ImageLoader.getInstance().displayImage("file://" + items.get(position).path, imageView, options);
+
+            Glide.with(context)
+                    .load("file://" + items.get(position).path)
+                    .into(imageView);
+
             return imageView;
         }
     }

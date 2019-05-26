@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion project.ext.compileSdkVersion
     defaultConfig {
         applicationId "io.github.iamutkarshtiwari.ananasproject"
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion project.ext.minSdkVersion
+        targetSdkVersion project.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -16,6 +16,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

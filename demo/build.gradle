@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "io.github.iamutkarshtiwari.ananasproject"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -26,7 +26,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:${androidx_version}"
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation "io.reactivex.rxjava2:rxjava:${rxjava_version}"
+    implementation "io.reactivex.rxjava2:rxandroid:${rxandroid_version}"
     implementation project(':ananas')
 }

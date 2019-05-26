@@ -58,7 +58,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
 public class EditImageActivity extends BaseActivity {
     private static final int PERMISSIONS_REQUEST_CODE = 110;
     public static final String IS_IMAGE_EDITED = "is_image_edited";
@@ -127,7 +126,6 @@ public class EditImageActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkInitImageLoader();
         setContentView(R.layout.activity_image_edit);
         initView();
         getData();

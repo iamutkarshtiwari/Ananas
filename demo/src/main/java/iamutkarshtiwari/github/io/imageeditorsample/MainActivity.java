@@ -15,11 +15,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.File;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestTakePhotoPermissions();
         } else {
-            doTakePhoto();
+            launchCamera();
         }
     }
 
@@ -118,20 +120,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     REQUEST_PERMISSON_CAMERA);
             return;
         }
-        doTakePhoto();
+        launchCamera();
     }
 
-    private void doTakePhoto() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = FileUtils.genEditFile();
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                photoURI = Uri.fromFile(photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE);
-            }
+    public void launchCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Uri outputFileUri = Uri.fromFile(FileUtils.genEditFile());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        } else {
+            File file = FileUtils.genEditFile();
+            Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", file);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        }
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        if (intent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
+            startActivityForResult(intent, TAKE_PHOTO_CODE);
         }
     }
 
@@ -191,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (requestCode == REQUEST_PERMISSON_CAMERA
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            doTakePhoto();
+            launchCamera();
         }
     }
 
