@@ -35,10 +35,9 @@ dependencies {
     testImplementation "org.robolectric:robolectric:${robolectric_version}"
     implementation "androidx.appcompat:appcompat:${androidx_compat}"
     implementation "androidx.recyclerview:recyclerview:${androidx_version}"
-    implementation 'com.isseiaoki:simplecropview:1.1.7'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "com.github.eltos:simpledialogfragment:${simple_dialog_fragment_version}"
-    implementation "com.edmodo:cropper:${cropper_version}"
+    api "com.theartofdev.edmodo:android-image-cropper:${cropper_version}"
     implementation "io.reactivex.rxjava2:rxjava:${rxjava_version}"
     implementation "io.reactivex.rxjava2:rxandroid:${rxandroid_version}"
     implementation "com.github.bumptech.glide:glide:${glide_version}"

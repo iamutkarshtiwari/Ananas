@@ -8,6 +8,7 @@
     <color name="materialcolorpicker__grey">#b3b3b3</color>
     <color name="hint_foreground_material_light">#00000000</color>
     <color name="text_color">#BEC2C4</color>
+    <color name="text_color_gray_3">#A6A5A5</color>
 
     <!--Kelly's 22 contrast colors-->
     <color name="kelly_1">#F2F3F4</color>
