@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -92,29 +91,6 @@
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <com.isseiaoki.simplecropview.CropImageView
-            android:id="@+id/crop_panel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="16dp"
-            android:visibility="gone"
-            custom:scv_background_color="@color/main_backgroud"
-            custom:scv_crop_mode="free"
-            custom:scv_frame_color="@color/white"
-            custom:scv_frame_stroke_weight="1dp"
-            custom:scv_guide_color="@color/white"
-            custom:scv_guide_show_mode="show_always"
-            custom:scv_guide_stroke_weight="1dp"
-            custom:scv_handle_color="@color/white"
-            custom:scv_handle_show_mode="show_always"
-            custom:scv_handle_size="14dp"
-            custom:scv_min_frame_size="50dp"
-            custom:scv_overlay_color="#aa1c1c1c"
-            custom:scv_touch_padding="8dp" />
-
         <iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView
             android:id="@+id/rotate_panel"
             android:layout_width="fill_parent"
@@ -154,6 +130,13 @@
             android:id="@+id/contrast_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.theartofdev.edmodo.cropper.CropImageView
+            android:id="@+id/crop_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
     </FrameLayout>
