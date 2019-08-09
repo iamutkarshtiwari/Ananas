@@ -62,9 +62,16 @@ android {
 ```
 
 ## Starting the PhotoEditor activity
-Simply add this line to the place from where you want to start the activity-
 
+In the activity from where you want to start the photo editor add this line outside all methods in your activity class-
 ```java
+final int PHOTO_EDITOR_REQUEST_CODE = 231;// Any integer value as a request code.
+```
+
+Simply add this line in a method from where you want to start the Ananas Photo Editor activity-
+```java
+
+ try {
   Intent intent = new ImageEditorIntentBuilder(this, sourceImagePath, outputFilePath)
          .withAddText() // Add the features you need 
          .withPaintFeature()
