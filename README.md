@@ -71,7 +71,7 @@ Simply add this line to the place from where you want to start the activity-
          .withFilterFeature()
          .withRotateFeature()
          .withCropFeature()
-         .withBrighnessFeature()
+         .withBrightnessFeature()
          .withSaturationFeature()
          .withBeautyFeature()
          .withStickerFeature() 
