@@ -1,6 +1,6 @@
 <img align="left" src="art/ananas.png" width="100" height="100" />
 
-# Ananas Photo Editor 
+# Ananas Photo Editor
 
 [![Download](https://img.shields.io/badge/JitPack-1.1.1-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/1.1.1) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
 
@@ -17,7 +17,7 @@ An easy photo editor integration for your Android apps.
 - Applying [**Filters**]() to your image
 - Changing the [**Contrast**]() and [**Saturation**]() of images
 - Addition [**Beauty**]() settings for images with face
- 
+
 
 ## Benefits
 - Plug and play
@@ -63,17 +63,17 @@ android {
 
 ## Starting the PhotoEditor activity
 
-In the activity from where you want to start the photo editor add this line outside all methods in your activity class-
+Add this constant to your activity class with your preferred request code:
 ```java
-final int PHOTO_EDITOR_REQUEST_CODE = 231;// Any integer value as a request code.
+private final int PHOTO_EDITOR_REQUEST_CODE = 231;// Any integer value as a request code.
 ```
 
-Simply add this line in a method from where you want to start the Ananas Photo Editor activity-
+Use the following code to build and launch the photo editor:
 ```java
 
  try {
   Intent intent = new ImageEditorIntentBuilder(this, sourceImagePath, outputFilePath)
-         .withAddText() // Add the features you need 
+         .withAddText() // Add the features you need
          .withPaintFeature()
          .withFilterFeature()
          .withRotateFeature()
@@ -81,7 +81,7 @@ Simply add this line in a method from where you want to start the Ananas Photo E
          .withBrightnessFeature()
          .withSaturationFeature()
          .withBeautyFeature()
-         .withStickerFeature() 
+         .withStickerFeature()
          .forcePortrait(true)  // Add this to force portrait mode (It's set to false by default)
          .build();
 
@@ -98,8 +98,8 @@ You can receive the new processed image path and it's edit status like this-
  @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        
-        if (requestCode == PHOTO_EDITOR_REQUEST_CODE) { // same code you used while starting 
+
+        if (requestCode == PHOTO_EDITOR_REQUEST_CODE) { // same code you used while starting
             String newFilePath = data.getStringExtra(EditImageActivity.OUTPUT_PATH);
             boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IMAGE_IS_EDIT, false);
         }
@@ -126,7 +126,7 @@ Happy coding! :)
 
 
 ## Questions?🤔
-Hit me on twitter 
+Hit me on twitter
 [![Twitter](https://img.shields.io/badge/Twitter-%40iamutkarsht-blue.svg)](https://twitter.com/iamutkarsht)
 [![Facebook](https://img.shields.io/badge/Facebook-Utkarsh%20Tiwari-blue.svg)](https://www.facebook.com/iamutkarshtiwari)
 
@@ -139,11 +139,11 @@ Hit me on twitter
 - Be polite.
 
 
-# Credits 
+# Credits
 
  Name | Library
 ------------ | -------------
-siwangqishiq | [ImageEditor Android](https://github.com/siwangqishiq/ImageEditor-Android) 
+siwangqishiq | [ImageEditor Android](https://github.com/siwangqishiq/ImageEditor-Android)
 IsseiAoki | [SimpleCropView](https://github.com/IsseiAoki/SimpleCropView)
 hoanganhtuan95ptit | [Contrast and Brightness feature](https://github.com/hoanganhtuan95ptit/EditPhoto)
 eltos | [Color Picker Dialog](https://github.com/eltos/SimpleDialogFragments)
