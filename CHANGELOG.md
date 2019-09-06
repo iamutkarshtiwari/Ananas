@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 # Released
 
+## [1.1.3]
+### Changes
+- Simplified rotate feature UX
+
 ## [1.1.2]
 ### Changes
 - Migrated to AndroidX
