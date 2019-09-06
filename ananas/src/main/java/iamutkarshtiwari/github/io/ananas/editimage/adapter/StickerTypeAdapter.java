@@ -24,9 +24,9 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
     public StickerTypeAdapter(StickerFragment fragment) {
         super();
         this.stickerFragment = fragment;
-        stickerPath = stickerFragment.getResources().getStringArray(R.array.types);
-        stickerPathName = stickerFragment.getResources().getStringArray(R.array.type_names);
-        stickerCount = stickerFragment.getResources().getIntArray(R.array.type_count);
+        stickerPath = stickerFragment.getResources().getStringArray(R.array.iamutkarshtiwari_github_io_ananas_types);
+        stickerPathName = stickerFragment.getResources().getStringArray(R.array.iamutkarshtiwari_github_io_ananas_type_names);
+        stickerCount = stickerFragment.getResources().getIntArray(R.array.iamutkarshtiwari_github_io_ananas_type_count);
     }
 
     public class ImageHolder extends ViewHolder {
@@ -63,16 +63,16 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         ImageHolder imageHolder = (ImageHolder) holder;
         String name = stickerPathName[position];
         imageHolder.text.setText(name);
-        imageHolder.text.setTag(R.id.TAG_STICKERS_PATH, stickerPath[position]);
-        imageHolder.text.setTag(R.id.TAG_STICKERS_COUNT, stickerCount[position]);
+        imageHolder.text.setTag(R.id.iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH, stickerPath[position]);
+        imageHolder.text.setTag(R.id.iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT, stickerCount[position]);
         imageHolder.text.setOnClickListener(imageClick);
     }
 
     private final class ImageClick implements OnClickListener {
         @Override
         public void onClick(View v) {
-            String data = (String) v.getTag(R.id.TAG_STICKERS_PATH);
-            int count = (int) v.getTag(R.id.TAG_STICKERS_COUNT);
+            String data = (String) v.getTag(R.id.iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH);
+            int count = (int) v.getTag(R.id.iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT);
             stickerFragment.swipToStickerDetails(data, count);
         }
     }

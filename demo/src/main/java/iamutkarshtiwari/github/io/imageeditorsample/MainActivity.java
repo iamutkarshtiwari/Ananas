@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View takenPhoto = findViewById(R.id.take_photo);
         takenPhoto.setOnClickListener(this);
 
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
     }
 
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             EditImageActivity.start(this, intent, ACTION_REQUEST_EDITIMAGE);
         } catch (Exception e) {
-            Toast.makeText(this, R.string.not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());
         }
     }
@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .subscribe(
                         this::setMainBitmap,
                         e -> Toast.makeText(
-                                this, R.string.load_error, Toast.LENGTH_SHORT).show()
+                                this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show()
                 );
 
         compositeDisposable.add(applyRotationDisposable);

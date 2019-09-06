@@ -52,7 +52,7 @@ public class RotateFragment extends BaseEditFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_rotate, null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
         return mainView;
     }

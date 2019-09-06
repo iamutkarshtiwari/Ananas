@@ -181,7 +181,7 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
                         e -> {
                             e.printStackTrace();
                             backToMain();
-                            Toast.makeText(getContext(), getString(R.string.save_error), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), getString(R.string.iamutkarshtiwari_github_io_ananas_save_error), Toast.LENGTH_SHORT).show();
                         });
         compositeDisposable.add(applyTextDisposable);
     }

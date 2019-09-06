@@ -57,7 +57,7 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
 
         smoothValueBar = mainView.findViewById(R.id.smooth_value_bar);
         whiteValueBar = mainView.findViewById(R.id.white_skin_value_bar);
-        dialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
+        dialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
         return mainView;
     }

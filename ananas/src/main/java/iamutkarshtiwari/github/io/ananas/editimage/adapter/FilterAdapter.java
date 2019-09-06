@@ -23,8 +23,8 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         super();
         this.filterListFragment = fragment;
         this.context = context;
-        filters = filterListFragment.getResources().getStringArray(R.array.filters);
-        filterImages = filterListFragment.getResources().getStringArray(R.array.filter_drawable_list);
+        filters = filterListFragment.getResources().getStringArray(R.array.iamutkarshtiwari_github_io_ananas_filters);
+        filterImages = filterListFragment.getResources().getStringArray(R.array.iamutkarshtiwari_github_io_ananas_filter_drawable_list);
     }
 
     @Override

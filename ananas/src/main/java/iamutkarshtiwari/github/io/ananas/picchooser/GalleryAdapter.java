@@ -56,7 +56,7 @@ class GalleryAdapter extends BaseAdapter {
             }
             BucketItem bi = (BucketItem) items.get(position);
             holder.text.setText(bi.images > 1 ?
-                    bi.name + " - " + context.getString(R.string.images, bi.images) :
+                    bi.name + " - " + context.getString(R.string.iamutkarshtiwari_github_io_ananas_images, bi.images) :
                     bi.name);
 
             Glide.with(context)

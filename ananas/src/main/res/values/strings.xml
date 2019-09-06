@@ -1,40 +1,40 @@
 <resources>
-    <string name="library_name">Photo Editor</string>
-    <string name="no_images">No image found</string>
-    <string name="images">%d images</string>
-    <string name="done">DONE</string>
-    <string name="apply">APPLY</string>
+    <string name="iamutkarshtiwari_github_io_ananas_library_name">Photo Editor</string>
+    <string name="iamutkarshtiwari_github_io_ananas_no_images">No image found</string>
+    <string name="iamutkarshtiwari_github_io_ananas_images">%d images</string>
+    <string name="iamutkarshtiwari_github_io_ananas_done">DONE</string>
+    <string name="iamutkarshtiwari_github_io_ananas_apply">APPLY</string>
 
-    <string name="stickers">Stickers</string>
-    <string name="filter">Filters</string>
-    <string name="crop">Crop</string>
-    <string name="rotate">Rotate</string>
-    <string name="text">Text</string>
-    <string name="edit">Edit</string>
-    <string name="brightness">Brightness</string>
+    <string name="iamutkarshtiwari_github_io_ananas_stickers">Stickers</string>
+    <string name="iamutkarshtiwari_github_io_ananas_filter">Filters</string>
+    <string name="iamutkarshtiwari_github_io_ananas_crop">Crop</string>
+    <string name="iamutkarshtiwari_github_io_ananas_rotate">Rotate</string>
+    <string name="iamutkarshtiwari_github_io_ananas_text">Text</string>
+    <string name="iamutkarshtiwari_github_io_ananas_edit">Edit</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brightness">Brightness</string>
     <string name="saturation">Saturation</string>
 
     <string name="materialcolorpicker__errHex">Hex Code Format incorrect</string>
     <string name="materialcolorpicker__btnSelectColor">Select</string>
-    <string name="saving_image">Saving…</string>
-    <string name="input_hint">Input Text …</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saving_image">Saving…</string>
+    <string name="iamutkarshtiwari_github_io_ananas_input_hint">Input Text …</string>
 
-    <string name="not_selected">Please choose an image for edit</string>
-    <string name="auto_newline">AutoNewline</string>
-    <string name="save_error">Save error!</string>
-    <string name="load_error">Failed to load the image!</string>
-    <string name="loading">Loading…</string>
-    <string name="pick_a_color">Pick a color</string>
+    <string name="iamutkarshtiwari_github_io_ananas_not_selected">Please choose an image for edit</string>
+    <string name="iamutkarshtiwari_github_io_ananas_auto_newline">AutoNewline</string>
+    <string name="iamutkarshtiwari_github_io_ananas_save_error">Save error!</string>
+    <string name="iamutkarshtiwari_github_io_ananas_load_error">Failed to load the image!</string>
+    <string name="iamutkarshtiwari_github_io_ananas_loading">Loading…</string>
+    <string name="iamutkarshtiwari_github_io_ananas_pick_a_color">Pick a color</string>
 
-    <string name="free_size">FREE</string>
-    <string name="fit_image">ORIGINAL</string>
-    <string name="square">SQUARE</string>
-    <string name="ratio3_4">3:4</string>
-    <string name="ratio4_3">4:3</string>
-    <string name="ratio9_16">9:16</string>
-    <string name="ratio16_9">16:9</string>
+    <string name="iamutkarshtiwari_github_io_ananas_free_size">FREE</string>
+    <string name="iamutkarshtiwari_github_io_ananas_fit_image">ORIGINAL</string>
+    <string name="iamutkarshtiwari_github_io_ananas_square">SQUARE</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio3_4">3:4</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio4_3">4:3</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio9_16">9:16</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio16_9">16:9</string>
 
-    <string-array name="filters">
+    <string-array name="iamutkarshtiwari_github_io_ananas_filters">
         <item>Origin</item>
         <item>Soft</item>
         <item>Black</item>
@@ -49,7 +49,7 @@
         <item>Shine</item>
     </string-array>
 
-    <string-array translatable="false" name="filter_drawable_list">
+    <string-array translatable="false" name="iamutkarshtiwari_github_io_ananas_filter_drawable_list">
         <item>filter_1</item>
         <item>filter_2</item>
         <item>filter_3</item>
@@ -64,7 +64,7 @@
         <item>filter_12</item>
     </string-array>
 
-    <string-array translatable="false" name="types">
+    <string-array translatable="false" name="iamutkarshtiwari_github_io_ananas_types">
         <item>type1</item>
         <item>type2</item>
         <item>type3</item>
@@ -73,7 +73,7 @@
         <item>type6</item>
     </string-array>
 
-    <string-array name="type_names">
+    <string-array name="iamutkarshtiwari_github_io_ananas_type_names">
         <item>Type 1</item>
         <item>Type 2</item>
         <item>Type 3</item>
@@ -82,7 +82,7 @@
         <item>Type 6</item>
     </string-array>
 
-    <integer-array translatable="false" name="type_count">
+    <integer-array translatable="false" name="iamutkarshtiwari_github_io_ananas_type_count">
         <item>5</item>
         <item>5</item>
         <item>5</item>
@@ -91,15 +91,15 @@
         <item>5</item>
     </integer-array>
 
-    <string name="more">More</string>
-    <string name="exit_without_save">The edited image is not saved. Do you want to exit? </string>
-    <string name="confirm">Confirm</string>
-    <string name="cancel">Cancel</string>
+    <string name="iamutkarshtiwari_github_io_ananas_more">More</string>
+    <string name="iamutkarshtiwari_github_io_ananas_exit_without_save">The edited image is not saved. Do you want to exit? </string>
+    <string name="iamutkarshtiwari_github_io_ananas_confirm">Confirm</string>
+    <string name="iamutkarshtiwari_github_io_ananas_cancel">Cancel</string>
 
-    <string name="beauty">Beauty</string>
-    <string name="smooth">Smoothness</string>
-    <string name="white_skin">Skin Tone</string>
+    <string name="iamutkarshtiwari_github_io_ananas_beauty">Beauty</string>
+    <string name="iamutkarshtiwari_github_io_ananas_smooth">Smoothness</string>
+    <string name="iamutkarshtiwari_github_io_ananas_white_skin">Skin Tone</string>
 
-    <item type="id" translatable="false" name="TAG_STICKERS_PATH" />
-    <item type="id" translatable="false" name="TAG_STICKERS_COUNT" />
+    <item type="id" translatable="false" name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH" />
+    <item type="id" translatable="false" name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT" />
 </resources>

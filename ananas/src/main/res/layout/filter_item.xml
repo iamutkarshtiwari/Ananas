@@ -19,7 +19,7 @@
         android:layout_below="@id/filter_image"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:text="@string/edit"
+        android:text="@string/iamutkarshtiwari_github_io_ananas_edit"
         android:textColor="@color/text_color"
         android:textSize="@dimen/image_edit_text_size"
         tool:text="Text" />

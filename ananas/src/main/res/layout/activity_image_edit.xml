@@ -26,7 +26,7 @@
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/back_btn"
             android:gravity="center"
-            android:text="@string/library_name"
+            android:text="@string/iamutkarshtiwari_github_io_ananas_library_name"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:gravity="center"
-                android:text="@string/done"
+                android:text="@string/iamutkarshtiwari_github_io_ananas_done"
                 android:textAllCaps="true"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:gravity="center"
-                android:text="@string/apply"
+                android:text="@string/iamutkarshtiwari_github_io_ananas_apply"
                 android:textAllCaps="true"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />

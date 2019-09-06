@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/smooth"
+                android:text="@string/iamutkarshtiwari_github_io_ananas_smooth"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
@@ -51,7 +51,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/white_skin"
+                android:text="@string/iamutkarshtiwari_github_io_ananas_white_skin"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
