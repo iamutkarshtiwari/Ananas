@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 # Released
+
+## [1.1.2]
+### Changes
+- Migrated to AndroidX
+- Fixed crop slider stroke
+- Added toast message to MainActivity
+- Replace UniversalImageLoader with Glide
+- Improved CropFragment with Cropper library
+- Fix sticker scale bug
+
 ## [1.1.1]
 ### Bugfix
 - Fixed memory leaks from AsyncTask by replacing with RxJava
