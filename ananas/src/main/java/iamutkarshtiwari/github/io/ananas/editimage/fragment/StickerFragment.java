@@ -61,7 +61,7 @@ public class StickerFragment extends BaseEditFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         mainView = inflater.inflate(R.layout.fragment_edit_image_sticker_type,
                 null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.saving_image,
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_saving_image,
                 false);
         return mainView;
     }
@@ -165,7 +165,7 @@ public class StickerFragment extends BaseEditFragment {
                     activity.changeMainBitmap(bitmap, true);
                     backToMain();
                 }, e -> {
-                    Toast.makeText(getActivity(), R.string.save_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
                 });
 
         compositeDisposable.add(saveStickerDisposable);

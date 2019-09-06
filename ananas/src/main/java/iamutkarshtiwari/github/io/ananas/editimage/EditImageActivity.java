@@ -119,7 +119,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
-            Toast.makeText(activity, R.string.not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
         activity.startActivityForResult(intent, requestCode);
@@ -157,7 +157,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     private void initView() {
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.loading,
+        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
@@ -292,8 +292,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     onSaveTaskDone();
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                    alertDialogBuilder.setMessage(R.string.exit_without_save)
-                            .setCancelable(false).setPositiveButton(R.string.confirm, (dialog, id) -> finish()).setNegativeButton(R.string.cancel, (dialog, id) -> dialog.cancel());
+                    alertDialogBuilder.setMessage(R.string.iamutkarshtiwari_github_io_ananas_exit_without_save)
+                            .setCancelable(false).setPositiveButton(R.string.iamutkarshtiwari_github_io_ananas_confirm, (dialog, id) -> finish()).setNegativeButton(R.string.iamutkarshtiwari_github_io_ananas_cancel, (dialog, id) -> dialog.cancel());
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
@@ -347,9 +347,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                         resetOpTimes();
                         onSaveTaskDone();
                     } else {
-                        showToast(R.string.save_error);
+                        showToast(R.string.iamutkarshtiwari_github_io_ananas_save_error);
                     }
-                }, e -> showToast(R.string.save_error));
+                }, e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_save_error));
 
         compositeDisposable.add(saveImageDisposable);
     }
@@ -371,7 +371,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> loadingDialog.show())
                 .doFinally(() -> loadingDialog.dismiss())
-                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.load_error));
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
 
         compositeDisposable.add(loadImageDisposable);
     }

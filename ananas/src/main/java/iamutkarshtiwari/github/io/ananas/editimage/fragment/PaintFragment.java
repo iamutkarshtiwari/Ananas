@@ -84,7 +84,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
         customPaintView = ensureEditActivity().findViewById(R.id.custom_paint_view);
         backToMenu = mainView.findViewById(R.id.back_to_main);

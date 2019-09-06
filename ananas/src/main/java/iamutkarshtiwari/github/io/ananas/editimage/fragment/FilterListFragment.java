@@ -48,7 +48,7 @@ public class FilterListFragment extends BaseEditFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_fliter, null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.loading,
+        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
         return mainView;
     }
@@ -152,7 +152,7 @@ public class FilterListFragment extends BaseEditFragment {
     }
 
     private void showSaveErrorToast() {
-        Toast.makeText(getActivity(), R.string.save_error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
     }
 
     private Single<Bitmap> applyFilter(int filterIndex) {
