@@ -84,13 +84,6 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.StickerView
-            android:id="@+id/sticker_panel"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-
         <iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView
             android:id="@+id/rotate_panel"
             android:layout_width="fill_parent"
@@ -128,6 +121,13 @@
 
         <iamutkarshtiwari.github.io.ananas.editimage.view.SaturationView
             android:id="@+id/contrast_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <iamutkarshtiwari.github.io.ananas.editimage.view.StickerView
+            android:id="@+id/sticker_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
