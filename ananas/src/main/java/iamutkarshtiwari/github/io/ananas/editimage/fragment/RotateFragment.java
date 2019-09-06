@@ -10,8 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.ImageView;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -26,14 +25,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class RotateFragment extends BaseEditFragment {
+public class RotateFragment extends BaseEditFragment implements OnClickListener {
     public static final int INDEX = ModuleConfig.INDEX_ROTATE;
-    public static final int MIN_ROTATION_DEGREE = 0;
-    public static final int MAX_ROTATION_DEGREE = 360;
     public static final String TAG = RotateFragment.class.getName();
 
+    private static final int RIGHT_ANGLE = 90;
+
     private View mainView;
-    private SeekBar seekBar;
     private RotateImageView rotatePanel;
     private Dialog loadingDialog;
 
@@ -61,13 +59,18 @@ public class RotateFragment extends BaseEditFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
-        seekBar = mainView.findViewById(R.id.rotate_bar);
-        seekBar.setProgress(MIN_ROTATION_DEGREE);
-
         this.rotatePanel = ensureEditActivity().rotatePanel;
+        setClickListeners();
+    }
+
+    private void setClickListeners() {
+        View backToMenu = mainView.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
-        seekBar.setOnSeekBarChangeListener(new RotateAngleChange());
+
+        ImageView rotateLeft = mainView.findViewById(R.id.rotate_left);
+        ImageView rotateRight = mainView.findViewById(R.id.rotate_right);
+        rotateLeft.setOnClickListener(this);
+        rotateRight.setOnClickListener(this);
     }
 
     @Override
@@ -79,7 +82,7 @@ public class RotateFragment extends BaseEditFragment {
 
         activity.rotatePanel.addBit(activity.getMainBit(),
                 activity.mainImage.getBitmapRect());
-        activity.rotateFragment.seekBar.setProgress(MIN_ROTATION_DEGREE);
+
         activity.rotatePanel.reset();
         activity.rotatePanel.setVisibility(View.VISIBLE);
         activity.bannerFlipper.showNext();
@@ -113,8 +116,20 @@ public class RotateFragment extends BaseEditFragment {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.rotate_left) {
+            int updatedAngle = rotatePanel.getRotateAngle() - RIGHT_ANGLE;
+            rotatePanel.rotateImage(updatedAngle);
+        } else if (id == R.id.rotate_right) {
+            int updatedAngle = rotatePanel.getRotateAngle() + RIGHT_ANGLE;
+            rotatePanel.rotateImage(updatedAngle);
+        }
+    }
+
     public void applyRotateImage() {
-        if (seekBar.getProgress() == MIN_ROTATION_DEGREE || seekBar.getProgress() == MAX_ROTATION_DEGREE) {
+        if (rotatePanel.getRotateAngle() == 0 || (rotatePanel.getRotateAngle() % 360) == 0) {
             backToMain();
         } else {
             compositeDisposable.clear();
@@ -133,22 +148,6 @@ public class RotateFragment extends BaseEditFragment {
                     });
 
             compositeDisposable.add(applyRotationDisposable);
-        }
-    }
-
-    private final class RotateAngleChange implements OnSeekBarChangeListener {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int angle,
-                                      boolean fromUser) {
-            rotatePanel.rotateImage(angle);
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
         }
     }
 

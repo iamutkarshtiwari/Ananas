@@ -15,4 +15,14 @@
     <dimen name="elevation_2dp">2dp</dimen>
     <dimen name="text_sticker_size">14sp</dimen>
     <dimen name="delete_icon_size">20dp</dimen>
+    <dimen name="rotate_icon_size">45dp</dimen>
+
+    <!--Spacing-->
+    <dimen name="spacing_xxsmall">2dp</dimen>
+    <dimen name="spacing_xsmall">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_xlarge">32dp</dimen>
+    <dimen name="spacing_xxlarge">64dp</dimen>
 </resources>
