@@ -23,6 +23,32 @@ An easy photo editor integration for your Android apps.
 - Plug and play
 - Easy image editing
 
+<br>
+
+## Previews
+
+Main Menu | Text Mode
+:--: | :--:
+<img src="/static/main_menu.gif" width="300" /> | <img src="/static/text_mode.gif" width="300" />
+
+Rotate Mode | Crop Mode
+:--: | :--:
+<img src="/static/rotate_mode.gif" width="300" /> | <img src="/static/crop_feature.gif" width="300" />
+
+Filter Mode |  Paint Mode
+:--: | :--:
+<img src="/static/filter_mode.gif" width="300" /> | <img src="/static/paint_mode.gif" width="300" />
+
+Beauty Mode | Saturation Mode
+:--: | :--:
+<img src="/static/beauty_mode.gif" width="300" /> | <img src="/static/saturation_mode.gif" width="300" />
+
+Brightness Mode | Sticker Mode
+:--: | :--:
+<img src="/static/brightness_mode.gif" width="300" /> | <img src="/static/sticker_mode.gif" width="300" />
+
+<br>
+
 ## Getting Started
 Add it in your root build.gradle at the end of repositories:
 ```
