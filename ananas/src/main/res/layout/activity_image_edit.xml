@@ -157,13 +157,13 @@
             android:layout_width="40dp"
             android:layout_height="35dp"
             android:layout_marginRight="5dp"
-            android:src="@drawable/undo" />
+            android:src="@drawable/ic_undo_black_24dp" />
 
         <ImageView
             android:id="@+id/redo_btn"
             android:layout_width="40dp"
             android:layout_height="35dp"
-            android:src="@drawable/redo" />
+            android:src="@drawable/ic_redo_black_24dp" />
     </LinearLayout>
 
 </RelativeLayout>
