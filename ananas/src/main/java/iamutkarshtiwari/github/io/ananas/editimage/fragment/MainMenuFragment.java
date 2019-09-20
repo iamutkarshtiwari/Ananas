@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 
 
 public class MainMenuFragment extends BaseEditFragment implements View.OnClickListener {
