@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -82,7 +83,6 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         backToMenu.setOnClickListener(this);
 
         setClickListeners();
-        updateEraserView();
         initStroke();
     }
 
@@ -133,11 +133,8 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
 
     private void toggleEraserView() {
         isEraser = !isEraser;
-        updateEraserView();
-    }
-
-    private void updateEraserView() {
         customPaintView.setEraser(isEraser);
+        ((ImageView) eraserView.findViewById(R.id.eraser_icon)).setImageResource(isEraser ? R.drawable.ic_eraser_enabled : R.drawable.ic_eraser_disabled);
     }
 
     public void savePaintImage() {

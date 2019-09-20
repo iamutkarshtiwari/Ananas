@@ -36,9 +36,10 @@
             style="@style/option_style">
 
             <ImageView
+                android:id="@+id/eraser_icon"
                 style="@style/icon_style"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_eraser_1" />
+                android:src="@drawable/ic_eraser_disabled" />
 
             <TextView
                 style="@style/option_text_style"
