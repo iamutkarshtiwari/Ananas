@@ -89,6 +89,10 @@ public class CustomPaintView extends View {
         this.mPaint.setStrokeWidth(width);
     }
 
+    public void setStrokeAlpha(float alpha) {
+        this.mPaint.setAlpha((int) alpha);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

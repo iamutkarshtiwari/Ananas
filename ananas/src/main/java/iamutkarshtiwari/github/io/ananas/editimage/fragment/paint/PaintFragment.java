@@ -1,71 +1,55 @@
-package iamutkarshtiwari.github.io.ananas.editimage.fragment;
+package iamutkarshtiwari.github.io.ananas.editimage.fragment.paint;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.SeekBar;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
-import iamutkarshtiwari.github.io.ananas.editimage.adapter.ColorListAdapter;
-import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnColorSelected;
-import iamutkarshtiwari.github.io.ananas.editimage.ui.ColorPicker;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.BaseEditFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.MainMenuFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
-import iamutkarshtiwari.github.io.ananas.editimage.view.PaintModeView;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class PaintFragment extends BaseEditFragment implements View.OnClickListener, OnColorSelected {
+public class PaintFragment extends BaseEditFragment implements View.OnClickListener, BrushConfigDialog.Properties {
+
     public static final int INDEX = ModuleConfig.INDEX_PAINT;
     public static final String TAG = PaintFragment.class.getName();
 
+    private static final float MAX_PERCENT = 100;
+    private static final float MAX_ALPHA = 255;
+
     private View mainView;
 
-    public final int[] paintColors = {
-            Color.BLACK,
-            Color.DKGRAY,
-            Color.GRAY,
-            Color.LTGRAY,
-            Color.WHITE,
-            Color.RED,
-            Color.GREEN,
-            Color.BLUE,
-            Color.YELLOW,
-            Color.CYAN,
-            Color.MAGENTA
-    };
-    public boolean isEraser = false;
+    private boolean isEraser = false;
 
     private View backToMenu;
-    private View popView;
-    private PaintModeView paintModeView;
-    private RecyclerView colorListView;
     private CustomPaintView customPaintView;
-    private PopupWindow setStrokeWidthWindow;
-    private ColorPicker colorPicker;
-    private ImageView eraserView;
-    private SeekBar strokeWidthSeekBar;
+    private LinearLayout eraserView;
+    private LinearLayout brushView;
+
+    private BrushConfigDialog brushConfigDialog;
     private Dialog loadingDialog;
+
+    private float brushSize = MAX_PERCENT;
+    private float brushAlpha = MAX_ALPHA;
+    private int brushColor = Color.WHITE;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -88,41 +72,39 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
                 false);
         customPaintView = ensureEditActivity().findViewById(R.id.custom_paint_view);
         backToMenu = mainView.findViewById(R.id.back_to_main);
-        paintModeView = mainView.findViewById(R.id.paint_thumb);
-        colorListView = mainView.findViewById(R.id.paint_color_list);
-        eraserView = mainView.findViewById(R.id.paint_eraser);
+        eraserView = mainView.findViewById(R.id.eraser_btn);
+        brushView = mainView.findViewById(R.id.brush_btn);
+
+        brushConfigDialog = new BrushConfigDialog();
+
+        brushConfigDialog.setPropertiesChangeListener(this);
 
         backToMenu.setOnClickListener(this);
 
-        colorPicker = new ColorPicker(getActivity(), 255, 0, 0);
-        initColorListView();
-        paintModeView.setOnClickListener(this);
-
-        initStrokeWidthPopWindow();
-
-        eraserView.setOnClickListener(this);
+        setClickListeners();
         updateEraserView();
+        initStroke();
     }
 
-    private void initColorListView() {
-        colorListView.setHasFixedSize(false);
+    private void setClickListeners() {
+        brushView.setOnClickListener(this);
+        eraserView.setOnClickListener(this);
+    }
 
-        LinearLayoutManager stickerListLayoutManager = new LinearLayoutManager(activity);
-        stickerListLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
-        colorListView.setLayoutManager(stickerListLayoutManager);
-        ColorListAdapter colorListAdapter = new ColorListAdapter(paintColors, this);
-        colorListView.setAdapter(colorListAdapter);
+    private void initStroke() {
+        customPaintView.setWidth(MAX_PERCENT);
+        customPaintView.setColor(Color.WHITE);
+        customPaintView.setStrokeAlpha(MAX_ALPHA);
     }
 
     @Override
     public void onClick(View view) {
         if (view == backToMenu) {
             backToMain();
-        } else if (view == paintModeView) {
-            setStokeWidth();
         } else if (view == eraserView) {
             toggleEraserView();
+        } else if (view == brushView) {
+            brushConfigDialog.show(requireFragmentManager(), brushConfigDialog.getTag());
         }
     }
 
@@ -149,93 +131,12 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         customPaintView.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onColorSelected(int position, int color) {
-        setPaintColor(color);
-    }
-
-    @Override
-    public void onMoreSelected(int position) {
-        colorPicker.show();
-        Button okColor = colorPicker.findViewById(R.id.okColorButton);
-        okColor.setOnClickListener(v -> {
-            setPaintColor(colorPicker.getColor());
-            colorPicker.dismiss();
-        });
-    }
-
-    protected void setPaintColor(final int paintColor) {
-        paintModeView.setPaintStrokeColor(paintColor);
-
-        updatePaintView();
-    }
-
-    private void updatePaintView() {
-        isEraser = false;
-        updateEraserView();
-
-        customPaintView.setColor(paintModeView.getStokenColor());
-        customPaintView.setWidth(paintModeView.getStokenWidth());
-    }
-
-    protected void setStokeWidth() {
-        if (popView.getMeasuredHeight() == 0) {
-            popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        }
-
-        strokeWidthSeekBar.setMax(paintModeView.getMeasuredHeight());
-        strokeWidthSeekBar.setProgress((int) paintModeView.getStokenWidth());
-        strokeWidthSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                paintModeView.setPaintStrokeWidth(progress);
-                updatePaintView();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
-        int[] locations = new int[2];
-        activity.bottomGallery.getLocationOnScreen(locations);
-        setStrokeWidthWindow.showAtLocation(activity.bottomGallery,
-                Gravity.NO_GRAVITY, 0, locations[1] - popView.getMeasuredHeight());
-    }
-
-    private void initStrokeWidthPopWindow() {
-        popView = LayoutInflater.from(activity).
-                inflate(R.layout.view_set_stoke_width, null);
-        setStrokeWidthWindow = new PopupWindow(
-                popView,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-
-        strokeWidthSeekBar = popView.findViewById(R.id.stoke_width_seekbar);
-
-        setStrokeWidthWindow.setFocusable(true);
-        setStrokeWidthWindow.setOutsideTouchable(true);
-        setStrokeWidthWindow.setBackgroundDrawable(new BitmapDrawable());
-        setStrokeWidthWindow.setAnimationStyle(R.style.popwin_anim_style);
-
-        paintModeView.setPaintStrokeColor(Color.WHITE);
-        paintModeView.setPaintStrokeWidth(20);
-
-        updatePaintView();
-    }
-
     private void toggleEraserView() {
         isEraser = !isEraser;
         updateEraserView();
     }
 
     private void updateEraserView() {
-        eraserView.setImageResource(isEraser ? R.drawable.eraser_seleced : R.drawable.eraser_normal);
         customPaintView.setEraser(isEraser);
     }
 
@@ -310,5 +211,29 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
             canvas.drawBitmap(customPaintView.getPaintBit(), 0, 0, null);
         }
         canvas.restore();
+    }
+
+    @Override
+    public void onColorChanged(int colorCode) {
+        brushColor = colorCode;
+        updateBrushParams();
+    }
+
+    @Override
+    public void onOpacityChanged(int opacity) {
+        brushAlpha = (opacity / MAX_PERCENT) * MAX_ALPHA;
+        updateBrushParams();
+    }
+
+    @Override
+    public void onBrushSizeChanged(int brushSize) {
+        this.brushSize = brushSize;
+        updateBrushParams();
+    }
+
+    private void updateBrushParams() {
+        customPaintView.setColor(brushColor);
+        customPaintView.setWidth(brushSize);
+        customPaintView.setStrokeAlpha(brushAlpha);
     }
 }

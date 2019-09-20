@@ -102,4 +102,6 @@
 
     <item type="id" translatable="false" name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH" />
     <item type="id" translatable="false" name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT" />
+    <string name="iamutkarshtiwari_github_io_ananas_eraser">消しゴム</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brush">絵筆</string>
 </resources>
