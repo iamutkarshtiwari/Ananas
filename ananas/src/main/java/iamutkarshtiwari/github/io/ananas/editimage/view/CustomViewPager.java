@@ -5,11 +5,18 @@ import android.util.AttributeSet;
 
 import androidx.viewpager.widget.ViewPager;
 
+import iamutkarshtiwari.github.io.ananas.editimage.utils.GestureNavigationBounds;
+
 public class CustomViewPager extends ViewPager {
     private boolean isCanScroll = false;
 
     public CustomViewPager(Context context) {
         super(context);
+    }
+
+    public CustomViewPager(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        new GestureNavigationBounds(this);
     }
 
     @Override
@@ -22,10 +29,6 @@ public class CustomViewPager extends ViewPager {
     @Override
     public void setCurrentItem(int item) {
         setCurrentItem(item, false);
-    }
-
-    public CustomViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
     }
 
     public void setScanScroll(boolean isCanScroll) {
