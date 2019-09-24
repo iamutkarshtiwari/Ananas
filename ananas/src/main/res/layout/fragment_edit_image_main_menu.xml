@@ -192,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/saturation"
+                    android:text="@string/iamutkarshtiwari_github_io_ananas_saturation"
                     android:textColor="@color/text_color"
                     android:textSize="@dimen/image_edit_text_size"
                     tool:text="Text" />

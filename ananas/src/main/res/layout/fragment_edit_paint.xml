@@ -22,6 +22,7 @@
             style="@style/option_style">
 
             <ImageView
+                android:id="@+id/brush_icon"
                 style="@style/icon_style"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_brush_white_24dp" />
