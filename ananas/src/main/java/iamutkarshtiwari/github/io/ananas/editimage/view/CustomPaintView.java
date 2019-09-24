@@ -8,10 +8,11 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.RequiresApi;
 
 public class CustomPaintView extends View {
     private Paint mPaint;
@@ -22,7 +23,7 @@ public class CustomPaintView extends View {
 
     private float last_x;
     private float last_y;
-    private boolean eraser;
+    private boolean isEraser;
 
     private int mColor;
 
@@ -89,6 +90,10 @@ public class CustomPaintView extends View {
         this.mPaint.setStrokeWidth(width);
     }
 
+    public void setStrokeAlpha(float alpha) {
+        this.mPaint.setAlpha((int) alpha);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -111,7 +116,7 @@ public class CustomPaintView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 ret = true;
-                mPaintCanvas.drawLine(last_x, last_y, x, y, eraser ? mEraserPaint : mPaint);
+                mPaintCanvas.drawLine(last_x, last_y, x, y, isEraser ? mEraserPaint : mPaint);
                 last_x = x;
                 last_y = y;
                 this.postInvalidate();
@@ -133,8 +138,12 @@ public class CustomPaintView extends View {
     }
 
     public void setEraser(boolean eraser) {
-        this.eraser = eraser;
+        this.isEraser = eraser;
         mPaint.setColor(eraser ? Color.TRANSPARENT : mColor);
+    }
+
+    public void setEraserStrokeWidth(float width) {
+        mEraserPaint.setStrokeWidth(width);
     }
 
     public Bitmap getPaintBit() {
