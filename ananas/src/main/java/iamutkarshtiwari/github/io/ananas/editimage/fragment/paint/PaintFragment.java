@@ -37,6 +37,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
 
     private static final float MAX_PERCENT = 100;
     private static final float MAX_ALPHA = 255;
+    private static final float INITIAL_WIDTH = 50;
 
     private View mainView;
 
@@ -102,9 +103,10 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     }
 
     private void initStroke() {
-        customPaintView.setWidth(MAX_PERCENT);
+        customPaintView.setWidth(INITIAL_WIDTH);
         customPaintView.setColor(Color.WHITE);
         customPaintView.setStrokeAlpha(MAX_ALPHA);
+        customPaintView.setEraserStrokeWidth(INITIAL_WIDTH);
     }
 
     @Override

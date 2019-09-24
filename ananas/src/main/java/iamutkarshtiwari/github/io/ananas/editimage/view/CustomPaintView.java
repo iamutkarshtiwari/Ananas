@@ -23,7 +23,7 @@ public class CustomPaintView extends View {
 
     private float last_x;
     private float last_y;
-    private boolean eraser;
+    private boolean isEraser;
 
     private int mColor;
 
@@ -116,7 +116,7 @@ public class CustomPaintView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 ret = true;
-                mPaintCanvas.drawLine(last_x, last_y, x, y, eraser ? mEraserPaint : mPaint);
+                mPaintCanvas.drawLine(last_x, last_y, x, y, isEraser ? mEraserPaint : mPaint);
                 last_x = x;
                 last_y = y;
                 this.postInvalidate();
@@ -138,7 +138,8 @@ public class CustomPaintView extends View {
     }
 
     public void setEraser(boolean eraser) {
-        this.eraser = eraser;
+        this.isEraser = eraser;
+        mPaint.setColor(eraser ? Color.TRANSPARENT : mColor);
     }
 
     public void setEraserStrokeWidth(float width) {
