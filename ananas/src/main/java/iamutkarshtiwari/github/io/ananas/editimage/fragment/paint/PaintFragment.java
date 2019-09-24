@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -118,12 +120,17 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
                 toggleButtons();
             }
         } else if (view.getId() == R.id.settings) {
-            if (isEraser) {
-                eraserConfigDialog.show(requireFragmentManager(), eraserConfigDialog.getTag());
-            } else {
-                brushConfigDialog.show(requireFragmentManager(), brushConfigDialog.getTag());
-            }
+            showDialog(isEraser ? eraserConfigDialog : brushConfigDialog);
         }
+    }
+
+    private void showDialog(BottomSheetDialogFragment dialogFragment) {
+        String tag = dialogFragment.getTag();
+
+        // Avoid IllegalStateException "Fragment already added"
+        if (dialogFragment.isAdded()) return;
+
+        dialogFragment.show(requireFragmentManager(), tag);
     }
 
     @Override
@@ -243,17 +250,21 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
-//        if (isEraser) {
-//
-//        } else {
         this.brushSize = brushSize;
-        updateBrushParams();
-//        }
+        if (isEraser) {
+            updateEraserSize();
+        } else {
+            updateBrushParams();
+        }
     }
 
     private void updateBrushParams() {
         customPaintView.setColor(brushColor);
         customPaintView.setWidth(brushSize);
         customPaintView.setStrokeAlpha(brushAlpha);
+    }
+
+    private void updateEraserSize() {
+        customPaintView.setWidth(brushSize);
     }
 }
