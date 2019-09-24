@@ -28,5 +28,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${androidx_version}"
     implementation "io.reactivex.rxjava2:rxjava:${rxjava_version}"
     implementation "io.reactivex.rxjava2:rxandroid:${rxandroid_version}"
+    implementation "androidx.core:core-ktx:${core_ktx_version}"
     implementation project(':ananas')
 }
