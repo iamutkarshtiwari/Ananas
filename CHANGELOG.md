@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 # Released
 
+## [1.2.0]
+### Enhancement 
+- Improved Paint feature UI
+- Fixed bug to reset on back to main options in Saturation, Brightness and Sticker Fragment
+- Improve Sticker feature UI
+- Updated Beauty feature seekbar hex.
+
 ## [1.1.3]
 ### Changes
 - Simplified rotate feature UX
