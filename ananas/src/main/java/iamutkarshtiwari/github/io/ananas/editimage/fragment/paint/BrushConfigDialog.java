@@ -40,7 +40,7 @@ public class BrushConfigDialog extends BottomSheetDialogFragment implements Seek
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_paint_feature, container, false);
+        return inflater.inflate(R.layout.fragment_brush_config, container, false);
     }
 
     @Override
