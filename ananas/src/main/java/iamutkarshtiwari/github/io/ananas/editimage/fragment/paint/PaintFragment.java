@@ -52,7 +52,8 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     private EraserConfigDialog eraserConfigDialog;
     private Dialog loadingDialog;
 
-    private float brushSize = MAX_PERCENT;
+    private float brushSize = INITIAL_WIDTH;
+    private float eraserSize = INITIAL_WIDTH;
     private float brushAlpha = MAX_ALPHA;
     private int brushColor = Color.WHITE;
 
@@ -133,6 +134,12 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         if (dialogFragment.isAdded()) return;
 
         dialogFragment.show(requireFragmentManager(), tag);
+
+        if (isEraser) {
+            updateEraserSize();
+        } else {
+            updateBrushParams();
+        }
     }
 
     @Override
@@ -253,10 +260,11 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
-        this.brushSize = brushSize;
         if (isEraser) {
+            this.eraserSize = brushSize;
             updateEraserSize();
         } else {
+            this.brushSize = brushSize;
             updateBrushParams();
         }
     }
@@ -268,6 +276,6 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     }
 
     private void updateEraserSize() {
-        customPaintView.setEraserStrokeWidth(brushSize);
+        customPaintView.setEraserStrokeWidth(eraserSize);
     }
 }
