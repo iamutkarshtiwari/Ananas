@@ -51,11 +51,10 @@
 
     <ImageView
         android:id="@+id/settings"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        style="@style/setting_icon_style"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/spacing_small"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/ic_settings_black_24dp" />
 
 </RelativeLayout>
