@@ -102,8 +102,13 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         if (view == backToMenu) {
             backToMain();
         } else if (view == eraserView) {
-            toggleEraserView();
+            if (!isEraser) {
+                toggleButtons();
+            }
         } else if (view == brushView) {
+            if (isEraser) {
+                toggleButtons();
+            }
             brushConfigDialog.show(requireFragmentManager(), brushConfigDialog.getTag());
         }
     }
@@ -131,10 +136,11 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         customPaintView.setVisibility(View.VISIBLE);
     }
 
-    private void toggleEraserView() {
+    private void toggleButtons() {
         isEraser = !isEraser;
         customPaintView.setEraser(isEraser);
         ((ImageView) eraserView.findViewById(R.id.eraser_icon)).setImageResource(isEraser ? R.drawable.ic_eraser_enabled : R.drawable.ic_eraser_disabled);
+        ((ImageView) brushView.findViewById(R.id.brush_icon)).setImageResource(isEraser ? R.drawable.ic_brush_grey_24dp : R.drawable.ic_brush_white_24dp);
     }
 
     public void savePaintImage() {

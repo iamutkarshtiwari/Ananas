@@ -14,7 +14,9 @@
     <string name="iamutkarshtiwari_github_io_ananas_eraser">Eraser</string>
     <string name="iamutkarshtiwari_github_io_ananas_edit">Edit</string>
     <string name="iamutkarshtiwari_github_io_ananas_brightness">Brightness</string>
-    <string name="saturation">Saturation</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saturation">Saturation</string>
+    <string name="iamutkarshtiwari_github_io_ananas_size">Size</string>
+    <string name="iamutkarshtiwari_github_io_ananas_opacity">Opacity</string>
 
     <string name="materialcolorpicker__errHex">Hex Code Format incorrect</string>
     <string name="materialcolorpicker__btnSelectColor">Select</string>

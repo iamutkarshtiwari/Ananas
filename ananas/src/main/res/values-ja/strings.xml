@@ -12,7 +12,9 @@
     <string name="iamutkarshtiwari_github_io_ananas_text">本文</string>
     <string name="iamutkarshtiwari_github_io_ananas_edit">編集</string>
     <string name="iamutkarshtiwari_github_io_ananas_brightness">輝度</string>
-    <string name="saturation">飽和</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saturation">飽和</string>
+    <string name="iamutkarshtiwari_github_io_ananas_size">寸法</string>
+    <string name="iamutkarshtiwari_github_io_ananas_opacity">不透明度</string>
 
     <string name="materialcolorpicker__errHex">16進コード形式が正しくない</string>
     <string name="materialcolorpicker__btnSelectColor">選び出す</string>
