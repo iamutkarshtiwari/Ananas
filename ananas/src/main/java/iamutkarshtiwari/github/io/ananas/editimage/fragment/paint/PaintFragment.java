@@ -147,6 +147,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         activity.mainImage.setVisibility(View.VISIBLE);
         activity.bannerFlipper.showPrevious();
 
+        customPaintView.reset();
         customPaintView.setVisibility(View.GONE);
     }
 
