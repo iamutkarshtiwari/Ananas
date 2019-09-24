@@ -28,7 +28,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class PaintFragment extends BaseEditFragment implements View.OnClickListener, BrushConfigDialog.Properties {
+public class PaintFragment extends BaseEditFragment implements View.OnClickListener, BrushConfigDialog.Properties, EraserConfigDialog.Properties {
 
     public static final int INDEX = ModuleConfig.INDEX_PAINT;
     public static final String TAG = PaintFragment.class.getName();
@@ -46,6 +46,7 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     private LinearLayout brushView;
 
     private BrushConfigDialog brushConfigDialog;
+    private EraserConfigDialog eraserConfigDialog;
     private Dialog loadingDialog;
 
     private float brushSize = MAX_PERCENT;
@@ -75,15 +76,22 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         backToMenu = mainView.findViewById(R.id.back_to_main);
         eraserView = mainView.findViewById(R.id.eraser_btn);
         brushView = mainView.findViewById(R.id.brush_btn);
+        mainView.findViewById(R.id.settings).setOnClickListener(this);
 
-        brushConfigDialog = new BrushConfigDialog();
-
-        brushConfigDialog.setPropertiesChangeListener(this);
+        setupOptionsConfig();
 
         backToMenu.setOnClickListener(this);
 
         setClickListeners();
         initStroke();
+    }
+
+    private void setupOptionsConfig() {
+        brushConfigDialog = new BrushConfigDialog();
+        brushConfigDialog.setPropertiesChangeListener(this);
+
+        eraserConfigDialog = new EraserConfigDialog();
+        eraserConfigDialog.setPropertiesChangeListener(this);
     }
 
     private void setClickListeners() {
@@ -109,7 +117,12 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
             if (isEraser) {
                 toggleButtons();
             }
-            brushConfigDialog.show(requireFragmentManager(), brushConfigDialog.getTag());
+        } else if (view.getId() == R.id.settings) {
+            if (isEraser) {
+                eraserConfigDialog.show(requireFragmentManager(), eraserConfigDialog.getTag());
+            } else {
+                brushConfigDialog.show(requireFragmentManager(), brushConfigDialog.getTag());
+            }
         }
     }
 
@@ -230,8 +243,12 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
 
     @Override
     public void onBrushSizeChanged(int brushSize) {
+//        if (isEraser) {
+//
+//        } else {
         this.brushSize = brushSize;
         updateBrushParams();
+//        }
     }
 
     private void updateBrushParams() {
