@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import androidx.annotation.Nullable;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -21,16 +22,15 @@ public class BrightnessFragment extends BaseEditFragment {
 
     public static final int INDEX = ModuleConfig.INDEX_BRIGHTNESS;
     public static final String TAG = BrightnessFragment.class.getName();
-    BrightnessView mBrightnessView;
-    SeekBar mSeekBar;
-    private View mainView;
-    private View mBackToMenu;
 
-    private boolean start = true;
+    private static final int INITIAL_BRIGHTNESS = 0;
+
+    private BrightnessView mBrightnessView;
+    private SeekBar mSeekBar;
+    private View mainView;
 
     public static BrightnessFragment newInstance() {
-        BrightnessFragment fragment = new BrightnessFragment();
-        return fragment;
+        return new BrightnessFragment();
     }
 
     @Nullable
@@ -54,7 +54,7 @@ public class BrightnessFragment extends BaseEditFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mBackToMenu = mainView.findViewById(R.id.back_to_main);
+        View mBackToMenu = mainView.findViewById(R.id.back_to_main);
 
         this.mBrightnessView = ensureEditActivity().brightnessView;
         mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
@@ -98,10 +98,11 @@ public class BrightnessFragment extends BaseEditFragment {
         activity.mainImage.setVisibility(View.VISIBLE);
         activity.brightnessView.setVisibility(View.GONE);
         activity.bannerFlipper.showPrevious();
+        activity.brightnessView.setBright(INITIAL_BRIGHTNESS);
     }
 
     public void applyBrightness() {
-        if (mSeekBar.getProgress() == mSeekBar.getMax() / 2) {// 没有做旋转
+        if (mSeekBar.getProgress() == mSeekBar.getMax() / 2) {
             backToMain();
             return;
         }
@@ -114,15 +115,11 @@ public class BrightnessFragment extends BaseEditFragment {
         mSeekBar.setProgress(mSeekBar.getMax() / 2);
     }
 
-    private void back() {
-        getActivity().onBackPressed();
-    }
 
     private final class BackToMenuClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             backToMain();
         }
-    }//
-
+    }
 }

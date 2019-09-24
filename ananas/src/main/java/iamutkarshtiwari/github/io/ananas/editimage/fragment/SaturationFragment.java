@@ -3,11 +3,12 @@ package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+
+import androidx.annotation.Nullable;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -19,17 +20,14 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
 public class SaturationFragment extends BaseEditFragment {
 
     public static final int INDEX = ModuleConfig.INDEX_CONTRAST;
+    private static final int INITIAL_SATURATION = 100;
     public static final String TAG = SaturationFragment.class.getName();
-    SaturationView mSaturationView;
-    SeekBar mSeekBar;
+    private SaturationView mSaturationView;
+    private SeekBar mSeekBar;
     private View mainView;
-    private View mBackToMenu;
-
-    private boolean start = true;
 
     public static SaturationFragment newInstance() {
-        SaturationFragment fragment = new SaturationFragment();
-        return fragment;
+        return new SaturationFragment();
     }
 
     @Nullable
@@ -53,7 +51,7 @@ public class SaturationFragment extends BaseEditFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mBackToMenu = mainView.findViewById(R.id.back_to_main);
+        View mBackToMenu = mainView.findViewById(R.id.back_to_main);
 
         this.mSaturationView = ensureEditActivity().saturationView;
         mBackToMenu.setOnClickListener(new SaturationFragment.BackToMenuClick());
@@ -97,6 +95,7 @@ public class SaturationFragment extends BaseEditFragment {
         activity.mainImage.setVisibility(View.VISIBLE);
         activity.saturationView.setVisibility(View.GONE);
         activity.bannerFlipper.showPrevious();
+        activity.saturationView.setSaturation(INITIAL_SATURATION);
     }
 
     public void applySaturation() {
@@ -111,10 +110,6 @@ public class SaturationFragment extends BaseEditFragment {
 
     private void initView() {
         mSeekBar.setProgress(mSeekBar.getMax());
-    }
-
-    private void back() {
-        getActivity().onBackPressed();
     }
 
     private final class BackToMenuClick implements View.OnClickListener {

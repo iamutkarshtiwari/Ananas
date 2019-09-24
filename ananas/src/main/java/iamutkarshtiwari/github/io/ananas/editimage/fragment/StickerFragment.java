@@ -117,7 +117,7 @@ public class StickerFragment extends BaseEditFragment {
         stickerView.addBitImage(bitmap);
     }
 
-    public StickerView getStickerView() {
+    private StickerView getStickerView() {
         return stickerView;
     }
 
@@ -144,6 +144,7 @@ public class StickerFragment extends BaseEditFragment {
     public void backToMain() {
         activity.mode = EditImageActivity.MODE_NONE;
         activity.bottomGallery.setCurrentItem(0);
+        stickerView.clear();
         stickerView.setVisibility(View.GONE);
         activity.bannerFlipper.showPrevious();
     }
@@ -173,7 +174,7 @@ public class StickerFragment extends BaseEditFragment {
 
     private Single<Bitmap> applyStickerToImage(Bitmap mainBitmap) {
         return Single.fromCallable(() -> {
-            EditImageActivity context = (EditImageActivity) getActivity();
+            EditImageActivity context = (EditImageActivity) requireActivity();
             Matrix touchMatrix = context.mainImage.getImageViewMatrix();
 
             Bitmap resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
