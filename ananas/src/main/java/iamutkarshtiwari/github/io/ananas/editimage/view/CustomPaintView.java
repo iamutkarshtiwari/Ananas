@@ -8,10 +8,11 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.RequiresApi;
 
 public class CustomPaintView extends View {
     private Paint mPaint;
@@ -138,7 +139,10 @@ public class CustomPaintView extends View {
 
     public void setEraser(boolean eraser) {
         this.eraser = eraser;
-        mPaint.setColor(eraser ? Color.TRANSPARENT : mColor);
+    }
+
+    public void setEraserStrokeWidth(float width) {
+        mEraserPaint.setStrokeWidth(width);
     }
 
     public Bitmap getPaintBit() {

@@ -265,6 +265,6 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
     }
 
     private void updateEraserSize() {
-        customPaintView.setWidth(brushSize);
+        customPaintView.setEraserStrokeWidth(brushSize);
     }
 }
