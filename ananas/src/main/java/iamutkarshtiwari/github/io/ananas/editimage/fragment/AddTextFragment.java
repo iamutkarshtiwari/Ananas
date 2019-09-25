@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,11 +20,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -32,6 +34,7 @@ import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnGestureControl;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMultiTouchListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnPhotoEditorListener;
+import iamutkarshtiwari.github.io.ananas.editimage.layout.ZoomLayout;
 import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -47,6 +50,7 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
 
     private View mainView;
     private TextStickerView textStickersParentView;
+    private ZoomLayout zoomLayout;
 
     private InputMethodManager inputMethodManager;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -78,6 +82,8 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
         textStickersParentView = editImageActivity.findViewById(R.id.text_sticker_panel);
         textStickersParentView.setDrawingCacheEnabled(true);
         addedViews = new ArrayList<>();
+
+        zoomLayout = editImageActivity.findViewById(R.id.text_sticker_panel_frame);
 
         View backToMenu = mainView.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
@@ -162,6 +168,35 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
         textStickersParentView.updateImageBitmap(activity.getMainBit());
         activity.bannerFlipper.showNext();
         textStickersParentView.setVisibility(View.VISIBLE);
+
+        autoScaleImageToFitBounds();
+    }
+
+    private void autoScaleImageToFitBounds() {
+        textStickersParentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                textStickersParentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                scaleImage();
+            }
+        });
+    }
+
+    private void scaleImage() {
+        final float zoomLayoutWidth = zoomLayout.getWidth();
+        final float zoomLayoutHeight = zoomLayout.getHeight();
+
+        final float imageViewWidth = textStickersParentView.getWidth();
+        final float imageViewHeight = textStickersParentView.getHeight();
+
+        // To avoid divideByZero exception
+        if (imageViewHeight != 0 && imageViewWidth != 0 && zoomLayoutHeight != 0 && zoomLayoutWidth != 0) {
+            final float offsetFactorX = zoomLayoutWidth / imageViewWidth;
+            final float offsetFactorY = zoomLayoutHeight / imageViewHeight;
+
+            float scaleFactor = Math.min(offsetFactorX, offsetFactorY);
+            zoomLayout.setChildScale(scaleFactor);
+        }
     }
 
     public void applyTextImage() {
