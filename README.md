@@ -170,7 +170,7 @@ Hit me on twitter
  Name | Library
 ------------ | -------------
 siwangqishiq | [ImageEditor Android](https://github.com/siwangqishiq/ImageEditor-Android)
-IsseiAoki | [SimpleCropView](https://github.com/IsseiAoki/SimpleCropView)
+ArthurHub | [Android Image Cropper](https://github.com/ArthurHub/Android-Image-Cropper)
 hoanganhtuan95ptit | [Contrast and Brightness feature](https://github.com/hoanganhtuan95ptit/EditPhoto)
 eltos | [Color Picker Dialog](https://github.com/eltos/SimpleDialogFragments)
 Russell Jurney | [Kelly's 22 colors list](https://medium.com/@rjurney/kellys-22-colours-of-maximum-contrast-58edb70c90d1)
