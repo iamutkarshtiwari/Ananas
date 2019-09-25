@@ -115,6 +115,12 @@ public class ZoomLayout extends FrameLayout implements ScaleGestureDetector.OnSc
         });
     }
 
+    public void setChildScale(float scaleFactor) {
+        scale = scaleFactor;
+        child().setScaleX(scaleFactor);
+        child().setScaleY(scaleFactor);
+    }
+
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleDetector) {
         return true;
