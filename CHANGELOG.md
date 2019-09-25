@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 # Released
 
+## [1.2.1]
+### Bugfix
+- Added auto-scale to AddTextFragment
+
 ## [1.2.0]
 ### Enhancement 
 - Improved Paint feature UI
