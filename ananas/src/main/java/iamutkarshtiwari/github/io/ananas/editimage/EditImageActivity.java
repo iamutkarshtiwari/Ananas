@@ -28,6 +28,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.AddTextFragment;
@@ -35,11 +38,11 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.BeautyFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.BrightnessFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.FilterListFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.MainMenuFragment;
-import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.RotateFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.SaturationFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
@@ -88,6 +91,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private int imageWidth, imageHeight;
     public int mode = MODE_NONE;
+    public Set<Integer> allowedModes;
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
     public CustomPaintView paintView;
@@ -129,8 +133,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_edit);
-        initView();
         getData();
+        initView();
+        loadImageFromFile(sourceFilePath);
     }
 
     @Override
@@ -153,7 +158,22 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
-        loadImageFromFile(sourceFilePath);
+        allowedModes = new HashSet<>();
+        addModeIfAllowed(ImageEditorIntentBuilder.STICKER_FEATURE, 1);
+        addModeIfAllowed(ImageEditorIntentBuilder.FILTER_FEATURE, 2);
+        addModeIfAllowed(ImageEditorIntentBuilder.CROP_FEATURE, 3);
+        addModeIfAllowed(ImageEditorIntentBuilder.ROTATE_FEATURE, 4);
+        addModeIfAllowed(ImageEditorIntentBuilder.ADD_TEXT_FEATURE, 5);
+        addModeIfAllowed(ImageEditorIntentBuilder.PAINT_FEATURE, 6);
+        addModeIfAllowed(ImageEditorIntentBuilder.BEAUTY_FEATURE, 7);
+        addModeIfAllowed(ImageEditorIntentBuilder.BRIGHTNESS_FEATURE, 8);
+        addModeIfAllowed(ImageEditorIntentBuilder.SATURATION_FEATURE, 9);
+    }
+
+    private void addModeIfAllowed(String extraName, int modeIndex) {
+        if (getIntent().getBooleanExtra(extraName, false)) {
+            allowedModes.add(modeIndex);
+        }
     }
 
     private void initView() {

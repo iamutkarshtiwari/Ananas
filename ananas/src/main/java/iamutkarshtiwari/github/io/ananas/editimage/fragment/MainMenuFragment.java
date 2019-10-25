@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
@@ -68,6 +69,16 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         mBeautyBtn.setOnClickListener(this);
         mBrightnessBtn.setOnClickListener(this);
         mSaturationBtn.setOnClickListener(this);
+
+        stickerBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_STICKERS) ? View.VISIBLE : View.GONE);
+        fliterBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_FILTER) ? View.VISIBLE : View.GONE);
+        cropBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_CROP) ? View.VISIBLE : View.GONE);
+        rotateBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_ROTATE) ? View.VISIBLE : View.GONE);
+        mTextBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_TEXT) ? View.VISIBLE : View.GONE);
+        mPaintBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_PAINT) ? View.VISIBLE : View.GONE);
+        mBeautyBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_BEAUTY) ? View.VISIBLE : View.GONE);
+        mBrightnessBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_BRIGHTNESS) ? View.VISIBLE : View.GONE);
+        mSaturationBtn.setVisibility(activity.allowedModes.contains(EditImageActivity.MODE_SATURATION) ? View.VISIBLE : View.GONE);
     }
 
     @Override
