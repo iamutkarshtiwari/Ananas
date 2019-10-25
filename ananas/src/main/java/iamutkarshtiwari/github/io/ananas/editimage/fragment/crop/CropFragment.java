@@ -183,7 +183,7 @@ public class CropFragment extends BaseEditFragment {
 
     public void applyCropImage() {
         disposables.add(getCroppedBitmap()
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> loadingDialogListener.showLoadingDialog())
                 .doFinally(() -> loadingDialogListener.dismissLoadingDialog())
