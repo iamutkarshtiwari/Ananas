@@ -66,13 +66,22 @@ Add the dependency in gradle file of app module like this
 implementation 'com.github.iamutkarshtiwari:Ananas:1.2.2'
 ```
 
-## Proguard Rules [Important!]
+## [Important!]
 
-Add this to your app's `proguard-rules.pro` file -
+Add this to your app's `proguard-rules.pro` file:
 
 ```pro
 -keepclasseswithmembers class * {
     native <methods>;
+}
+```
+
+And this to your app's `build.gradle`:
+
+```
+compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
 }
 ```
 
