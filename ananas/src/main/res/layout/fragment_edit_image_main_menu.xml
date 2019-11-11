@@ -20,6 +20,7 @@
                 android:id="@+id/btn_paint"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -42,6 +43,7 @@
                 android:id="@+id/btn_filter"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -65,6 +67,7 @@
                 android:id="@+id/btn_crop"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -88,6 +91,7 @@
                 android:id="@+id/btn_rotate"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -111,6 +115,7 @@
                 android:id="@+id/btn_text"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -134,6 +139,7 @@
                 android:id="@+id/btn_stickers"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -157,6 +163,7 @@
                 android:id="@+id/btn_brightness"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -180,6 +187,7 @@
                 android:id="@+id/btn_contrast"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
@@ -203,6 +211,7 @@
                 android:id="@+id/btn_beauty"
                 style="@style/option_style"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <ImageView
