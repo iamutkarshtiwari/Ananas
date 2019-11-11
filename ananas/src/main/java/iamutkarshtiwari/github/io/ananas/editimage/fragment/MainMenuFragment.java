@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
@@ -18,7 +19,7 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     private View mainView;
 
     private View stickerBtn;
-    private View fliterBtn;
+    private View filterButton;
     private View cropBtn;
     private View rotateBtn;
     private View mTextBtn;
@@ -26,10 +27,10 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     private View mBeautyBtn;
     private View mBrightnessBtn;
     private View mSaturationBtn;
+    private Bundle intentBundle;
 
     public static MainMenuFragment newInstance() {
-        MainMenuFragment fragment = new MainMenuFragment();
-        return fragment;
+        return new MainMenuFragment();
     }
 
     @Override
@@ -42,6 +43,7 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.fragment_edit_image_main_menu,
                 null);
+        intentBundle = getArguments();
         return mainView;
     }
 
@@ -50,7 +52,7 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         super.onActivityCreated(savedInstanceState);
 
         stickerBtn = mainView.findViewById(R.id.btn_stickers);
-        fliterBtn = mainView.findViewById(R.id.btn_filter);
+        filterButton = mainView.findViewById(R.id.btn_filter);
         cropBtn = mainView.findViewById(R.id.btn_crop);
         rotateBtn = mainView.findViewById(R.id.btn_rotate);
         mTextBtn = mainView.findViewById(R.id.btn_text);
@@ -59,15 +61,50 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
         mBrightnessBtn = mainView.findViewById(R.id.btn_brightness);
         mSaturationBtn = mainView.findViewById(R.id.btn_contrast);
 
-        stickerBtn.setOnClickListener(this);
-        fliterBtn.setOnClickListener(this);
-        cropBtn.setOnClickListener(this);
-        rotateBtn.setOnClickListener(this);
-        mTextBtn.setOnClickListener(this);
-        mPaintBtn.setOnClickListener(this);
-        mBeautyBtn.setOnClickListener(this);
-        mBrightnessBtn.setOnClickListener(this);
-        mSaturationBtn.setOnClickListener(this);
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.STICKER_FEATURE, false)) {
+            stickerBtn.setVisibility(View.VISIBLE);
+            stickerBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.FILTER_FEATURE, false)) {
+            filterButton.setVisibility(View.VISIBLE);
+            filterButton.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.CROP_FEATURE, false)) {
+            cropBtn.setVisibility(View.VISIBLE);
+            cropBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.ROTATE_FEATURE, false)) {
+            rotateBtn.setVisibility(View.VISIBLE);
+            rotateBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.ADD_TEXT_FEATURE, false)) {
+            mTextBtn.setVisibility(View.VISIBLE);
+            mTextBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.PAINT_FEATURE, false)) {
+            mPaintBtn.setVisibility(View.VISIBLE);
+            mPaintBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.BEAUTY_FEATURE, false)) {
+            mBeautyBtn.setVisibility(View.VISIBLE);
+            mBeautyBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.BRIGHTNESS_FEATURE, false)) {
+            mBrightnessBtn.setVisibility(View.VISIBLE);
+            mBrightnessBtn.setOnClickListener(this);
+        }
+
+        if (intentBundle.getBoolean(ImageEditorIntentBuilder.SATURATION_FEATURE, false)) {
+            mSaturationBtn.setVisibility(View.VISIBLE);
+            mSaturationBtn.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -84,7 +121,7 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     public void onClick(View v) {
         if (v == stickerBtn) {
             onStickClick();
-        } else if (v == fliterBtn) {
+        } else if (v == filterButton) {
             onFilterClick();
         } else if (v == cropBtn) {
             onCropClick();
