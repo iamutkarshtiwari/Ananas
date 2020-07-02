@@ -57,6 +57,11 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
+    fun withEditorTitle(title:String): ImageEditorIntentBuilder {
+        intent.putExtra(EDITOR_TITLE, title)
+        return this
+    }
+
     fun withSourcePath(sourcePath: String): ImageEditorIntentBuilder {
         intent.putExtra(SOURCE_PATH, sourcePath)
         return this
@@ -104,5 +109,6 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val SOURCE_PATH = "source_path"
         const val OUTPUT_PATH = "output_path"
         const val FORCE_PORTRAIT = "force_portrait"
+        const val EDITOR_TITLE = "editor_title"
     }
 }

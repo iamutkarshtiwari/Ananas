@@ -151,7 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withBrightnessFeature()
                     .withSaturationFeature()
                     .withBeautyFeature()
-                    .withStickerFeature()
+//                    .withStickerFeature()
+//                    .withEditorTitle("My Editor")
                     .forcePortrait(true)
                     .build();
 
