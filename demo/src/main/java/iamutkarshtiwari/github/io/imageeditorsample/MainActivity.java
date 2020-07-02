@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private int imageWidth, imageHeight;
     private String path;
-    private Uri photoURI = null;
+    private File photoFile = null;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -126,12 +126,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void launchCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Uri outputFileUri = Uri.fromFile(FileUtils.genEditFile());
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            photoFile = FileUtils.genEditFile();
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
         } else {
-            File file = FileUtils.genEditFile();
-            Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", file);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            photoFile = FileUtils.genEditFile();
+            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
         }
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         if (intent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withBrightnessFeature()
                     .withSaturationFeature()
                     .withBeautyFeature()
+                    .withStickerFeature()
                     .forcePortrait(true)
                     .build();
 
@@ -218,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void handleTakePhoto() {
-        if (photoURI != null) {
-            path = photoURI.getPath();
+        if (photoFile != null) {
+            path = photoFile.getPath();
             loadImage(path);
         }
     }
@@ -252,8 +253,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .doFinally(() -> loadingDialog.dismiss())
                 .subscribe(
                         this::setMainBitmap,
-                        e -> Toast.makeText(
-                                this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show()
+                        e -> { e.printStackTrace();
+                            Toast.makeText(
+                                this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();}
                 );
 
         compositeDisposable.add(applyRotationDisposable);

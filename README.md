@@ -174,7 +174,7 @@ Hit me on twitter
 - Be polite.
 
 
-# Credits
+## Credits
 
  Name | Library
 ------------ | -------------
