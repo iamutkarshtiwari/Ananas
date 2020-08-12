@@ -2,7 +2,7 @@
 
 # Ananas Photo Editor
 
-[![Download](https://img.shields.io/badge/JitPack-1.2.4-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/1.2.3) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
+[![Download](https://img.shields.io/badge/JitPack-1.2.4-blue.svg)](https://jitpack.io/#iamutkarshtiwari/Ananas/1.2.4) ![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)
 
 An easy photo editor integration for your Android apps.
 
