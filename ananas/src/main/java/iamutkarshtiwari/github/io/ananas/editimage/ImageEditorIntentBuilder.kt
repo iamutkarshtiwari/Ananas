@@ -72,6 +72,11 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
+    fun setSupportActionBarVisibility(isVisible: Boolean): ImageEditorIntentBuilder {
+        intent.putExtra(SUPPORT_ACTION_BAR_VISIBILITY, isVisible)
+        return this
+    }
+
     @Throws(Exception::class)
     fun build(): Intent {
 
@@ -104,5 +109,6 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val SOURCE_PATH = "source_path"
         const val OUTPUT_PATH = "output_path"
         const val FORCE_PORTRAIT = "force_portrait"
+        const val SUPPORT_ACTION_BAR_VISIBILITY = "support_action_bar_visibility"
     }
 }

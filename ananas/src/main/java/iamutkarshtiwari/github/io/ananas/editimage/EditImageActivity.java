@@ -90,6 +90,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public int mode = MODE_NONE;
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
+    protected boolean isSupportActionBarEnabled = false;
     public CustomPaintView paintView;
 
     private Bitmap mainBitmap;
@@ -129,8 +130,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_edit);
-        initView();
         getData();
+        initView();
     }
 
     @Override
@@ -151,14 +152,23 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
+        isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
+
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
-        loadImageFromFile(sourceFilePath);
     }
 
     private void initView() {
         loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
+
+        if (getSupportActionBar() != null) {
+            if (isSupportActionBarEnabled) {
+                getSupportActionBar().show();
+            } else {
+                getSupportActionBar().hide();
+            }
+        }
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageWidth = metrics.widthPixels / 2;
@@ -215,6 +225,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         if (!PermissionUtils.hasPermissions(this, requiredPermissions)) {
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
+
+        loadImageFromFile(sourceFilePath);
     }
 
     private void setOnMainBitmapChangeListener(OnMainBitmapChangeListener listener) {

@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 # Released
 
+## [1.2.4]
+### Enhancement
+- Added toggle for SupportActionBar
+
 ## [1.2.1]
 ### Bugfix
 - Added auto-scale to AddTextFragment
