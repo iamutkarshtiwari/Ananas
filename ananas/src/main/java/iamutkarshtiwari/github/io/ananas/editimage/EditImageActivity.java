@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -35,11 +36,11 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.BeautyFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.BrightnessFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.FilterListFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.MainMenuFragment;
-import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.RotateFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.SaturationFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
@@ -61,7 +62,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener {
-    private static final int PERMISSIONS_REQUEST_CODE = 110;
     public static final String IS_IMAGE_EDITED = "is_image_edited";
     public static final int MODE_NONE = 0;
     public static final int MODE_STICKERS = 1;
@@ -73,7 +73,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public static final int MODE_BEAUTY = 7;
     public static final int MODE_BRIGHTNESS = 8;
     public static final int MODE_SATURATION = 9;
-
+    private static final int PERMISSIONS_REQUEST_CODE = 110;
     private final String[] requiredPermissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -81,29 +81,21 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     public String sourceFilePath;
     public String outputFilePath;
+    public String editorTitle;
     public StickerView stickerView;
     public CropImageView cropPanel;
     public ImageViewTouch mainImage;
     public TextStickerView textStickerView;
-
-    private int imageWidth, imageHeight;
     public int mode = MODE_NONE;
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
     protected boolean isSupportActionBarEnabled = false;
     public CustomPaintView paintView;
-
-    private Bitmap mainBitmap;
-
     public ViewFlipper bannerFlipper;
     public BrightnessView brightnessView;
     public SaturationView saturationView;
     public RotateImageView rotatePanel;
-    protected int numberOfOperations = 0;
-    private Dialog loadingDialog;
-
     public CustomViewPager bottomGallery;
-    private MainMenuFragment mainMenuFragment;
     public StickerFragment stickerFragment;
     public FilterListFragment filterListFragment;
     public CropFragment cropFragment;
@@ -113,7 +105,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public BeautyFragment beautyFragment;
     public BrightnessFragment brightnessFragment;
     public SaturationFragment saturationFragment;
-
+    protected int numberOfOperations = 0;
+    private int imageWidth, imageHeight;
+    private Bitmap mainBitmap;
+    private Dialog loadingDialog;
+    private TextView titleView;
+    private MainMenuFragment mainMenuFragment;
     private RedoUndoController redoUndoController;
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -156,9 +153,14 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
+        editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
     }
 
     private void initView() {
+        titleView = findViewById(R.id.title);
+        if (editorTitle != null) {
+            titleView.setText(editorTitle);
+        }
         loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
                 false);
 
@@ -453,6 +455,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         isBeenSaved = true;
     }
 
+    public Bitmap getMainBit() {
+        return mainBitmap;
+    }
+
     /**
      * @author panyi
      */
@@ -540,9 +546,5 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     break;
             }
         }
-    }
-
-    public Bitmap getMainBit() {
-        return mainBitmap;
     }
 }
