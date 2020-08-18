@@ -127,10 +127,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Uri outputFileUri = Uri.fromFile(FileUtils.genEditFile());
+            photoURI = outputFileUri;
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
         } else {
             File file = FileUtils.genEditFile();
             Uri photoUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", file);
+            photoURI = photoUri;
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
         }
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
