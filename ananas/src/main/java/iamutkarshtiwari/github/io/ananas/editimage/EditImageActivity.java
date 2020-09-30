@@ -118,7 +118,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private Uri sourceUri;
 
     public static void start(Activity activity, Intent intent, int requestCode) {
-        if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
+        String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+        Uri sourceUri = (Uri) intent.getSerializableExtra(ImageEditorIntentBuilder.SOURCE_URI);
+
+        if (TextUtils.isEmpty(sourcePath) && sourceUri == null) {
             Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
