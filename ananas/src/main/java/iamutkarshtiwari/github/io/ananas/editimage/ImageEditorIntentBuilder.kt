@@ -14,7 +14,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
 ) {
     private var sourceUri: Uri? = null
 
-    constructor(context: Context,
+    @JvmOverloads constructor(context: Context,
                 sourceUri: Uri,
                 outputPath: String?,
                 intent: Intent = Intent(
@@ -75,6 +75,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
     }
 
     fun withSourceUri(sourceUri: Uri): ImageEditorIntentBuilder {
+        this.sourceUri = sourceUri
         intent.putExtra(SOURCE_URI, sourceUri)
         intent.removeExtra(SOURCE_PATH)
         return this
