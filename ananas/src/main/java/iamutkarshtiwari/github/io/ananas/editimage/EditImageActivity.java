@@ -119,9 +119,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
-        Uri sourceUri = (Uri) intent.getSerializableExtra(ImageEditorIntentBuilder.SOURCE_URI);
+        String sourceUriStr = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
 
-        if (TextUtils.isEmpty(sourcePath) && sourceUri == null) {
+        if (TextUtils.isEmpty(sourcePath) && TextUtils.isEmpty(sourceUriStr)) {
             Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -156,7 +156,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
 
-        sourceUri = (Uri) getIntent().getSerializableExtra(ImageEditorIntentBuilder.SOURCE_URI);
+        String sourceUriStr = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
+        if (!TextUtils.isEmpty(sourceUriStr)) {
+            sourceUri = Uri.parse(sourceUriStr);
+        }
+
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
@@ -234,7 +238,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
 
-        if (sourceFilePath != null && sourceFilePath.trim().length() > 0) {
+        if (!TextUtils.isEmpty(sourceFilePath)) {
             loadImageFromFile(sourceFilePath);
         } else {
             loadImageFromUri(sourceUri);
@@ -347,6 +351,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     protected void onSaveTaskDone() {
         Intent returnIntent = new Intent();
+        returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_URI, sourceUri.toString());
         returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_PATH, sourceFilePath);
         returnIntent.putExtra(ImageEditorIntentBuilder.OUTPUT_PATH, outputFilePath);
         returnIntent.putExtra(IS_IMAGE_EDITED, numberOfOperations > 0);

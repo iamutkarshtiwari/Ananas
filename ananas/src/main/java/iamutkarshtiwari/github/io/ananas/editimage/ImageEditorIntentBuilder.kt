@@ -76,7 +76,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
 
     fun withSourceUri(sourceUri: Uri): ImageEditorIntentBuilder {
         this.sourceUri = sourceUri
-        intent.putExtra(SOURCE_URI, sourceUri)
+        intent.putExtra(SOURCE_URI, sourceUri.toString())
         intent.removeExtra(SOURCE_PATH)
         return this
     }
@@ -112,7 +112,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         } else if (!sourcePath.isNullOrBlank()) {
             intent.putExtra(SOURCE_PATH, sourcePath)
         } else {
-            intent.putExtra(SOURCE_URI, sourceUri)
+            intent.putExtra(SOURCE_URI, sourceUri.toString())
         }
 
         if (outputPath.isNullOrBlank()) {
