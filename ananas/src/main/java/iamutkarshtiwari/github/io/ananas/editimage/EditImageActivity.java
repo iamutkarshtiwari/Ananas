@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -114,6 +115,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private RedoUndoController redoUndoController;
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private Uri sourceUri;
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
@@ -151,6 +153,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
 
+        sourceUri = (Uri) getIntent().getSerializableExtra(ImageEditorIntentBuilder.SOURCE_URI);
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
@@ -228,7 +231,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
 
-        loadImageFromFile(sourceFilePath);
+        if (sourceFilePath != null && sourceFilePath.trim().length() > 0) {
+            loadImageFromFile(sourceFilePath);
+        } else {
+            loadImageFromUri(sourceUri);
+        }
     }
 
     private void setOnMainBitmapChangeListener(OnMainBitmapChangeListener listener) {
@@ -377,6 +384,19 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         });
     }
 
+    private void loadImageFromUri(Uri uri) {
+        compositeDisposable.clear();
+
+        Disposable loadImageDisposable = loadImage(uri)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+
+        compositeDisposable.add(loadImageDisposable);
+    }
+
     private void loadImageFromFile(String filePath) {
         compositeDisposable.clear();
 
@@ -393,6 +413,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private Single<Bitmap> loadImage(String filePath) {
         return Single.fromCallable(() -> BitmapUtils.getSampledBitmap(filePath, imageWidth,
                 imageHeight));
+    }
+
+    private Single<Bitmap> loadImage(Uri uri) {
+        return Single.fromCallable(() -> BitmapUtils.decodeSampledBitmap(this, uri,
+                imageWidth, imageHeight));
     }
 
     private void showToast(@StringRes int resId) {
