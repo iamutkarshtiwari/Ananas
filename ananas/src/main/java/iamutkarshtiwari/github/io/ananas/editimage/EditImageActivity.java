@@ -80,6 +80,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public Uri sourceUri;
     public String sourceFilePath;
     public String outputFilePath;
     public String editorTitle;
@@ -115,7 +116,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private RedoUndoController redoUndoController;
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private Uri sourceUri;
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
