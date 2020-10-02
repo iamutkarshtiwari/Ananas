@@ -17,6 +17,8 @@
 package iamutkarshtiwari.github.io.ananas.editimage.utils;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -24,8 +26,10 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
@@ -33,11 +37,18 @@ import android.view.View;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
 
 public class BitmapUtils {
     /**
@@ -45,8 +56,12 @@ public class BitmapUtils {
      */
     @SuppressWarnings("unused")
     private static final String TAG = "BitmapUtils";
+    private static final Rect EMPTY_RECT = new Rect();
 
     public static final long MAX_SZIE = 1024 * 512;// 500KB
+
+    /** Used to know the max texture size allowed to be rendered */
+    private static int mMaxTextureSize;
 
     public static int getOrientation(final String imagePath) {
         int rotate = 0;
@@ -350,7 +365,6 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(filePath, options);
     }
 
-
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -371,6 +385,170 @@ public class BitmapUtils {
         }
 
         return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmap(Context context, Uri uri, int reqWidth, int reqHeight) {
+
+        try {
+            ContentResolver resolver = context.getContentResolver();
+
+            // First decode with inJustDecodeBounds=true to check dimensions
+            BitmapFactory.Options options = decodeImageForOption(resolver, uri);
+
+            if(options.outWidth  == -1 && options.outHeight == -1)
+                throw new RuntimeException("File is not a picture");
+
+            // Calculate inSampleSize
+            options.inSampleSize =
+                    Math.max(
+                            calculateInSampleSizeByReqestedSize(
+                                    options.outWidth, options.outHeight, reqWidth, reqHeight),
+                            calculateInSampleSizeByMaxTextureSize(options.outWidth, options.outHeight));
+
+            // Decode bitmap with inSampleSize set
+            Bitmap bitmap = decodeImage(resolver, uri, options);
+
+            return bitmap;
+
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Failed to load sampled bitmap: " + uri + "\r\n" + e.getMessage(), e);
+        }
+    }
+
+    /** Decode image from uri using "inJustDecodeBounds" to get the image dimensions. */
+    private static BitmapFactory.Options decodeImageForOption(ContentResolver resolver, Uri uri)
+            throws FileNotFoundException {
+        InputStream stream = null;
+        try {
+            stream = resolver.openInputStream(uri);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(stream, EMPTY_RECT, options);
+            options.inJustDecodeBounds = false;
+            return options;
+        } finally {
+            closeSafe(stream);
+        }
+    }
+
+    /**
+     * Decode image from uri using given "inSampleSize", but if failed due to out-of-memory then raise
+     * the inSampleSize until success.
+     */
+    private static Bitmap decodeImage(
+            ContentResolver resolver, Uri uri, BitmapFactory.Options options)
+            throws FileNotFoundException {
+        do {
+            InputStream stream = null;
+            try {
+                stream = resolver.openInputStream(uri);
+                return BitmapFactory.decodeStream(stream, EMPTY_RECT, options);
+            } catch (OutOfMemoryError e) {
+                options.inSampleSize *= 2;
+            } finally {
+                closeSafe(stream);
+            }
+        } while (options.inSampleSize <= 512);
+        throw new RuntimeException("Failed to decode image: " + uri);
+    }
+
+    /**
+     * Calculate the largest inSampleSize value that is a power of 2 and keeps both height and width
+     * larger than the requested height and width.
+     */
+    private static int calculateInSampleSizeByReqestedSize(
+            int width, int height, int reqWidth, int reqHeight) {
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            while ((height / 2 / inSampleSize) > reqHeight && (width / 2 / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
+    /**
+     * Calculate the largest inSampleSize value that is a power of 2 and keeps both height and width
+     * smaller than max texture size allowed for the device.
+     */
+    private static int calculateInSampleSizeByMaxTextureSize(int width, int height) {
+        int inSampleSize = 1;
+        if (mMaxTextureSize == 0) {
+            mMaxTextureSize = getMaxTextureSize();
+        }
+        if (mMaxTextureSize > 0) {
+            while ((height / inSampleSize) > mMaxTextureSize
+                    || (width / inSampleSize) > mMaxTextureSize) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
+    /**
+     * Get the max size of bitmap allowed to be rendered on the device.<br>
+     * http://stackoverflow.com/questions/7428996/hw-accelerated-activity-how-to-get-opengl-texture-size-limit.
+     */
+    private static int getMaxTextureSize() {
+        // Safe minimum default size
+        final int IMAGE_MAX_BITMAP_DIMENSION = 2048;
+
+        try {
+            // Get EGL Display
+            EGL10 egl = (EGL10) EGLContext.getEGL();
+            EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+
+            // Initialise
+            int[] version = new int[2];
+            egl.eglInitialize(display, version);
+
+            // Query total number of configurations
+            int[] totalConfigurations = new int[1];
+            egl.eglGetConfigs(display, null, 0, totalConfigurations);
+
+            // Query actual list configurations
+            EGLConfig[] configurationsList = new EGLConfig[totalConfigurations[0]];
+            egl.eglGetConfigs(display, configurationsList, totalConfigurations[0], totalConfigurations);
+
+            int[] textureSize = new int[1];
+            int maximumTextureSize = 0;
+
+            // Iterate through all the configurations to located the maximum texture size
+            for (int i = 0; i < totalConfigurations[0]; i++) {
+                // Only need to check for width since opengl textures are always squared
+                egl.eglGetConfigAttrib(
+                        display, configurationsList[i], EGL10.EGL_MAX_PBUFFER_WIDTH, textureSize);
+
+                // Keep track of the maximum texture size
+                if (maximumTextureSize < textureSize[0]) {
+                    maximumTextureSize = textureSize[0];
+                }
+            }
+
+            // Release
+            egl.eglTerminate(display);
+
+            // Return largest texture size found, or default
+            return Math.max(maximumTextureSize, IMAGE_MAX_BITMAP_DIMENSION);
+        } catch (Exception e) {
+            return IMAGE_MAX_BITMAP_DIMENSION;
+        }
+    }
+
+    /**
+     * Close the given closeable object (Stream) in a safe way: check if it is null and catch-log
+     * exception thrown.
+     *
+     * @param closeable the closable object to close
+     */
+    private static void closeSafe(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (IOException ignored) {
+            }
+        }
     }
 
     public static boolean saveBitmap(Bitmap bm, String filePath) {

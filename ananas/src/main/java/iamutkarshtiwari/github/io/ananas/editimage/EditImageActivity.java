@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -29,6 +30,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.AddTextFragment;
@@ -39,6 +42,7 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.MainMenuFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.RotateFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.SaturationFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.AspectRatio;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
@@ -79,6 +83,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public Uri sourceUri;
     public String sourceFilePath;
     public String outputFilePath;
     public String editorTitle;
@@ -115,8 +120,17 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private List<AspectRatio> aspectRatios;
+    private float aspectRatioMin;
+    private String aspectRatioMinMsg;
+    private float aspectRatioMax;
+    private String aspectRatioMaxMsg;
+
     public static void start(Activity activity, Intent intent, int requestCode) {
-        if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
+        String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+        String sourceUriStr = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
+
+        if (TextUtils.isEmpty(sourcePath) && TextUtils.isEmpty(sourceUriStr)) {
             Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -151,9 +165,20 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
 
+        String sourceUriStr = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
+        if (!TextUtils.isEmpty(sourceUriStr)) {
+            sourceUri = Uri.parse(sourceUriStr);
+        }
+
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
+
+        aspectRatios = (List<AspectRatio>) getIntent().getSerializableExtra(ImageEditorIntentBuilder.ASPECT_RATIOS);
+        aspectRatioMin = getIntent().getFloatExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MIN, CropFragment.NO_ASPECT_RATIO_LIMIT);
+        aspectRatioMinMsg = getIntent().getStringExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MIN_MSG);
+        aspectRatioMax = getIntent().getFloatExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MAX, CropFragment.NO_ASPECT_RATIO_LIMIT);
+        aspectRatioMaxMsg = getIntent().getStringExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MAX_MSG);
     }
 
     private void initView() {
@@ -205,7 +230,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 this.getSupportFragmentManager());
         stickerFragment = StickerFragment.newInstance();
         filterListFragment = FilterListFragment.newInstance();
+
         cropFragment = CropFragment.newInstance();
+        cropFragment.setAspectRatios(aspectRatios);
+        cropFragment.setMinimumAspectRatio(aspectRatioMin, aspectRatioMinMsg);
+        cropFragment.setMaximumAspectRatio(aspectRatioMax, aspectRatioMaxMsg);
+
         rotateFragment = RotateFragment.newInstance();
         paintFragment = PaintFragment.newInstance();
         beautyFragment = BeautyFragment.newInstance();
@@ -228,7 +258,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
 
-        loadImageFromFile(sourceFilePath);
+        if (!TextUtils.isEmpty(sourceFilePath)) {
+            loadImageFromFile(sourceFilePath);
+        } else {
+            loadImageFromUri(sourceUri);
+        }
     }
 
     private void setOnMainBitmapChangeListener(OnMainBitmapChangeListener listener) {
@@ -337,6 +371,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     protected void onSaveTaskDone() {
         Intent returnIntent = new Intent();
+        returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_URI, sourceUri.toString());
         returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_PATH, sourceFilePath);
         returnIntent.putExtra(ImageEditorIntentBuilder.OUTPUT_PATH, outputFilePath);
         returnIntent.putExtra(IS_IMAGE_EDITED, numberOfOperations > 0);
@@ -348,6 +383,20 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     protected void doSaveImage() {
         if (numberOfOperations <= 0)
             return;
+
+        float aspectRatio = (float) mainBitmap.getWidth() / mainBitmap.getHeight();
+
+        if (aspectRatioMin != CropFragment.NO_ASPECT_RATIO_LIMIT &&
+                aspectRatio < aspectRatioMin) {
+            Toast.makeText(this, aspectRatioMinMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (aspectRatioMax != CropFragment.NO_ASPECT_RATIO_LIMIT &&
+                aspectRatio > aspectRatioMax) {
+            Toast.makeText(this, aspectRatioMaxMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         compositeDisposable.clear();
 
@@ -377,6 +426,19 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         });
     }
 
+    private void loadImageFromUri(Uri uri) {
+        compositeDisposable.clear();
+
+        Disposable loadImageDisposable = loadImage(uri)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+
+        compositeDisposable.add(loadImageDisposable);
+    }
+
     private void loadImageFromFile(String filePath) {
         compositeDisposable.clear();
 
@@ -393,6 +455,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private Single<Bitmap> loadImage(String filePath) {
         return Single.fromCallable(() -> BitmapUtils.getSampledBitmap(filePath, imageWidth,
                 imageHeight));
+    }
+
+    private Single<Bitmap> loadImage(Uri uri) {
+        return Single.fromCallable(() -> BitmapUtils.decodeSampledBitmap(this, uri,
+                imageWidth, imageHeight));
     }
 
     private void showToast(@StringRes int resId) {

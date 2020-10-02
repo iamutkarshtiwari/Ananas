@@ -1,6 +1,7 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment.crop;
 
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -19,6 +20,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -28,12 +32,12 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class CropFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_CROP;
     public static final String TAG = CropFragment.class.getName();
+    public static final float NO_ASPECT_RATIO_LIMIT = -1;
 
     private static int SELECTED_COLOR = R.color.white;
     private static int UNSELECTED_COLOR = R.color.text_color_gray_3;
@@ -42,6 +46,12 @@ public class CropFragment extends BaseEditFragment {
     private LinearLayout ratioList;
     private CropImageView cropPanel;
     private OnLoadingDialogListener loadingDialogListener;
+
+    private List<AspectRatio> aspectRatios;
+    private float aspectRatioMin;
+    private float aspectRatioMax;
+    private String aspectRatioMinMsg;
+    private String aspectRatioMaxMsg;
 
     private CropRationClick cropRatioClick = new CropRationClick();
     private TextView selectedTextView;
@@ -74,26 +84,52 @@ public class CropFragment extends BaseEditFragment {
         params.leftMargin = 20;
         params.rightMargin = 20;
 
-        RatioText[] ratioTextList = RatioText.values();
-        for (int i = 0; i < ratioTextList.length; i++) {
+        for (int i = 0; i < aspectRatios.size(); i++) {
+            AspectRatio aspectRatio = aspectRatios.get(i);
+
             TextView text = new TextView(activity);
             toggleButtonStatus(text, false);
             text.setTextSize(15);
             text.setAllCaps(true);
             text.setTypeface(text.getTypeface(), Typeface.BOLD);
-            text.setText(getResources().getText(ratioTextList[i].getRatioTextId()));
+            text.setText(aspectRatios.get(i).getName());
             ratioList.addView(text, params);
 
             if (i == 0) {
                 selectedTextView = text;
             }
 
-            text.setTag(ratioTextList[i]);
+            text.setTag(aspectRatio);
             text.setOnClickListener(cropRatioClick);
         }
         toggleButtonStatus(selectedTextView, true);
     }
 
+    public List<AspectRatio> getDefaultAspectRatios() {
+        return Arrays.asList(
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_free_size)),
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_fit_image), -1, -1),
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_square), 1, 1),
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_ratio3_4), 3, 4),
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_ratio4_3), 4, 3),
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_ratio9_16), 9, 16),
+                new AspectRatio(getString(R.string.iamutkarshtiwari_github_io_ananas_ratio16_9), 16, 9)
+        );
+    }
+
+    public void setAspectRatios(List<AspectRatio> aspectRatios) {
+        this.aspectRatios = aspectRatios;
+    }
+
+    public void setMinimumAspectRatio(float minAspectRatio, String validationMessage) {
+        this.aspectRatioMin = minAspectRatio;
+        this.aspectRatioMinMsg = validationMessage;
+    }
+
+    public void setMaximumAspectRatio(float maxAspectRatio, String validationMessage) {
+        this.aspectRatioMax = maxAspectRatio;
+        this.aspectRatioMaxMsg = validationMessage;
+    }
 
     private final class CropRationClick implements OnClickListener {
         @Override
@@ -105,15 +141,14 @@ public class CropFragment extends BaseEditFragment {
 
             selectedTextView = currentTextView;
 
-            RatioText ratioText = (RatioText) currentTextView.getTag();
-            if (ratioText == RatioText.FREE) {
+            AspectRatio aspectRatio = (AspectRatio) currentTextView.getTag();
+            if (aspectRatio.isFree()) {
                 cropPanel.setFixedAspectRatio(false);
-            } else if (ratioText == RatioText.FIT_IMAGE) {
+            } else if (aspectRatio.isFitImage()) {
                 Bitmap currentBmp = ensureEditActivity().getMainBit();
                 cropPanel.setAspectRatio(currentBmp.getWidth(), currentBmp.getHeight());
             } else {
-                AspectRatio aspectRatio = ratioText.getAspectRatio();
-                cropPanel.setAspectRatio(aspectRatio.getAspectX(), aspectRatio.getAspectY());
+                cropPanel.setAspectRatio(aspectRatio.getX(), aspectRatio.getY());
             }
         }
     }
@@ -135,6 +170,11 @@ public class CropFragment extends BaseEditFragment {
 
         View backToMenu = mainView.findViewById(R.id.back_to_main);
         ratioList = mainView.findViewById(R.id.ratio_list_group);
+
+        if (aspectRatios == null) {
+            aspectRatios = getDefaultAspectRatios();
+        }
+
         setUpRatioList();
         this.cropPanel = ensureEditActivity().cropPanel;
         backToMenu.setOnClickListener(new BackToMenuClick());
@@ -180,8 +220,22 @@ public class CropFragment extends BaseEditFragment {
         activity.bannerFlipper.showPrevious();
     }
 
-
     public void applyCropImage() {
+        RectF cropRect = cropPanel.getCropWindowRect();
+        float cropAspectRatio = (float) (cropRect.right - cropRect.left) / (cropRect.bottom - cropRect.top);
+
+        if (aspectRatioMin != NO_ASPECT_RATIO_LIMIT &&
+                cropAspectRatio < aspectRatioMin) {
+            Toast.makeText(getContext(), aspectRatioMinMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (aspectRatioMax != NO_ASPECT_RATIO_LIMIT &&
+                cropAspectRatio > aspectRatioMax) {
+            Toast.makeText(getContext(), aspectRatioMaxMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         disposables.add(getCroppedBitmap()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
