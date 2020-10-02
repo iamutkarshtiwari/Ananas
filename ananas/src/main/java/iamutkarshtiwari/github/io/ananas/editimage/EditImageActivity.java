@@ -30,6 +30,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.AddTextFragment;
@@ -40,6 +42,7 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.MainMenuFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.RotateFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.SaturationFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.AspectRatio;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
@@ -117,6 +120,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private List<AspectRatio> aspectRatios;
+    private float aspectRatioMin;
+    private String aspectRatioMinMsg;
+    private float aspectRatioMax;
+    private String aspectRatioMaxMsg;
+
     public static void start(Activity activity, Intent intent, int requestCode) {
         String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         String sourceUriStr = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
@@ -164,6 +173,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
+
+        aspectRatios = (List<AspectRatio>) getIntent().getSerializableExtra(ImageEditorIntentBuilder.ASPECT_RATIOS);
+        aspectRatioMin = getIntent().getFloatExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MIN, CropFragment.NO_ASPECT_RATIO_LIMIT);
+        aspectRatioMinMsg = getIntent().getStringExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MIN_MSG);
+        aspectRatioMax = getIntent().getFloatExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MAX, CropFragment.NO_ASPECT_RATIO_LIMIT);
+        aspectRatioMaxMsg = getIntent().getStringExtra(ImageEditorIntentBuilder.ASPECT_RATIO_MAX_MSG);
     }
 
     private void initView() {
@@ -215,7 +230,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 this.getSupportFragmentManager());
         stickerFragment = StickerFragment.newInstance();
         filterListFragment = FilterListFragment.newInstance();
+
         cropFragment = CropFragment.newInstance();
+        cropFragment.setAspectRatios(aspectRatios);
+        cropFragment.setMinimumAspectRatio(aspectRatioMin, aspectRatioMinMsg);
+        cropFragment.setMaximumAspectRatio(aspectRatioMax, aspectRatioMaxMsg);
+
         rotateFragment = RotateFragment.newInstance();
         paintFragment = PaintFragment.newInstance();
         beautyFragment = BeautyFragment.newInstance();
@@ -363,6 +383,20 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     protected void doSaveImage() {
         if (numberOfOperations <= 0)
             return;
+
+        float aspectRatio = (float) mainBitmap.getWidth() / mainBitmap.getHeight();
+
+        if (aspectRatioMin != CropFragment.NO_ASPECT_RATIO_LIMIT &&
+                aspectRatio < aspectRatioMin) {
+            Toast.makeText(this, aspectRatioMinMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (aspectRatioMax != CropFragment.NO_ASPECT_RATIO_LIMIT &&
+                aspectRatio > aspectRatioMax) {
+            Toast.makeText(this, aspectRatioMaxMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         compositeDisposable.clear();
 

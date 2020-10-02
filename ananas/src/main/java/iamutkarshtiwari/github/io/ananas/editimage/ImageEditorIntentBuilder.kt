@@ -3,6 +3,7 @@ package iamutkarshtiwari.github.io.ananas.editimage
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.AspectRatio
 
 class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Context,
                                                          private val sourcePath: String?,
@@ -92,6 +93,23 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
+    fun withAspectRatios(aspectRatios: ArrayList<AspectRatio>): ImageEditorIntentBuilder {
+        intent.putExtra(ASPECT_RATIOS, aspectRatios)
+        return this
+    }
+
+    fun withMinimumAspectRatios(minimumAspectRatio: Float, validationMessage: String): ImageEditorIntentBuilder {
+        intent.putExtra(ASPECT_RATIO_MIN, minimumAspectRatio)
+        intent.putExtra(ASPECT_RATIO_MIN_MSG, validationMessage)
+        return this
+    }
+
+    fun withMaximumAspectRatios(maximumAspectRatio: Float, validationMessage: String): ImageEditorIntentBuilder {
+        intent.putExtra(ASPECT_RATIO_MAX, maximumAspectRatio)
+        intent.putExtra(ASPECT_RATIO_MAX_MSG, validationMessage)
+        return this
+    }
+
     fun forcePortrait(isForcePortrait: Boolean): ImageEditorIntentBuilder {
         intent.putExtra(FORCE_PORTRAIT, isForcePortrait)
         return this
@@ -141,5 +159,11 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val FORCE_PORTRAIT = "force_portrait"
         const val EDITOR_TITLE = "editor_title"
         const val SUPPORT_ACTION_BAR_VISIBILITY = "support_action_bar_visibility"
+
+        const val ASPECT_RATIOS = "aspect_ratios"
+        const val ASPECT_RATIO_MIN = "aspect_ratio_min"
+        const val ASPECT_RATIO_MIN_MSG = "aspect_ratio_min_msg"
+        const val ASPECT_RATIO_MAX = "aspect_ratio_max"
+        const val ASPECT_RATIO_MAX_MSG = "aspect_ratio_max_msg"
     }
 }
