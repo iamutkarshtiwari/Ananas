@@ -19,38 +19,29 @@ public class StickerView extends View {
     private static int STATUS_ROTATE = 3;
 
     private int imageCount;
-    private Context mContext;
     private int currentStatus;
     private StickerItem currentItem;
     private float oldx, oldy;
-
-    private Paint rectPaint = new Paint();
-    private Paint boxPaint = new Paint();
 
     private LinkedHashMap<Integer, StickerItem> bank = new LinkedHashMap<Integer, StickerItem>();
 
     public StickerView(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public StickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public StickerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        this.mContext = context;
+    private void init() {
         currentStatus = STATUS_IDLE;
-
-        rectPaint.setColor(Color.RED);
-        rectPaint.setAlpha(100);
-
     }
 
     public void addBitImage(final Bitmap addBit) {
@@ -145,7 +136,7 @@ public class StickerView extends View {
                     float dx = x - oldx;
                     float dy = y - oldy;
                     if (currentItem != null) {
-                        currentItem.updateRotateAndScale(oldx, oldy, dx, dy);
+                        currentItem.updateRotateAndScale(dx, dy);
                         invalidate();
                     }
                     oldx = x;

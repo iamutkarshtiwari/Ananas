@@ -43,7 +43,6 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
-import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.PermissionUtils;
 import iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView;
@@ -51,8 +50,6 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomViewPager;
 import iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.SaturationView;
-import iamutkarshtiwari.github.io.ananas.editimage.view.StickerView;
-import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
 import iamutkarshtiwari.github.io.ananas.editimage.widget.RedoUndoController;
@@ -84,10 +81,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public String sourceFilePath;
     public String outputFilePath;
     public String editorTitle;
-    public StickerView stickerView;
     public CropImageView cropPanel;
     public ImageViewTouch mainImage;
-    public TextStickerView textStickerView;
     public int mode = MODE_NONE;
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
@@ -114,7 +109,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private TextView titleView;
     private MainMenuFragment mainMenuFragment;
     private RedoUndoController redoUndoController;
-    private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static void start(Activity activity, Intent intent, int requestCode) {
@@ -199,10 +193,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         View backBtn = findViewById(R.id.back_btn);
         backBtn.setOnClickListener(v -> onBackPressed());
 
-        stickerView = findViewById(R.id.sticker_panel);
         cropPanel = findViewById(R.id.crop_panel);
         rotatePanel = findViewById(R.id.rotate_panel);
-        textStickerView = findViewById(R.id.text_sticker_panel);
         paintView = findViewById(R.id.custom_paint_view);
         brightnessView = findViewById(R.id.brightness_panel);
         saturationView = findViewById(R.id.contrast_panel);
@@ -222,7 +214,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         brightnessFragment = BrightnessFragment.newInstance();
         saturationFragment = SaturationFragment.newInstance();
         addTextFragment = AddTextFragment.newInstance();
-        setOnMainBitmapChangeListener(addTextFragment);
 
         bottomGallery.setAdapter(bottomGalleryAdapter);
 
@@ -243,10 +234,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         } else {
             loadImageFromUri(sourceUri);
         }
-    }
-
-    private void setOnMainBitmapChangeListener(OnMainBitmapChangeListener listener) {
-        onMainBitmapChangeListener = listener;
     }
 
     @Override
@@ -342,10 +329,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             mainBitmap = newBit;
             mainImage.setImageBitmap(mainBitmap);
             mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-
-            if (mode == MODE_TEXT) {
-                onMainBitmapChangeListener.onMainBitmapChange();
-            }
         }
     }
 
