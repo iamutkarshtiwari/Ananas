@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -27,20 +28,65 @@
         style="@style/edit_text_style"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/add_text_color_picker_recycler_view"
+        android:layout_above="@+id/add_text_style_layout"
         android:layout_below="@+id/add_text_done_tv"
         android:gravity="center"
         android:inputType="textMultiLine"
         android:textSize="@dimen/text_size_40sp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/add_text_color_picker_recycler_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/add_text_style_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:background="@android:color/black"
-        tools:listitem="@layout/color_picker_item_list" />
+        android:layout_alignParentBottom="true">
 
+        <TextView
+            android:id="@+id/add_text_choose_font"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Roboto"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/background_border"
+            android:padding="@dimen/padding_10dp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/add_text_color_picker_recycler_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/add_text_bold"/>
+
+        <ImageButton
+            android:id="@+id/add_text_bold"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="8dp"
+            android:src="@drawable/ic_format_bold"
+            android:background="@drawable/background_border"
+            app:layout_constraintTop_toTopOf="@id/add_text_choose_font"
+            app:layout_constraintBottom_toBottomOf="@id/add_text_choose_font"
+            app:layout_constraintStart_toEndOf="@id/add_text_choose_font"
+            app:layout_constraintEnd_toEndOf="@id/add_text_italic"/>
+
+        <ImageButton
+            android:id="@+id/add_text_italic"
+            android:layout_width="48dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_format_italic"
+            android:background="@drawable/background_border"
+            app:layout_constraintTop_toTopOf="@id/add_text_choose_font"
+            app:layout_constraintBottom_toBottomOf="@id/add_text_choose_font"
+            app:layout_constraintStart_toEndOf="@id/add_text_bold"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/add_text_color_picker_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/color_picker_item_list" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

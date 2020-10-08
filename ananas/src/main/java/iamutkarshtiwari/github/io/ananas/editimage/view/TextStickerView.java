@@ -2,6 +2,7 @@ package iamutkarshtiwari.github.io.ananas.editimage.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,9 +50,9 @@ public class TextStickerView extends View {
         editTextListener = listener;
     }
 
-    public void addText(final String text, int color) {
+    public void addText(final String text, int color, Typeface font, int style) {
         TextStickerItem item = new TextStickerItem(this.getContext());
-        item.init(text, color, this);
+        item.init(text, color, font, style, this);
         if (currentItem != null) {
             currentItem.isDrawHelpTool = false;
         }

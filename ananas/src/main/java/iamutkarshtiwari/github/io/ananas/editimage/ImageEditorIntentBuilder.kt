@@ -2,6 +2,7 @@ package iamutkarshtiwari.github.io.ananas.editimage
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 
 class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Context,
@@ -89,6 +90,11 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
 
     fun withOutputPath(outputPath: String): ImageEditorIntentBuilder {
         intent.putExtra(OUTPUT_PATH, outputPath)
+        return this
+    }
+
+    fun withFonts(fonts: HashMap<String, Typeface>): ImageEditorIntentBuilder {
+        EditImageActivity.fonts = fonts
         return this
     }
 

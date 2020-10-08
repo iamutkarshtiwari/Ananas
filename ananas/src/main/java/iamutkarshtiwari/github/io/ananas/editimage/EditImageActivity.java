@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -71,7 +74,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public static final int MODE_BEAUTY = 7;
     public static final int MODE_BRIGHTNESS = 8;
     public static final int MODE_SATURATION = 9;
+    public static HashMap<String, Typeface> fonts;
     private static final int PERMISSIONS_REQUEST_CODE = 110;
+
     private final String[] requiredPermissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -213,7 +218,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         beautyFragment = BeautyFragment.newInstance();
         brightnessFragment = BrightnessFragment.newInstance();
         saturationFragment = SaturationFragment.newInstance();
-        addTextFragment = AddTextFragment.newInstance();
+        addTextFragment = AddTextFragment.newInstance(fonts);
 
         bottomGallery.setAdapter(bottomGalleryAdapter);
 
@@ -308,7 +313,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                     alertDialogBuilder.setMessage(R.string.iamutkarshtiwari_github_io_ananas_exit_without_save)
-                            .setCancelable(false).setPositiveButton(R.string.iamutkarshtiwari_github_io_ananas_confirm, (dialog, id) -> finish()).setNegativeButton(R.string.iamutkarshtiwari_github_io_ananas_cancel, (dialog, id) -> dialog.cancel());
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.iamutkarshtiwari_github_io_ananas_confirm, (dialog, id) -> finish())
+                            .setNegativeButton(R.string.iamutkarshtiwari_github_io_ananas_cancel, (dialog, id) -> dialog.cancel());
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();

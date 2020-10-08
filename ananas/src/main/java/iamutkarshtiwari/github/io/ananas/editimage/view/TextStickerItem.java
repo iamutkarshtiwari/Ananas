@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.view.View;
 
@@ -23,8 +24,11 @@ public class TextStickerItem {
 
     private static final int BUTTON_WIDTH = Constants.STICKER_BTN_HALF_SIZE;
 
-    public String text;
-    public final TextPaint fontPaint;
+    private String text;
+    private Typeface font;
+    private int style;
+
+    private final TextPaint fontPaint;
 
     private RectF textBaseline;
     private RectF helpBox;
@@ -64,16 +68,25 @@ public class TextStickerItem {
         }
     }
 
-    public void init(String addText, int color, View parentView) {
-        text = addText;
+    public String getText() { return text; }
+    public int getColor() { return fontPaint.getColor(); }
+    public Typeface getFont() { return font; }
+    public int getStyle() { return style; }
+
+    public void init(String text, int color, Typeface font, int style, View parentView) {
+        this.text = text;
+        this.font = font;
+        this.style = style;
+
         fontPaint.setColor(color);
+        fontPaint.setTypeface(Typeface.create(font, style));
 
         Rect bounds = new Rect();
         fontPaint.getTextBounds(text, 0, text.length(), bounds);
 
         int textWidth = bounds.width();
         int textHeight = bounds.height();
-        int left = (parentView.getWidth() >> 1) - (textWidth >> 1);
+        int left = (parentView.getWidth() >> 1) - (textWidth >> 1) - bounds.left;
         int top = (parentView.getHeight() >> 1) - (textHeight >> 1);
 
         textBaseline = new RectF(left, top, left + textWidth, top);
@@ -83,7 +96,7 @@ public class TextStickerItem {
         helpBox = new RectF(
                 textBaseline.left,
                 textBaseline.top + bounds.top,
-                textBaseline.right,
+                textBaseline.right + (bounds.right - textWidth),
                 textBaseline.top + bounds.bottom);
 
         updateHelpBoxRect();
@@ -100,41 +113,39 @@ public class TextStickerItem {
         detectDeleteRect = new RectF(deleteRect);
     }
 
-    public void update(String text, int color) {
+    public void update(String text, int color, Typeface font, int style) {
+        this.text = text;
+        this.font = font;
+        this.style = style;
+
         fontPaint.setColor(color);
+        fontPaint.setTypeface(Typeface.create(font, style));
 
-        if (!this.text.equals(text)) {
-            this.text = text;
+        Rect bounds = new Rect();
+        fontPaint.getTextBounds(text, 0, text.length(), bounds);
 
-            Rect bounds = new Rect();
-            fontPaint.getTextBounds(text, 0, text.length(), bounds);
+        textBaseline.right = textBaseline.left + bounds.width();
 
-            textBaseline.right = textBaseline.left + bounds.width();
+        helpBox.set(textBaseline.left,
+                textBaseline.top + bounds.top,
+                textBaseline.right + bounds.left + (bounds.right - bounds.width()),
+                textBaseline.top + bounds.bottom);
 
-            helpBox.set(textBaseline.left,
-                    textBaseline.top + bounds.top,
-                    textBaseline.right,
-                    textBaseline.top + bounds.bottom);
+        updateHelpBoxRect();
 
-            updateHelpBoxRect();
+        deleteRect = new RectF(helpBox.left - BUTTON_WIDTH, helpBox.top
+                - BUTTON_WIDTH, helpBox.left + BUTTON_WIDTH, helpBox.top
+                + BUTTON_WIDTH);
 
-            this.helpBox = new RectF(textBaseline.left, textBaseline.top + bounds.top, textBaseline.right, textBaseline.top + bounds.bottom);
-            updateHelpBoxRect();
+        rotateRect = new RectF(helpBox.right - BUTTON_WIDTH, helpBox.bottom
+                - BUTTON_WIDTH, helpBox.right + BUTTON_WIDTH, helpBox.bottom
+                + BUTTON_WIDTH);
 
-            deleteRect = new RectF(helpBox.left - BUTTON_WIDTH, helpBox.top
-                    - BUTTON_WIDTH, helpBox.left + BUTTON_WIDTH, helpBox.top
-                    + BUTTON_WIDTH);
-
-            rotateRect = new RectF(helpBox.right - BUTTON_WIDTH, helpBox.bottom
-                    - BUTTON_WIDTH, helpBox.right + BUTTON_WIDTH, helpBox.bottom
-                    + BUTTON_WIDTH);
-
-            Matrix m = new Matrix();
-            m.setRotate(rotateAngle, textBaseline.centerX(), textBaseline.centerY());
-            m.mapRect(detectRect, helpBox);
-            m.mapRect(detectDeleteRect, deleteRect);
-            m.mapRect(detectRotateRect, rotateRect);
-        }
+        Matrix m = new Matrix();
+        m.setRotate(rotateAngle, textBaseline.centerX(), textBaseline.centerY());
+        m.mapRect(detectRect, helpBox);
+        m.mapRect(detectDeleteRect, deleteRect);
+        m.mapRect(detectRotateRect, rotateRect);
     }
 
     private void updateHelpBoxRect() {
@@ -187,7 +198,11 @@ public class TextStickerItem {
         Rect bounds = new Rect();
         fontPaint.getTextBounds(text, 0, text.length(), bounds);
 
-        helpBox.set(textBaseline.left, textBaseline.top + bounds.top, textBaseline.right, textBaseline.top + bounds.bottom);
+        helpBox.set(textBaseline.left,
+                textBaseline.top + bounds.top,
+                textBaseline.right + (bounds.right - bounds.width()),
+                textBaseline.top + bounds.bottom);
+
         updateHelpBoxRect();
 
         rotateRect.offsetTo(helpBox.right - BUTTON_WIDTH, helpBox.bottom

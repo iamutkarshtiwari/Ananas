@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import iamutkarshtiwari.github.io.ananas.R;
@@ -33,6 +35,7 @@ public class AddTextFragment extends BaseEditFragment implements View.OnClickLis
 
     public static final int INDEX = ModuleConfig.INDEX_ADDTEXT;
     public static final String TAG = AddTextFragment.class.getName();
+    private final HashMap<String, Typeface> fonts;
 
     private View mainView;
     private TextStickerView textStickersParentView;
@@ -40,8 +43,12 @@ public class AddTextFragment extends BaseEditFragment implements View.OnClickLis
     private InputMethodManager inputMethodManager;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public static AddTextFragment newInstance() {
-        return new AddTextFragment();
+    public static AddTextFragment newInstance(HashMap<String, Typeface> fonts) {
+        return new AddTextFragment(fonts);
+    }
+
+    private AddTextFragment(HashMap<String, Typeface> fonts) {
+        this.fonts = fonts;
     }
 
     @Override
@@ -76,17 +83,20 @@ public class AddTextFragment extends BaseEditFragment implements View.OnClickLis
 
     private void showTextEditDialog(final TextStickerItem textItem) {
         TextEditorDialogFragment textEditorDialogFragment =
-                TextEditorDialogFragment.show(activity, textItem.text, textItem.fontPaint.getColor());
+                TextEditorDialogFragment.show(activity, textItem.getText(), textItem.getColor(),
+                        textItem.getFont(), textItem.getStyle(), fonts);
 
-        textEditorDialogFragment.setOnTextEditorListener((inputText, colorCode1) ->
-                textItem.update(inputText, colorCode1));
+        textEditorDialogFragment.setOnTextEditorListener((inputText, colorCode, typeface, style) -> {
+            textItem.update(inputText, colorCode, typeface, style);
+            textStickersParentView.invalidate();
+        });
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.add_text_btn) {
-            TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(activity);
+            TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(activity, fonts);
             textEditorDialogFragment.setOnTextEditorListener(this::addText);
         }
     }
@@ -182,7 +192,7 @@ public class AddTextFragment extends BaseEditFragment implements View.OnClickLis
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void addText(String text, final int colorCodeTextView) {
-        textStickersParentView.addText(text, colorCodeTextView);
+    private void addText(String text, final int colorCodeTextView, Typeface font, int style) {
+        textStickersParentView.addText(text, colorCodeTextView, font, style);
     }
 }

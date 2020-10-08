@@ -18,6 +18,7 @@
     <string name="iamutkarshtiwari_github_io_ananas_saturation">Saturacion</string>
     <string name="iamutkarshtiwari_github_io_ananas_size">Tamaño</string>
     <string name="iamutkarshtiwari_github_io_ananas_opacity">Opacidad</string>
+    <string name="iamutkarshtiwari_github_io_ananas_default_font_name">Defecto</string>
 
     <string name="materialcolorpicker__errHex">Formato de Codigo Hex incorrecto</string>
     <string name="materialcolorpicker__btnSelectColor">Seleccionar</string>
