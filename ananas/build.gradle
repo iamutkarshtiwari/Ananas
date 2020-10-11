@@ -44,7 +44,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:${glide_version}"
     implementation "androidx.core:core-ktx:${core_ktx_version}"
     implementation "com.android.support.constraint:constraint-layout:${constraint_layout_version}"
-    implementation 'com.github.thirstycoda:CarouselPicker:v1.2'
+    implementation 'com.github.thirstycoda:CarouselPicker:v1.4'
 }
 repositories {
     mavenCentral()

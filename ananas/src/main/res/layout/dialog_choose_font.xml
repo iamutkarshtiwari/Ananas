@@ -24,5 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:orientation="vertical"
-        app:items_visible="nine" />
+        app:items_visible="nine"
+        app:unselected_item_opacity="0.5"
+        app:text_max_lines="1"/>
 </LinearLayout>
