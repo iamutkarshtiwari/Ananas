@@ -15,6 +15,7 @@ import android.util.DisplayMetrics;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -116,6 +117,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private RedoUndoController redoUndoController;
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private int backResId;
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
@@ -164,6 +166,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
+        backResId = getIntent().getIntExtra(ImageEditorIntentBuilder.BACK_RESOURCE_ID, 0);
     }
 
     private void initView() {
@@ -196,8 +199,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
         mainImage = findViewById(R.id.main_image);
 
-        View backBtn = findViewById(R.id.back_btn);
+        ImageView backBtn = findViewById(R.id.back_btn);
         backBtn.setOnClickListener(v -> onBackPressed());
+
+        if (backResId > 0) {
+            backBtn.setImageResource(backResId);
+        }
 
         stickerView = findViewById(R.id.sticker_panel);
         cropPanel = findViewById(R.id.crop_panel);

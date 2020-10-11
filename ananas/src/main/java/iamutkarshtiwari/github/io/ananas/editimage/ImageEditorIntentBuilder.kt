@@ -92,6 +92,11 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
+    fun withBackDrawable(backResId: Int): ImageEditorIntentBuilder {
+        intent.putExtra(BACK_RESOURCE_ID, backResId)
+        return this
+    }
+
     fun forcePortrait(isForcePortrait: Boolean): ImageEditorIntentBuilder {
         intent.putExtra(FORCE_PORTRAIT, isForcePortrait)
         return this
@@ -141,5 +146,6 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val FORCE_PORTRAIT = "force_portrait"
         const val EDITOR_TITLE = "editor_title"
         const val SUPPORT_ACTION_BAR_VISIBILITY = "support_action_bar_visibility"
+        const val BACK_RESOURCE_ID = "back_res_id"
     }
 }
