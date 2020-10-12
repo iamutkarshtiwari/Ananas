@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import in.goodiebag.carouselpicker.CarouselPicker;
@@ -96,18 +98,18 @@ public class FontChooserDialogFragment extends DialogFragment {
         CarouselPicker carouselPicker = view.findViewById(R.id.choose_font_carousel);
 
         int initialFontPosition = -1;
-
-        ArrayList<String> fontNames = new ArrayList<>();
+        int count = 0;
 
         carouselPicker.setOffscreenPageLimit(9);
+        TreeSet<String> fontNames = new TreeSet<>(fonts.keySet());
         List<CarouselPicker.PickerItem> textItems = new ArrayList<>();
 
-        for (Map.Entry<String, Typeface> font : fonts.entrySet()) {
-            String name = font.getKey();
-            fontNames.add(name);
+        for (String key : fontNames) {
+            String name = key;
+            Typeface font = fonts.get(key);
 
-            if (initialFontPosition == -1 && font.getValue().equals(initialFont)) {
-                initialFontPosition = fontNames.size() - 1;
+            if (initialFontPosition == -1 && font.equals(initialFont)) {
+                initialFontPosition = count;
             }
 
             if (!TextUtils.isEmpty(text)) {
@@ -118,9 +120,8 @@ public class FontChooserDialogFragment extends DialogFragment {
             // and end of fonts, particularly when using the italic style
             name = " " + name + " ";
 
-                    // TODO: disable text wrap for long messages
-            // TODO: some fonts Bold & Italic Monospace gets cut off
-            textItems.add(new CarouselPicker.TextItem(name, 20, color, font.getValue(), CarouselPicker.TextItem.FontStyle.values()[fontStyle]));
+            textItems.add(new CarouselPicker.TextItem(name, 20, color, font, CarouselPicker.TextItem.FontStyle.values()[fontStyle]));
+            count++;
         }
 
         CarouselPicker.CarouselViewAdapter textAdapter =
@@ -132,7 +133,7 @@ public class FontChooserDialogFragment extends DialogFragment {
         //Make a callback on activity when user is done with text editing
         doneTv.setOnClickListener(view1 -> {
             if (onFontChosenListener != null) {
-                String fontName = fontNames.get(carouselPicker.getCurrentItem());
+                String fontName = new ArrayList<String>(fontNames).get(carouselPicker.getCurrentItem());
                 Typeface font = ((CarouselPicker.TextItem) textItems.get(carouselPicker.getCurrentItem())).getFont();
 
                 onFontChosenListener.onDone(fontName, font);
