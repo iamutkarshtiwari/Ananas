@@ -318,7 +318,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 break;
             default:
                 if (canAutoExit()) {
-                    onSaveTaskDone();
+                    setResult(RESULT_CANCELED);
+                    finish();
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                     alertDialogBuilder.setMessage(R.string.iamutkarshtiwari_github_io_ananas_exit_without_save)
