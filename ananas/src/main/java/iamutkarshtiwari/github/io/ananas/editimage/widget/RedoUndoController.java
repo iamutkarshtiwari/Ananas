@@ -2,6 +2,9 @@ package iamutkarshtiwari.github.io.ananas.editimage.widget;
 
 import android.graphics.Bitmap;
 import android.view.View;
+import android.widget.ImageView;
+
+import androidx.core.content.ContextCompat;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -13,8 +16,8 @@ import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
  */
 public class RedoUndoController implements View.OnClickListener {
     private View mRootView;
-    private View mUndoBtn;//撤销按钮
-    private View mRedoBtn;//重做按钮
+    private ImageView mUndoBtn;//撤销按钮
+    private ImageView mRedoBtn;//重做按钮
     private EditImageActivity mActivity;
     private EditCache mEditCache = new EditCache();//保存前一次操作内容 用于撤销操作
 
@@ -86,8 +89,15 @@ public class RedoUndoController implements View.OnClickListener {
     public void updateBtns() {
         //System.out.println("缓存Size = " + mEditCache.getSize() + "  current = " + mEditCache.getCur());
         //System.out.println("content = " + mEditCache.debugLog());
-        mUndoBtn.setVisibility(mEditCache.checkNextBitExist() ? View.VISIBLE : View.INVISIBLE);
-        mRedoBtn.setVisibility(mEditCache.checkPreBitExist() ? View.VISIBLE : View.INVISIBLE);
+        if (mEditCache.checkNextBitExist())
+            mUndoBtn.setImageDrawable(ContextCompat.getDrawable(mUndoBtn.getContext(), R.drawable.ic_undo_24));
+        else
+            mUndoBtn.setImageDrawable(ContextCompat.getDrawable(mUndoBtn.getContext(), R.drawable.ic_undo_disabled_24));
+
+        if (mEditCache.checkPreBitExist())
+            mRedoBtn.setImageDrawable(ContextCompat.getDrawable(mUndoBtn.getContext(), R.drawable.ic_redo_24));
+        else
+            mRedoBtn.setImageDrawable(ContextCompat.getDrawable(mUndoBtn.getContext(), R.drawable.ic_redo_disabled_24));
     }
 
     public void onDestroy() {
