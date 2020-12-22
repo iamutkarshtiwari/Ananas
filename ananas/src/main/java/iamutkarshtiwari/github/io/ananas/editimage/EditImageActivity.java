@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Surface;
@@ -79,8 +81,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    public String sourceFilePath;
-    public String outputFilePath;
+    public Uri sourceUri;
+    public Uri targetUri;
     public String editorTitle;
     public StickerView stickerView;
     public CropImageView cropPanel;
@@ -116,7 +118,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static void start(Activity activity, Intent intent, int requestCode) {
-        if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
+        if (intent.getParcelableExtra(ImageEditorIntentBuilder.SOURCE_URI) == null) {
             Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -149,10 +151,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
-        isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
+        isSupportActionBarEnabled = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
 
-        sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
-        outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
+        sourceUri = (Uri) getIntent().getParcelableExtra(ImageEditorIntentBuilder.SOURCE_URI);
+        targetUri = (Uri) getIntent().getParcelableExtra(ImageEditorIntentBuilder.TARGET_URI);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
     }
 
@@ -228,7 +230,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
 
-        loadImageFromFile(sourceFilePath);
+        loadImageFromFile(sourceUri);
     }
 
     private void setOnMainBitmapChangeListener(OnMainBitmapChangeListener listener) {
@@ -337,8 +339,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     protected void onSaveTaskDone() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_PATH, sourceFilePath);
-        returnIntent.putExtra(ImageEditorIntentBuilder.OUTPUT_PATH, outputFilePath);
+        returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_URI, sourceUri);
+        returnIntent.putExtra(ImageEditorIntentBuilder.TARGET_URI, targetUri);
         returnIntent.putExtra(IS_IMAGE_EDITED, numberOfOperations > 0);
 
         setResult(RESULT_OK, returnIntent);
@@ -370,17 +372,17 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private Single<Boolean> saveImage(Bitmap finalBitmap) {
         return Single.fromCallable(() -> {
-            if (TextUtils.isEmpty(outputFilePath))
+            if (targetUri == null)
                 return false;
 
-            return BitmapUtils.saveBitmap(finalBitmap, outputFilePath);
+            return BitmapUtils.saveBitmap(getContentResolver(), finalBitmap, targetUri);
         });
     }
 
-    private void loadImageFromFile(String filePath) {
+    private void loadImageFromFile(Uri uri) {
         compositeDisposable.clear();
 
-        Disposable loadImageDisposable = loadImage(filePath)
+        Disposable loadImageDisposable = loadImage(uri)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> loadingDialog.show())
@@ -390,9 +392,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         compositeDisposable.add(loadImageDisposable);
     }
 
-    private Single<Bitmap> loadImage(String filePath) {
-        return Single.fromCallable(() -> BitmapUtils.getSampledBitmap(filePath, imageWidth,
-                imageHeight));
+    private Single<Bitmap> loadImage(Uri uri) {
+        return Single.fromCallable(() -> MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri));
     }
 
     private void showToast(@StringRes int resId) {

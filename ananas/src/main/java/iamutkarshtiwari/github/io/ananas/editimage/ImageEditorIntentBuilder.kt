@@ -2,10 +2,11 @@ package iamutkarshtiwari.github.io.ananas.editimage
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 
 class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Context,
-                                                         private val sourcePath: String?,
-                                                         private val outputPath: String?,
+                                                         private val sourceUri: Uri?,
+                                                         private val targetUri: Uri?,
                                                          private val intent: Intent = Intent(
                                                                  context,
                                                                  EditImageActivity::class.java
@@ -62,13 +63,13 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
-    fun withSourcePath(sourcePath: String): ImageEditorIntentBuilder {
-        intent.putExtra(SOURCE_PATH, sourcePath)
+    fun withSourceUri(sourceUri: Uri?): ImageEditorIntentBuilder {
+        intent.putExtra(SOURCE_URI, sourceUri)
         return this
     }
 
-    fun withOutputPath(outputPath: String): ImageEditorIntentBuilder {
-        intent.putExtra(OUTPUT_PATH, outputPath)
+    fun withTargetUri(targetUri: Uri?): ImageEditorIntentBuilder {
+        intent.putExtra(TARGET_URI, targetUri)
         return this
     }
 
@@ -85,16 +86,16 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
     @Throws(Exception::class)
     fun build(): Intent {
 
-        if (sourcePath.isNullOrBlank()) {
-            throw Exception("Output image path required. Use withOutputPath(path) to provide the output image path.")
+        if (sourceUri==null) {
+            throw Exception("Input image uri is required. Use withSourceUri to write input image uri")
         } else {
-            intent.putExtra(SOURCE_PATH, sourcePath)
+            intent.putExtra(SOURCE_URI, sourceUri)
         }
 
-        if (outputPath.isNullOrBlank()) {
-            throw Exception("Output image path required. Use withOutputPath(path) to provide the output image path.")
+        if (targetUri==null) {
+            throw Exception("Output image uri is required. Use withTargetUri to write output image uri")
         } else {
-            intent.putExtra(OUTPUT_PATH, outputPath)
+            intent.putExtra(TARGET_URI, targetUri)
         }
 
         return intent
@@ -111,8 +112,8 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val BEAUTY_FEATURE = "beauty_feature"
         const val STICKER_FEATURE = "sticker_feature"
 
-        const val SOURCE_PATH = "source_path"
-        const val OUTPUT_PATH = "output_path"
+        const val SOURCE_URI = "source_uri"
+        const val TARGET_URI = "target_uri"
         const val FORCE_PORTRAIT = "force_portrait"
         const val EDITOR_TITLE = "editor_title"
         const val SUPPORT_ACTION_BAR_VISIBILITY = "support_action_bar_visibility"

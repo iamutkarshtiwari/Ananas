@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void editImageClick() {
         File outputFile = FileUtils.genEditFile();
         try {
-            Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
+            Intent intent = new ImageEditorIntentBuilder(this, Uri.fromFile(new File(path)), Uri.fromFile(new File(outputFile.getAbsolutePath())))
                     .withAddText()
                     .withPaintFeature()
                     .withFilterFeature()
@@ -228,17 +228,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void handleEditorImage(Intent data) {
-        String newFilePath = data.getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
+        Uri newFileUri = (Uri) data.getParcelableExtra(ImageEditorIntentBuilder.TARGET_URI);
         boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false);
 
         if (isImageEdit) {
-            Toast.makeText(this, getString(R.string.save_path, newFilePath), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.save_path, newFileUri.getPath()), Toast.LENGTH_LONG).show();
         } else {
-            newFilePath = data.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+            newFileUri = (Uri) data.getParcelableExtra(ImageEditorIntentBuilder.SOURCE_URI);
 
         }
 
-        loadImage(newFilePath);
+        loadBitmapFromUri(newFileUri);
     }
 
     private void handleSelectFromAblum(Intent data) {
@@ -255,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .doFinally(() -> loadingDialog.dismiss())
                 .subscribe(
                         this::setMainBitmap,
-                        e -> { e.printStackTrace();
+                        e -> {
+                            e.printStackTrace();
                             Toast.makeText(
-                                this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();}
+                                    this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();
+                        }
                 );
 
         compositeDisposable.add(applyRotationDisposable);
@@ -280,6 +282,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imageWidth / 4,
                         imageHeight / 4
                 )
+        );
+    }
+
+    private Single<Bitmap> loadBitmapFromUri(Uri uri) {
+        return Single.fromCallable(() ->
+                MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri)
         );
     }
 }

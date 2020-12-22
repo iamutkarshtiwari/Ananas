@@ -17,6 +17,7 @@
 package iamutkarshtiwari.github.io.ananas.editimage.utils;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -26,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
@@ -392,5 +394,19 @@ public class BitmapUtils {
             return false;
         }
     }
-
+    public static boolean saveBitmap(ContentResolver contentResolver,Bitmap bitmap, Uri uri) {
+        try {
+            OutputStream out = contentResolver.openOutputStream(uri);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
