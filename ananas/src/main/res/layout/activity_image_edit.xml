@@ -62,7 +62,7 @@
         </ViewFlipper>
     </RelativeLayout>
 
-    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomViewPager
+    <kuanweitw.github.io.ananas.editimage.view.CustomViewPager
         android:id="@+id/bottom_gallery"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/bottom_banner_height"
@@ -78,55 +78,55 @@
         android:layout_below="@id/banner"
         android:background="#000000">
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
+        <kuanweitw.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
             android:id="@+id/main_image"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView
+        <kuanweitw.github.io.ananas.editimage.view.RotateImageView
             android:id="@+id/rotate_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.layout.ZoomLayout
+        <kuanweitw.github.io.ananas.editimage.layout.ZoomLayout
             android:id="@+id/text_sticker_panel_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView
+            <kuanweitw.github.io.ananas.editimage.view.TextStickerView
                 android:id="@+id/text_sticker_panel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="gone"/>
 
-        </iamutkarshtiwari.github.io.ananas.editimage.layout.ZoomLayout>
+        </kuanweitw.github.io.ananas.editimage.layout.ZoomLayout>
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView
+        <kuanweitw.github.io.ananas.editimage.view.CustomPaintView
             android:id="@+id/custom_paint_view"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView
+        <kuanweitw.github.io.ananas.editimage.view.BrightnessView
             android:id="@+id/brightness_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.SaturationView
+        <kuanweitw.github.io.ananas.editimage.view.SaturationView
             android:id="@+id/contrast_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <iamutkarshtiwari.github.io.ananas.editimage.view.StickerView
+        <kuanweitw.github.io.ananas.editimage.view.StickerView
             android:id="@+id/sticker_panel"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

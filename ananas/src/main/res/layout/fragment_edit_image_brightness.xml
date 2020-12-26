@@ -11,7 +11,7 @@
         android:layout_centerVertical="true"
         android:src="@drawable/image_edit_back" />
 
-    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+    <kuanweitw.github.io.ananas.editimage.view.CustomSeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

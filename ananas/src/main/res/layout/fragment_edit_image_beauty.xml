@@ -33,7 +33,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+            <kuanweitw.github.io.ananas.editimage.view.CustomSeekBar
                 android:id="@+id/smooth_value_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+            <kuanweitw.github.io.ananas.editimage.view.CustomSeekBar
                 android:id="@+id/white_skin_value_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

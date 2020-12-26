@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import iamutkarshtiwari.github.io.ananas.editimage.widget.EditCache;
+import kuanweitw.github.io.ananas.editimage.widget.EditCache;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

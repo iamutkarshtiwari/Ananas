@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="iamutkarshtiwari.github.io.ananas">
+    package="kuanweitw.github.io.ananas">
 
     <application>
         <activity
-            android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity"
+            android:name="kuanweitw.github.io.ananas.editimage.EditImageActivity"
             android:label="@string/iamutkarshtiwari_github_io_ananas_library_name"
             android:exported="true" />
 
-        <activity android:name=".picchooser.SelectPictureActivity" />
+        <activity android:name="kuanweitw.github.io.ananas.picchooser.SelectPictureActivity" />
     </application>
 
 </manifest>
