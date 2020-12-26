@@ -5,7 +5,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "io.github.iamutkarshtiwari.ananasproject"
+        applicationId "io.github.kuanweitw.ananasproject"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

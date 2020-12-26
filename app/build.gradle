@@ -4,7 +4,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 android {
     compileSdkVersion project.ext.compileSdkVersion
     defaultConfig {
-        applicationId "io.github.iamutkarshtiwari.ananasproject"
+        applicationId "io.github.kuanweitw.ananasproject"
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
         versionCode 1

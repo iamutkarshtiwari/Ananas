@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'kotlin-kapt'
 
-group='com.github.iamutkarshtiwari'
+group='com.github.kuanweitw'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
