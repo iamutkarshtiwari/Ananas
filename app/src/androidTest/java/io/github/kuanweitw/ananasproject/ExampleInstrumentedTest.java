@@ -1,4 +1,4 @@
-package io.github.iamutkarshtiwari.ananasproject;
+package io.github.kuanweitw.ananasproject;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
