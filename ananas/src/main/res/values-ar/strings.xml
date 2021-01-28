@@ -1,0 +1,109 @@
+<resources>
+    <string name="iamutkarshtiwari_github_io_ananas_library_name">معدل الصور</string>
+    <string name="iamutkarshtiwari_github_io_ananas_no_images">لم يتم العثور على صورة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_images">%d الصور</string>
+    <string name="iamutkarshtiwari_github_io_ananas_done">منجز</string>
+    <string name="iamutkarshtiwari_github_io_ananas_apply">تطبيق</string>
+
+    <string name="iamutkarshtiwari_github_io_ananas_stickers">ملصقات</string>
+    <string name="iamutkarshtiwari_github_io_ananas_filter">المرشحات</string>
+    <string name="iamutkarshtiwari_github_io_ananas_crop">  قتصاص</string>
+    <string name="iamutkarshtiwari_github_io_ananas_rotate">استدارة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_text">نص</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brush">فرشاة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_eraser">ممحاة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_edit">تعديل</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brightness">سطوع</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saturation">التشبع</string>
+    <string name="iamutkarshtiwari_github_io_ananas_size">بحجم</string>
+    <string name="iamutkarshtiwari_github_io_ananas_opacity">العتامة</string>
+
+    <string name="materialcolorpicker__errHex">تنسيق الكود السداسي غير صحيح</string>
+    <string name="materialcolorpicker__btnSelectColor">تحديد</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saving_image">إنقاذ…</string>
+    <string name="iamutkarshtiwari_github_io_ananas_input_hint">أدخل نصآ…</string>
+
+    <string name="iamutkarshtiwari_github_io_ananas_not_selected">الرجاء اختيار صورة للتحرير</string>
+    <string name="iamutkarshtiwari_github_io_ananas_auto_newline">خط جديد تلقائي</string>
+    <string name="iamutkarshtiwari_github_io_ananas_save_error">حفظ الخطأ</string>
+    <string name="iamutkarshtiwari_github_io_ananas_load_error">فشل تحميل الصورة!</string>
+    <string name="iamutkarshtiwari_github_io_ananas_loading">جار التحميل…</string>
+    <string name="iamutkarshtiwari_github_io_ananas_pick_a_color">اختر لونا</string>
+
+    <string name="iamutkarshtiwari_github_io_ananas_free_size">مجانا</string>
+    <string name="iamutkarshtiwari_github_io_ananas_fit_image">أصلي</string>
+    <string name="iamutkarshtiwari_github_io_ananas_square">ميدان</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio3_4">3:4</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio4_3">4:3</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio9_16">9:16</string>
+    <string name="iamutkarshtiwari_github_io_ananas_ratio16_9">16:9</string>
+
+    <string-array name="iamutkarshtiwari_github_io_ananas_filters">
+        <item>الأصل</item>
+        <item>ناعم</item>
+        <item>أسود</item>
+        <item>كلاسيك</item>
+        <item>رائع</item>
+        <item>ريترو</item>
+        <item>نعمة او وقت سماح</item>
+        <item>فيلم</item>
+        <item>ذاكرة</item>
+        <item>زبادي</item>
+        <item>عابر</item>
+        <item>يلمع</item>
+    </string-array>
+
+    <string-array translatable="false" name="iamutkarshtiwari_github_io_ananas_filter_drawable_list">
+        <item>filter_1</item>
+        <item>filter_2</item>
+        <item>filter_3</item>
+        <item>filter_4</item>
+        <item>filter_5</item>
+        <item>filter_6</item>
+        <item>filter_7</item>
+        <item>filter_8</item>
+        <item>filter_9</item>
+        <item>filter_10</item>
+        <item>filter_11</item>
+        <item>filter_12</item>
+    </string-array>
+
+    <string-array translatable="false" name="iamutkarshtiwari_github_io_ananas_types">
+        <item>type1</item>
+        <item>type2</item>
+        <item>type3</item>
+        <item>type4</item>
+        <item>type5</item>
+        <item>type6</item>
+    </string-array>
+
+    <string-array name="iamutkarshtiwari_github_io_ananas_type_names">
+        <item>نوع 1</item>
+        <item>نوع 2</item>
+        <item>نوع 3</item>
+        <item>نوع 4</item>
+        <item>نوع 5</item>
+        <item>نوع 6</item>
+    </string-array>
+
+    <integer-array translatable="false" name="iamutkarshtiwari_github_io_ananas_type_count">
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>5</item>
+        <item>3</item>
+        <item>5</item>
+    </integer-array>
+
+    <string name="iamutkarshtiwari_github_io_ananas_more">أكثر</string>
+    <string name="iamutkarshtiwari_github_io_ananas_exit_without_save">لا يتم حفظ الصورة المحررة. هل تريد الخروج؟ </string>
+    <string name="iamutkarshtiwari_github_io_ananas_confirm">تؤكد</string>
+    <string name="iamutkarshtiwari_github_io_ananas_cancel">إلغاء</string>
+
+    <string name="iamutkarshtiwari_github_io_ananas_beauty">جمال</string>
+    <string name="iamutkarshtiwari_github_io_ananas_smooth">نعومة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_white_skin">لون البشرة</string>
+
+    <item type="id" translatable="false" name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH" />
+    <item type="id" translatable="false" name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT" />
+</resources>
