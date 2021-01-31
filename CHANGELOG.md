@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 # Released
 
+## [1.2.5]
+- Added Arabic and French locales
+- Fixed image orientation issue while loading bitmap
+- Fixed demo app crash on Android Q and above while loading images 
+
 ## [1.2.4]
 ### Enhancement
 - Added toggle for SupportActionBar
