@@ -155,6 +155,7 @@ public class TextEditorDialogFragment extends DialogFragment {
             }
 
             if (!fontFound) {
+                fonts.put(getString(R.string.iamutkarshtiwari_github_io_ananas_default_font_name), font);
                 chooseFont.setText(getString(R.string.iamutkarshtiwari_github_io_ananas_default_font_name));
             }
 
