@@ -17,6 +17,7 @@
     <string name="iamutkarshtiwari_github_io_ananas_saturation">Saturation</string>
     <string name="iamutkarshtiwari_github_io_ananas_size">Size</string>
     <string name="iamutkarshtiwari_github_io_ananas_opacity">Opacity</string>
+    <string name="iamutkarshtiwari_github_io_ananas_default_font_name">Default</string>
 
     <string name="materialcolorpicker__errHex">Hex Code Format incorrect</string>
     <string name="materialcolorpicker__btnSelectColor">Select</string>

@@ -73,7 +73,7 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         public void onClick(View v) {
             String data = (String) v.getTag(R.id.iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH);
             int count = (int) v.getTag(R.id.iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT);
-            stickerFragment.swipToStickerDetails(data, count);
+            stickerFragment.swipeToStickerDetails(data, count);
         }
     }
 }

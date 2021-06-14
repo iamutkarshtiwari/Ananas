@@ -2,6 +2,8 @@ package iamutkarshtiwari.github.io.ananas.editimage
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
+import android.net.Uri
 
 class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Context,
                                                          private val sourcePath: String?,
@@ -11,6 +13,17 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
                                                                  EditImageActivity::class.java
                                                          )
 ) {
+    private var sourceUri: Uri? = null
+
+    @JvmOverloads constructor(context: Context,
+                sourceUri: Uri,
+                outputPath: String?,
+                intent: Intent = Intent(
+                        context,
+                        EditImageActivity::class.java
+                )) : this(context, null, outputPath, intent) {
+        this.sourceUri = sourceUri
+    }
 
     fun withAddText(): ImageEditorIntentBuilder {
         intent.putExtra(ADD_TEXT_FEATURE, true)
@@ -62,13 +75,26 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
+    fun withSourceUri(sourceUri: Uri): ImageEditorIntentBuilder {
+        this.sourceUri = sourceUri
+        intent.putExtra(SOURCE_URI, sourceUri.toString())
+        intent.removeExtra(SOURCE_PATH)
+        return this
+    }
+
     fun withSourcePath(sourcePath: String): ImageEditorIntentBuilder {
         intent.putExtra(SOURCE_PATH, sourcePath)
+        intent.removeExtra(SOURCE_URI)
         return this
     }
 
     fun withOutputPath(outputPath: String): ImageEditorIntentBuilder {
         intent.putExtra(OUTPUT_PATH, outputPath)
+        return this
+    }
+
+    fun withFonts(fonts: HashMap<String, Typeface>): ImageEditorIntentBuilder {
+        EditImageActivity.fonts = fonts
         return this
     }
 
@@ -85,10 +111,14 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
     @Throws(Exception::class)
     fun build(): Intent {
 
-        if (sourcePath.isNullOrBlank()) {
-            throw Exception("Output image path required. Use withOutputPath(path) to provide the output image path.")
-        } else {
+        if (sourcePath.isNullOrBlank() && sourceUri == null) {
+            throw Exception("Source image required. Use withSourcePath(path) or withSourceUri(uri) to provide the source.")
+        } else if (!sourcePath.isNullOrBlank() && sourceUri != null) {
+            throw Exception("Multiple source images specified. Use either withSourcePath(path) or withSourceUri(uri) to provide the source.")
+        } else if (!sourcePath.isNullOrBlank()) {
             intent.putExtra(SOURCE_PATH, sourcePath)
+        } else {
+            intent.putExtra(SOURCE_URI, sourceUri.toString())
         }
 
         if (outputPath.isNullOrBlank()) {
@@ -111,6 +141,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val BEAUTY_FEATURE = "beauty_feature"
         const val STICKER_FEATURE = "sticker_feature"
 
+        const val SOURCE_URI = "source_uri"
         const val SOURCE_PATH = "source_path"
         const val OUTPUT_PATH = "output_path"
         const val FORCE_PORTRAIT = "force_portrait"

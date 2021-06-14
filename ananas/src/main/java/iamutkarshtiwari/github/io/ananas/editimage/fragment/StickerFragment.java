@@ -69,7 +69,7 @@ public class StickerFragment extends BaseEditFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.stickerView = activity.stickerView;
+        this.stickerView = activity.findViewById(R.id.sticker_panel);
         flipper = mainView.findViewById(R.id.flipper);
         flipper.setInAnimation(activity, R.anim.in_bottom_to_top);
         flipper.setOutAnimation(activity, R.anim.out_bottom_to_top);
@@ -101,12 +101,11 @@ public class StickerFragment extends BaseEditFragment {
     @Override
     public void onShow() {
         activity.mode = EditImageActivity.MODE_STICKERS;
-        activity.stickerFragment.getStickerView().setVisibility(
-                View.VISIBLE);
+        stickerView.setVisibility(View.VISIBLE);
         activity.bannerFlipper.showNext();
     }
 
-    public void swipToStickerDetails(String path, int stickerCount) {
+    public void swipeToStickerDetails(String path, int stickerCount) {
         stickerAdapter.addStickerImages(path, stickerCount);
         flipper.showNext();
     }
@@ -115,10 +114,6 @@ public class StickerFragment extends BaseEditFragment {
         int imageKey = getResources().getIdentifier(path, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageKey);
         stickerView.addBitImage(bitmap);
-    }
-
-    private StickerView getStickerView() {
-        return stickerView;
     }
 
     private final class BackToMenuClick implements OnClickListener {

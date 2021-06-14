@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.io.File;
+import java.util.HashMap;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -142,6 +145,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void editImageClick() {
         File outputFile = FileUtils.genEditFile();
         try {
+            HashMap<String, Typeface> fonts = new HashMap<>();
+            fonts.put("Sans", Typeface.SANS_SERIF);
+            fonts.put("Monospace", Typeface.MONOSPACE);
+            fonts.put("Serif", Typeface.SERIF);
+
             Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
                     .withAddText()
                     .withPaintFeature()
@@ -153,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withBeautyFeature()
                     .withStickerFeature()
                     .withEditorTitle("Photo Editor")
+                    .withFonts(fonts)
                     .forcePortrait(true)
                     .setSupportActionBarVisibility(false)
                     .build();
