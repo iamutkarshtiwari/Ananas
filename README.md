@@ -137,7 +137,7 @@ You can receive the new processed image path and it's edit status like this-
 
         if (requestCode == PHOTO_EDITOR_REQUEST_CODE) { // same code you used while starting
             String newFilePath = data.getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
-            boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IMAGE_IS_EDIT, false);
+            boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false);
         }
     }
 ```
