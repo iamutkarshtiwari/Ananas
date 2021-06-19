@@ -15,22 +15,16 @@
             android:layout_margin="5dp" />
 
         <Button
-            android:id="@+id/select_album"
+            android:id="@+id/photo_picker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/choose_image" />
-
-        <Button
-            android:id="@+id/take_photo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/take_photo" />
+            android:text="@string/ananas_image_editor_choose_image" />
 
         <Button
             android:id="@+id/edit_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/edit_image" />
+            android:text="@string/ananas_image_editor_edit_image" />
     </LinearLayout>
 
 </ScrollView>

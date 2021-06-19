@@ -10,11 +10,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/ananas_image_editor_app_name"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name="iamutkarshtiwari.github.io.imageeditorsample.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/ananas_image_editor_app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -22,12 +22,10 @@
             </intent-filter>
         </activity>
 
-        <!--选择相册图片Activity-->
         <activity
-            android:name="iamutkarshtiwari.github.io.ananas.picchooser.SelectPictureActivity">
+            android:name=".imagepicker.activity.ImagePickerActivity">
         </activity>
 
-        <!--图片编辑Activity-->
         <activity
             android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity"
             android:windowSoftInputMode="adjustPan">
@@ -35,14 +33,23 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
 
     </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.PICK" />
+            <data android:mimeType="image/*" />
+        </intent>
+    </queries>
 
 </manifest>

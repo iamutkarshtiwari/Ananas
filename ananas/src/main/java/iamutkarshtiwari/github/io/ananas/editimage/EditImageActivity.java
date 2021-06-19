@@ -3,6 +3,7 @@ package iamutkarshtiwari.github.io.ananas.editimage;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -115,12 +117,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public static void start(Activity activity, Intent intent, int requestCode) {
+    public static void start(ActivityResultLauncher<Intent> launcher, Intent intent, Context context) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
-            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
-        activity.startActivityForResult(intent, requestCode);
+        launcher.launch(intent);
     }
 
     @Override
