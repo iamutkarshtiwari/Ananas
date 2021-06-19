@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -240,16 +241,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NotNull String permissions[], @NotNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (!(grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    finish();
-                }
-                break;
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            if (!(grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                finish();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -387,7 +385,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> loadingDialog.show())
                 .doFinally(() -> loadingDialog.dismiss())
-                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> {
+                    showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error);
+                    Log.wtf("Error", e.getMessage());
+                });
 
         compositeDisposable.add(loadImageDisposable);
     }

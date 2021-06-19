@@ -71,7 +71,6 @@ class ImagePickerActivity : ParentActivity(R.layout.activity_main) {
         }
     }
 
-
     private fun returnResult(data: Intent?) {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
@@ -89,13 +88,13 @@ class ImagePickerActivity : ParentActivity(R.layout.activity_main) {
                 queryImageUrl = imageUri?.path!!
                 queryImageUrl = compressImageFile(queryImageUrl, false, imageUri!!)
             } else {
-                queryImageUrl = imgPath ?: ""
+                queryImageUrl = imgPath
                 compressImageFile(queryImageUrl, uri = imageUri!!)
             }
             imageUri = Uri.fromFile(File(queryImageUrl))
 
             val result = Intent().apply {
-                putExtra(BUNDLE_EXTRA_IMAGE_PATH, imageUri)
+                putExtra(BUNDLE_EXTRA_IMAGE_PATH, imageUri?.path)
             }
             setResult(RESULT_OK, result)
             finish()
