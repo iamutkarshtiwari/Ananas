@@ -202,7 +202,6 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     public void applyTextImage() {
         // Hide borders of all stickers before save
         updateViewsBordersVisibilityExcept(null);
-        compositeDisposable.clear();
         Disposable applyTextDisposable = Observable.fromCallable(() -> getFinalBitmapFromView(textStickersParentView))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -237,12 +236,6 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
 
         // Crop actual image from textStickerView
         return Bitmap.createBitmap(resultBitmap, textStickerWidthCenterX - (imageViewWidth / 2), textStickerHeightCenterY - (imageViewHeight / 2), imageViewWidth, imageViewHeight);
-    }
-
-    @Override
-    public void onPause() {
-        compositeDisposable.clear();
-        super.onPause();
     }
 
     @Override

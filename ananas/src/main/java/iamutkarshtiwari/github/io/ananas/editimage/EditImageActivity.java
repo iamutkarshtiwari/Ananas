@@ -1,7 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -112,11 +111,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private int imageWidth, imageHeight;
     private Bitmap mainBitmap;
     private Dialog loadingDialog;
-    private TextView titleView;
     private MainMenuFragment mainMenuFragment;
     private RedoUndoController redoUndoController;
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static void start(ActivityResultLauncher<Intent> launcher, Intent intent, Context context) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
@@ -132,12 +130,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         setContentView(R.layout.activity_image_edit);
         getData();
         initView();
-    }
-
-    @Override
-    protected void onPause() {
-        compositeDisposable.clear();
-        super.onPause();
     }
 
     @Override
@@ -160,7 +152,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     private void initView() {
-        titleView = findViewById(R.id.title);
+        TextView titleView = findViewById(R.id.title);
         if (editorTitle != null) {
             titleView.setText(editorTitle);
         }
@@ -268,8 +260,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-    }
+    public void onPointerCaptureChanged(boolean hasCapture) { }
 
     @Override
     public void onBackPressed() {
@@ -349,8 +340,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         if (numberOfOperations <= 0)
             return;
 
-        compositeDisposable.clear();
-
         Disposable saveImageDisposable = saveImage(mainBitmap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -378,8 +367,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     private void loadImageFromFile(String filePath) {
-        compositeDisposable.clear();
-
         Disposable loadImageDisposable = loadImage(filePath)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -462,9 +449,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         return mainBitmap;
     }
 
-    /**
-     * @author panyi
-     */
     private final class BottomGalleryAdapter extends FragmentPagerAdapter {
         BottomGalleryAdapter(FragmentManager fm) {
             super(fm);

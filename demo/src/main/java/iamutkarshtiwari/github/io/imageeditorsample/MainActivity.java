@@ -77,12 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onPause() {
-        compositeDisposable.clear();
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
         compositeDisposable.dispose();
         super.onDestroy();
@@ -209,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void loadImage(String imagePath) {
-        compositeDisposable.clear();
         Disposable applyRotationDisposable = loadBitmapFromFile(imagePath)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

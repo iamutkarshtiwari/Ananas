@@ -98,12 +98,6 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
     }
 
     @Override
-    public void onPause() {
-        compositeDisposable.clear();
-        super.onPause();
-    }
-
-    @Override
     public void onDestroy() {
         compositeDisposable.dispose();
         super.onDestroy();
@@ -132,7 +126,6 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
         if (rotatePanel.getRotateAngle() == 0 || (rotatePanel.getRotateAngle() % 360) == 0) {
             backToMain();
         } else {
-            compositeDisposable.clear();
             Disposable applyRotationDisposable = applyRotation(activity.getMainBit())
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
