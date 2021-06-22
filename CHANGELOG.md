@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 # Released
 
+
+## [1.2.6]
+- Fixed blank image at first time load
+- Added new picker for gallery and camera photos
+- Fixed crashes on Android 10 <= devices 
+
 ## [1.2.5]
 - Added Arabic and French locales
 - Fixed image orientation issue while loading bitmap
