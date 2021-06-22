@@ -86,7 +86,7 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
     fun build(): Intent {
 
         if (sourcePath.isNullOrBlank()) {
-            throw Exception("Output image path required. Use withOutputPath(path) to provide the output image path.")
+            throw Exception("Source image path required. Use withSourcePath(path) to provide the output image path.")
         } else {
             intent.putExtra(SOURCE_PATH, sourcePath)
         }

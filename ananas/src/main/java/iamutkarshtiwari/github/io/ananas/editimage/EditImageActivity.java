@@ -1,8 +1,8 @@
 package iamutkarshtiwari.github.io.ananas.editimage;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -109,18 +111,17 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private int imageWidth, imageHeight;
     private Bitmap mainBitmap;
     private Dialog loadingDialog;
-    private TextView titleView;
     private MainMenuFragment mainMenuFragment;
     private RedoUndoController redoUndoController;
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public static void start(Activity activity, Intent intent, int requestCode) {
+    public static void start(ActivityResultLauncher<Intent> launcher, Intent intent, Context context) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
-            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
-        activity.startActivityForResult(intent, requestCode);
+        launcher.launch(intent);
     }
 
     @Override
@@ -129,12 +130,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         setContentView(R.layout.activity_image_edit);
         getData();
         initView();
-    }
-
-    @Override
-    protected void onPause() {
-        compositeDisposable.clear();
-        super.onPause();
     }
 
     @Override
@@ -157,7 +152,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     private void initView() {
-        titleView = findViewById(R.id.title);
+        TextView titleView = findViewById(R.id.title);
         if (editorTitle != null) {
             titleView.setText(editorTitle);
         }
@@ -238,16 +233,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NotNull String permissions[], @NotNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (!(grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    finish();
-                }
-                break;
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            if (!(grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                finish();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -268,8 +260,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-    }
+    public void onPointerCaptureChanged(boolean hasCapture) { }
 
     @Override
     public void onBackPressed() {
@@ -349,8 +340,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         if (numberOfOperations <= 0)
             return;
 
-        compositeDisposable.clear();
-
         Disposable saveImageDisposable = saveImage(mainBitmap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -378,14 +367,21 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     private void loadImageFromFile(String filePath) {
-        compositeDisposable.clear();
-
         Disposable loadImageDisposable = loadImage(filePath)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doOnSubscribe(subscriber -> {
+                    loadingDialog.show();
+                    mainMenuFragment.setMenuOptionsClickable(false);
+                })
+                .doOnSuccess(bitmap -> {
+                    mainMenuFragment.setMenuOptionsClickable(true);
+                })
                 .doFinally(() -> loadingDialog.dismiss())
-                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> {
+                    showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error);
+                    Log.wtf("Error", e.getMessage());
+                });
 
         compositeDisposable.add(loadImageDisposable);
     }
@@ -459,9 +455,6 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         return mainBitmap;
     }
 
-    /**
-     * @author panyi
-     */
     private final class BottomGalleryAdapter extends FragmentPagerAdapter {
         BottomGalleryAdapter(FragmentManager fm) {
             super(fm);

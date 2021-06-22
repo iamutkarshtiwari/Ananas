@@ -1,9 +1,12 @@
 <resources>
-    <string name="app_name">图片编辑</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="choose_image">选择一张需要编辑的图片</string>
-    <string name="edit_image">编辑图片</string>
-    <string name="save_path">保存到路径: %s</string>
-    <string name="take_photo">拍摄照片</string>
+    <string name="ananas_image_editor_app_name">图片编辑</string>
+    <string name="ananas_image_editor_hello_world">Hello world!</string>
+    <string name="ananas_image_editor_action_settings">Settings</string>
+    <string name="ananas_image_editor_choose_image">选择图像</string>
+    <string name="ananas_image_editor_edit_image">编辑图片</string>
+    <string name="ananas_image_editor_save_path">保存到路径: %s</string>
+    <string name="ananas_image_editor_take_photo">拍摄照片</string>
+    <string name="ananas_image_editor_permission_not_granted">未授予权限。</string>
+    <string name="ananas_image_editor_select_capture_image">请选择或捕获图像</string>
+    <string name="ananas_image_editor_select_error">选择图像时出错。</string>
 </resources>

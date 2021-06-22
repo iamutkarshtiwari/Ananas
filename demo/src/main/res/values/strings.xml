@@ -1,9 +1,13 @@
 <resources>
-    <string name="app_name">Ananas</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="choose_image">Select image from gallery</string>
-    <string name="edit_image">Edit image</string>
-    <string name="save_path">save path : %s</string>
-    <string name="take_photo">Capture photo</string>
+    <string name="file_provider_name" translatable="false">.fileProvider</string>
+    <string name="ananas_image_editor_app_name">Ananas</string>
+    <string name="ananas_image_editor_hello_world">Hello world!</string>
+    <string name="ananas_image_editor_action_settings">Settings</string>
+    <string name="ananas_image_editor_choose_image">Pick Image</string>
+    <string name="ananas_image_editor_edit_image">Edit image</string>
+    <string name="ananas_image_editor_save_path">save path : %s</string>
+    <string name="ananas_image_editor_take_photo">Capture photo</string>
+    <string name="ananas_image_editor_permission_not_granted">Permissions not granted.</string>
+    <string name="ananas_image_editor_select_capture_image">Please select or capture image</string>
+    <string name="ananas_image_editor_select_error">Error occured while selecting the image.</string>
 </resources>

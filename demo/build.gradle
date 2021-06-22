@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -26,8 +29,13 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:${androidx_version}"
+    implementation "androidx.core:core-ktx:${core_ktx_version}"
     implementation "io.reactivex.rxjava2:rxjava:${rxjava_version}"
     implementation "io.reactivex.rxjava2:rxandroid:${rxandroid_version}"
-    implementation "androidx.core:core-ktx:${core_ktx_version}"
+    implementation "com.github.bumptech.glide:glide:${glide_version}"
+    kapt "com.github.bumptech.glide:compiler:${glide_version}"
     implementation project(':ananas')
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
 }
