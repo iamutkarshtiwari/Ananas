@@ -159,31 +159,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         openAlbum();
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            switch (requestCode) {
-//                case SELECT_GALLERY_IMAGE_CODE:
-//                    handleSelectFromAblum(data);
-//                    break;
-//                case TAKE_PHOTO_CODE:
-//                    handleTakePhoto();
-//                    break;
-//                case ACTION_REQUEST_EDITIMAGE:
-//                    handleEditorImage(data);
-//                    break;
-//            }
-//        }
-//    }
-
-//    private void handleTakePhoto() {
-//        if (photoFile != null) {
-//            path = photoFile.getPath();
-//            loadImage(path);
-//        }
-//    }
-
     private void handleEditorImage(Intent data) {
         String newFilePath = data.getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         boolean isImageEdit = data.getBooleanExtra(EditImageActivity.IS_IMAGE_EDITED, false);
