@@ -370,7 +370,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         Disposable loadImageDisposable = loadImage(filePath)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doOnSubscribe(subscriber -> {
+                    loadingDialog.show();
+                    mainMenuFragment.setMenuOptionsClickable(false);
+                })
+                .doOnSuccess(bitmap -> {
+                    mainMenuFragment.setMenuOptionsClickable(true);
+                })
                 .doFinally(() -> loadingDialog.dismiss())
                 .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> {
                     showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error);
