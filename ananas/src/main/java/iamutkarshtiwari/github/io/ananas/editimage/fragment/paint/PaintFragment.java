@@ -157,7 +157,9 @@ public class PaintFragment extends BaseEditFragment implements View.OnClickListe
         activity.mainImage.setImageBitmap(activity.getMainBit());
         activity.bannerFlipper.showNext();
 
+        isEraser = false;
         customPaintView.setVisibility(View.VISIBLE);
+        customPaintView.setEraser(isEraser);
     }
 
     private void toggleButtons() {
