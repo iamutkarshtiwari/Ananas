@@ -57,8 +57,25 @@ public class CustomPaintView extends View {
     }
 
     private void generatorBit() {
-        mDrawBit = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        mPaintCanvas = new Canvas(mDrawBit);
+        int measuredWidth = getMeasuredWidth();
+        int measuredHeight = getMeasuredHeight();
+
+        if (measuredHeight <= 0 || measuredWidth <= 0) {
+            measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            measuredWidth = getMeasuredWidth();
+            measuredHeight = getMeasuredHeight();
+
+            if (measuredWidth > 0 && measuredHeight > 0) {
+                mDrawBit = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888);
+            }
+
+        } else {
+            mDrawBit = Bitmap.createBitmap(measuredWidth, measuredHeight, Bitmap.Config.ARGB_8888);
+        }
+
+        if (mDrawBit != null) {
+            mPaintCanvas = new Canvas(mDrawBit);
+        }
     }
 
     private void init(Context context) {
